@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MTS Window</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="css/style.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+
+<style>
+    .top-left,.top-right{
+        overflow: hidden;
+        padding:10px;
+        margin-top:10px;
+        height:auto;
+        background-color:#f9f9f9;
+        width:100%
+    }
+
+    .top-left{
+        background-color: aqua;
+    }
+
+    .top-right{
+        background-color: green;
+    }
+
+    .btnThis {
+        background-color:indigo;
+        border: none;
+        color: white;
+        width: auto;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .btnThis:hover {
+        background-color: RoyalBlue;
+    }
+
+    table {
+        border-collapse: collapse;
+        max-width: 100%;
+        white-space: nowrap;
+        font-size:small;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+   
+</style>
+
+
+
+<body>
+    <div class="sidenav">
+        <button class="btn" id="btnNew"><i class="fa fa-plus-circle"></i>  New MTS</button>
+        <br><br>
+        <button class="btn" id="btnQueue"><i class="fa fa-list-ul"></i>  MTS Queue</button>
+        <br><br><br>
+        <button class="btn" id="btnPrice"><i class="fa fa-tags"></i>  Price List</button>
+        <br><br><br><br>
+        <button class="btn" id="btnCost"><i class="fa fa-percent"></i>  Cost</button>
+        <br><br><br>
+        <button class="btn" id="btnDelivered"><i class="fa fa-truck"></i>  Delivered</button>
+        <br><br><br>
+        <button class="btn" id="btnPasswords"><i class="fa fa-lock"></i>  Passwords</button>
+        <br>
+
+    </div>
+      
+    <div class="main">
+
+        <div class="row no-gutters" style="font-size: medium;;" >
+            <div class="col no-gutters">
+                <div class="top-left">
+                    <form >
+                        <div>Prepared By: <input type="text" placeholder="Name"></div>
+                        <br>
+                        <div>Project: <input type="text" placeholder="Project Name" style="margin-left: 39px;"></div>
+                        <br>
+                        <div>Address: <input type="text" placeholder="Addres" style="margin-left: 30px;"></div>
+                        <br>
+                        <div>From: <input type="text" placeholder="Delivered Form" style="margin-left: 51.5px;"></div>
+                    
+                    </form>
+                </div>
+            </div>
+
+            <div class="col no-gutters">
+                <div class="top-right">
+                    <form>
+                        <div>MTS No.: <input type="number" placeholder="MTS No." disabled> <button class="btnThis" id="btnEdit"><i class="fa fa-edit"></i></button></div>
+                        <br>
+                        <div style="display: inline-block;"> Date:</div><div style="display: inline-block; margin-left: 33px;"><input type="text" id="datepicker" style="padding: 0 0  0 0;" width="200" > </div>
+                        <button class="btnThis" id="btnToday">Today</button>
+                        <br> <br> 
+                        <div>
+                            <label class="checkbox-inline"><input type="checkbox" value=""> Materials &nbsp; </label>
+                            <label class="checkbox-inline"><input type="checkbox" value=""> Tools  </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="mid-table" >
+            <! –– use for putting table -- >
+            <div id="TableContainer"  style="text-align:center;font-size: small;"></div> 
+
+            <button class= "btnThis"  id='btnAddRow' onclick="fncCreateRow(); return false;">Add Row</button>
+            
+        </div>
+    
+       
+
+    </div>
+
+        
+  
+
+
+</body>
+<script>
+
+ 
+   
+
+    $(document).ready(function(){
+        var vHeaderArray = ['QTY', 'UNIT', 'DESCRIPTION','REMARKS','DISCOUNT','PRICE','TOTAL'];
+        fncCreateTableHeader('TableContainer', vHeaderArray);
+        fncCreateRow('myTable');
+        //fncView();
+    });
+
+    function fncCreateTableHeader(vDiv, vHeaderArray)
+    {		
+        var vTable = $('#'+vDiv).append($('<table id="myTable" border="1" ><thead><tr></tr><tbody><tfoot>'));
+        for(x=0;x<vHeaderArray.length;x++)
+        {
+            vTable.find('thead > tr').append('<th>'+vHeaderArray[x]+'</th>');
+            
+        }		
+
+        return vTable;
+    }
+
+    function fncCreateRow(vTableName)
+    {
+        $("#myTable").append("<tr></tr>");
+        fncAddRow();	
+    }
+
+    function fncAddRow()
+    {
+
+        var vHeaderLength = $('#myTable > thead').find("th").length;
+/*        var vFieldID = ['inpQty', 'inpUnit', 'inpDescription', 'inpRemarks','inpDiscount','inpPrice']
+        for(i=0;i<vHeaderLength-1;i++)
+        {
+            $("#myTable > tbody > tr:last").append("<td><input id="+vFieldID[i]+" autocomplete='off'></td>");
+        }
+ */
+        $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpQty' /></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpUnit'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpDescription'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpRemarks'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpDiscount' /></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpPrice' /></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpTotal' disabled/></td>");
+  
+    }
+
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+        // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+}
+
+    $('#datepicker').datepicker({
+        uiLibrary: 'bootstrap'
+    });
+    
+</script>
+</html>
