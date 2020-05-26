@@ -45,9 +45,23 @@
         cursor: pointer;
         text-align: center;
     }
-
     .btnThis:hover {
-        background-color: RoyalBlue;
+            background-color: RoyalBlue;
+    }
+
+    #btnDeleteRow {
+        background-color:darkred;
+        border: none;
+        color: white;
+        width: auto;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    #btnDeleteRow:hover {
+        background-color: crimson ;
+       
     }
 
     table {
@@ -55,10 +69,80 @@
         max-width: 100%;
         white-space: nowrap;
         font-size:small;
-        margin-left: auto;
-        margin-right: auto;
+        
+       
+    }
+    .mid-table{
+        display: inline-block;
     }
 
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {top:-300px; opacity:0} 
+        to {top:0; opacity:1}
+    }
+
+    @keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .modal-body {padding: 2px 16px;}
+
+    #btnNew{
+        box-shadow: 5px 10px #e73838;
+    }
    
 </style>
 
@@ -87,13 +171,13 @@
             <div class="col no-gutters">
                 <div class="top-left">
                     <form >
-                        <div>Prepared By: <input type="text" placeholder="Name"></div>
+                        <div>Prepared By: <input type="text" placeholder="Name" id="inpPreparedBy"></div>
                         <br>
-                        <div>Project: <input type="text" placeholder="Project Name" style="margin-left: 39px;"></div>
+                        <div>Project: <input type="text" placeholder="Project Name" style="margin-left: 39px;" id="inpProject"></div>
                         <br>
-                        <div>Address: <input type="text" placeholder="Addres" style="margin-left: 30px;"></div>
+                        <div>Address: <input type="text" placeholder="Addres" style="margin-left: 30px;" id="inpAddress"></div>
                         <br>
-                        <div>From: <input type="text" placeholder="Delivered Form" style="margin-left: 51.5px;"></div>
+                        <div>From: <input type="text" placeholder="Delivered Form" style="margin-left: 51.5px;" id="inpFrom"></div>
                     
                     </form>
                 </div>
@@ -102,30 +186,80 @@
             <div class="col no-gutters">
                 <div class="top-right">
                     <form>
-                        <div>MTS No.: <input type="number" placeholder="MTS No." disabled> <button class="btnThis" id="btnEdit"><i class="fa fa-edit"></i></button></div>
+                        <div>MTS No.: <input type="text" placeholder="MTS No." id="inpMTSNoTop" disabled> <button class="btnThis" id="btnMTSEdit" onclick="fncMTSModal();return false;"><i class="fa fa-edit"></i></button></div>
                         <br>
                         <div style="display: inline-block;"> Date:</div><div style="display: inline-block; margin-left: 33px;"><input type="text" id="datepicker" style="padding: 0 0  0 0;" width="200" > </div>
-                        <button class="btnThis" id="btnToday">Today</button>
+                        <button class="btnThis" id="btnToday" onclick="fncToday();return false;">Today</button>
                         <br> <br> 
                         <div>
-                            <label class="checkbox-inline"><input type="checkbox" value=""> Materials &nbsp; </label>
-                            <label class="checkbox-inline"><input type="checkbox" value=""> Tools  </label>
+                            <label class="checkbox-inline"><input type="checkbox" value="Mtarials"> Materials &nbsp; </label>
+                            <label class="checkbox-inline"><input type="checkbox" value="Tools"> Tools  </label>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="mid-table" >
-            <! –– use for putting table -- >
+        <div class="mid-table">
+            <!-- use for putting table  -->
             <div id="TableContainer"  style="text-align:center;font-size: small;"></div> 
+            <div style="margin-top: 10px;"></div>
 
-            <button class= "btnThis"  id='btnAddRow' onclick="fncCreateRow(); return false;">Add Row</button>
-            
+            <button class= "btnThis"  id='btnAddRow' onclick="fncCreateRow(); return false;"><i class="fa fa-plus"></i> Add Row Below</button>
+           
+            <button  id='btnDeleteRow'><i class="fa fa-times"></i> Delete Selected Rows</button>
+           
+            <div style="display: inline-block; float: right;">Total Cost: <input type="number" style="height:25px;width:168px;margin-right: 75px;"  id="inpTotalCost" disabled>
+                
         </div>
-    
        
 
+    </div>
+
+    <div class="und-main" >
+        <div class="row no-gutters" style="font-size: medium;;" >
+            <div class="col no-gutters">
+                <div class="top-left">
+                    <form >
+                        <div>Requested By: <input type="text" placeholder="Name"  id="inpRequestedBy"></div>
+                        <br>
+                        <div>Approved By: <input type="text" placeholder="Name" style="margin-left:8px;"  id="inpApprovedBy"></div>
+                                   
+                    </form>
+                </div>
+            </div>
+
+            <div class="col no-gutters">
+                <div class="top-right">
+                    <form>
+                        <div>Taken Out By: <input type="text" placeholder="Name"  id="inpTakenOutBy"></button></div>
+                        <br>
+                        <div style="display: inline-block;">Received By: <input type="text" placeholder="Name" style="margin-left: 6px;"  id="inpReceivedBy"></button></div>
+                        <button class="btnThis" id="btnSave" onclick="fncSaveToDB();return false;"><i class="fa fa-save"></i> Save</button>
+                        
+                       
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+        <div class="modal-header">
+            <h2>MTS Number</h2>
+            <span class="close">&times;</span>
+           
+        </div>
+        <div class="modal-body">
+            <div style="display: inline-block;">Enter MTS Number: <input type="number" placeholder="Number" style="margin-left: 6px;" id="inpMTSNoModal" min="0"></button></div>
+            <button class="btnThis" id="btnSaveMTSNo" onclick="fncMTSNoSave();return false;"><i class="fa fa-save"></i> Save</button>
+        </div>
+        </div>
     </div>
 
         
@@ -134,16 +268,37 @@
 
 </body>
 <script>
-
+    var gMtsNo=0;
  
    
+    $("#datepicker").keydown(false)
 
     $(document).ready(function(){
-        var vHeaderArray = ['QTY', 'UNIT', 'DESCRIPTION','REMARKS','DISCOUNT','PRICE','TOTAL'];
+        fncMTSModal() 
+        var vHeaderArray = ['QTY', 'UNIT', 'DESCRIPTION','REMARKS','DISCOUNT','PRICE','TOTAL','SELECTED'];
         fncCreateTableHeader('TableContainer', vHeaderArray);
         fncCreateRow('myTable');
         //fncView();
+
+
+        $("#btnDeleteRow").click(function(){
+            fncDeleteSelected()
+        });
     });
+
+    function fncDeleteSelected(){
+        var count=0;
+        $("table tbody").find('input[name="selected"]').each(function(){
+                if($(this).is(":checked")){
+                    $(this).parents("tr").remove();
+                    count++;
+                }
+            });
+
+            if(count==0){
+                alert("Check Atleast one Checkbox")
+            }
+    }  
 
     function fncCreateTableHeader(vDiv, vHeaderArray)
     {		
@@ -167,19 +322,15 @@
     {
 
         var vHeaderLength = $('#myTable > thead').find("th").length;
-/*        var vFieldID = ['inpQty', 'inpUnit', 'inpDescription', 'inpRemarks','inpDiscount','inpPrice']
-        for(i=0;i<vHeaderLength-1;i++)
-        {
-            $("#myTable > tbody > tr:last").append("<td><input id="+vFieldID[i]+" autocomplete='off'></td>");
-        }
- */
-        $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpQty' /></td>");
-        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpUnit'/></td>");
-        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpDescription'/></td>");
+
+        $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpQty' style='width:40px' /></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpUnit' style='width:50px'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpDescription' style='width:250px'/></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpRemarks'/></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpDiscount' /></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpPrice' /></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpTotal' disabled/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='checkbox' id='inpSelect'  name='selected'/></td>");
   
     }
 
@@ -204,6 +355,79 @@
     $('#datepicker').datepicker({
         uiLibrary: 'bootstrap'
     });
+
+    function fncMTSModal(){
+
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+    
+            modal.style.display = "block";
+        
+        if (gMtsNo<1 || gMtsNo.isInteger==false )
+        {
+            span.onclick = function() {
+              alert("Please put an appropriate MTS number");
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    alert("Please put an appropriate MTS number");
+            }
+            }
+
+        } 
+        else
+        {  
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            }
+        }
+    }
+
+    function fncMTSNoSave(){
+        gMtsNo=$("#inpMTSNoModal").val();
+        if(gMtsNo=="" || gMtsNo<=0)
+        {
+            alert("please put an appropriate MTS Number")
+        }
+        else
+        {
+            console.log(gMtsNo);
+            $('#inpMTSNoTop').val(gMtsNo);
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+    }
+
+    function fncToday()
+    {
+        var vDate= new Date();
+        var vDay = String(vDate.getDate()).padStart(2, '0');
+        var vMonth = String(vDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var vYear = vDate.getFullYear();
+	
+	    vDate = vMonth + '/' + vDay + '/' + vYear
+        $('#datepicker').val(vDate);
+        console.log(vDate)
+    }
+
+    function fncSaveToDB()
+    {
+        alert("Save to db")
+    }
     
 </script>
 </html>
