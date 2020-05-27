@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MTS Queue List</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="css/style.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+
+<style>
+    .btnThis {
+        background-color:indigo;
+        border: none;
+        color: white;
+        width: auto;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+    }
+    .btnThis:hover {
+            background-color: RoyalBlue;
+    }
+
+    table {
+        border-collapse: collapse;
+        max-width: 100%;
+        white-space: nowrap;
+        font-size:medium;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        
+        
+       
+    }
+
+    #btnQueue{
+        box-shadow: 5px 10px #e73838;
+    }
+    #divUser{
+        position: fixed;
+        right: 0px;
+        padding: 0px 10px; 
+    }
+</style>
+
+
+
+<body>
+    <div class="sidenav">
+        <button class="btn" id="btnNew"><i class="fa fa-plus-circle"></i>  New MTS</button>
+        <br><br>
+        <button class="btn" id="btnQueue"><i class="fa fa-list-ul"></i>  MTS Queue</button>
+        <br><br>
+        <button class="btn" id="btnQuotation"><i class="fa fa-file"></i> New Quotation</button>
+        <br><br><br><br>
+        <button class="btn" id="btnPrice"><i class="fa fa-tags"></i>  Price List</button>
+        <br><br><br><br>
+        <br><br><br>
+        <br><br><br>
+        <button class="btn" id="btnLogout"><i class="fa fa-sign-out"></i>  Logout</button>
+        <br>
+
+    </div>
+
+    <div class="main">
+        <div id="divUser">Logged in as: ASDASA  </div>
+        <br>
+        <div id="TableContainer"  style="text-align:center;font-size: small;border-top-style:groove ;"></div>         
+    </div>
+      
+      
+  
+
+
+</body>
+
+<script>
+ $(document).ready(function(){
+        
+        var vHeaderArray = ['Project Name', 'MTS No.', 'Status','View'];
+        fncCreateTableHeader('TableContainer', vHeaderArray);
+        fncCreateRow('myTable');
+        //fncView();
+    });
+
+    function fncCreateTableHeader(vDiv, vHeaderArray)
+    {		
+        var vTable = $('#'+vDiv).append($('<table id="myTable" border="1" ><thead><tr></tr><tbody><tfoot>'));
+        for(x=0;x<vHeaderArray.length;x++)
+        {
+            vTable.find('thead > tr').append('<th>'+vHeaderArray[x]+'</th>');
+            
+        }		
+
+        return vTable;
+    }
+
+    function fncCreateRow(vTableName)
+    {
+        $("#myTable").append("<tr></tr>");
+        fncAddRow();	
+    }
+
+    function fncAddRow()
+    {
+
+        var vHeaderLength = $('#myTable > thead').find("th").length;
+
+
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpProjectName'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='MTSNo'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpStatus'/></td>");
+        $("#myTable > tbody > tr:last").append("<td><button class='btnThis'><i class='fa fa-search-plus'></i> View</button></td>");
+  
+    }
+
+
+</script>
+
+</html>
