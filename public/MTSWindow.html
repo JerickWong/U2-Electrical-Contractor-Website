@@ -208,14 +208,15 @@
 
         <div class="mid-table">
             <!-- use for putting table  -->
-            <button class= "btnThis"  id='btnPanelBoard' onclick="fncAddPanelBoard(); return false;" style="float:right;margin-bottom: 10px;"><i class="fa fa-plus"></i> Add  Panelboard</button>
+            <button class= "btnThis"  id='btnPanelBoard' onclick="fncAddPanelBoard(); return false;" style="margin-bottom: 10px;"><i class="fa fa-plus"></i> Add  Panelboard</button>
+            <button class= "btnThis"  id='btnAddRow' onclick="fncCreateRow(); return false;"><i class="fa fa-plus"></i> Add Row Below</button>
             <div id="TableContainer"  style="text-align:center;font-size: small;"></div> 
             <!-- Just for ui purpose -->
             <div style="margin-top: 10px;"></div> 
 
-            <button class= "btnThis"  id='btnAddRow' onclick="fncCreateRow(); return false;"><i class="fa fa-plus"></i> Add Row Below</button>
-           
-            <button  id='btnDeleteRow'><i class="fa fa-times"></i> Delete Selected Rows</button>
+          
+            <!-- Use this if you want to use the checkbox -->
+            <!-- <button  id='btnDeleteRow'><i class="fa fa-times"></i> Delete Selected Rows</button> -->
            
             <div style="display: inline-block; float: right;">Total Cost: <input type="number" style="height:25px;width:168px;margin-right: 75px;"  id="inpTotalCost" disabled>
                 
@@ -311,12 +312,16 @@
         fncCreateRow('myTable');
         //fncView();
 
-
+// Use this if you want to use the checkbox
+/*
         $("#btnDeleteRow").click(function(){
             fncDeleteSelected()
         });
+*/
     });
 
+// Use this if you want to use the checkbox
+/*
     function fncDeleteSelected()
     {
         var count=0;
@@ -330,7 +335,10 @@
             if(count==0){
                 alert("Check Atleast one Checkbox")
             }
+
+
     }  
+*/  
 
     function fncCreateTableHeader(vDiv, vHeaderArray)
     {		
@@ -362,8 +370,13 @@
         $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpDiscount' /></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpPrice' /></td>");
         $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpTotal' disabled/></td>");
-        $("#myTable > tbody > tr:last").append("<td><input type='checkbox' id='inpSelect'  name='selected'/></td>");
-  
+        $("#myTable > tbody > tr:last").append("<td><button id='btnDeleteRow' value='Delete' onclick='deleteRow(this)'>X</button></td>");
+        // <input type='checkbox' id='inpSelect'  name='selected'/>
+    }
+
+    function deleteRow(btn) {
+        var row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
     }
 
     function validate(evt)
