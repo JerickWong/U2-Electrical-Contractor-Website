@@ -1,0 +1,63 @@
+body{
+    font-family: "Lato", sans-serif;
+  }
+  
+  .btn{
+    background-color: indigo;
+    color: white !important;
+    font-size: 18px !important;
+    margin: 10px;
+  }
+  
+  .btn:hover {
+    background-color: RoyalBlue;
+   
+  }
+  
+  /* .btn:focus{
+    box-shadow: 5px 10px #e73838;
+  } */
+  
+  .main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    font-size: 20px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+  }
+  
+  
+  
+  /* Sidebar CSS */
+  
+  #sidebar-wrapper {
+    min-height: 100vh;
+  }
+  
+  
+  #sidebar-wrapper .list-group {
+    width: inherit;
+    min-height: inherit;
+  }
+  
+  #btnLogout{
+    position: relative;
+    margin-top: 550px;
+  }
+  
+  /* Page Content CSS */
+  
+  #page-content-wrapper {
+    min-width: 100vw;
+  }
+  
+  @media (min-width: 768px) {
+    #sidebar-wrapper {
+      margin-left: 0;
+    }
+  
+    #page-content-wrapper {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+  
+  
