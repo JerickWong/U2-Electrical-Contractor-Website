@@ -1,0 +1,73 @@
+Company:
+name: String,
+owner: String,
+balance: Number
+
+User:
+email: String,
+username: String,
+password: String,
+permission: String (Employee/Manager/Admin),
+
+MTS Entity:
+prepared_by: String,
+project: String,
+address: String,
+mts: Number,
+date: Date,
+delivered_from: String,
+total: Number,
+requested_by: String,
+approved_by: String,
+takenout_by: String,
+received_by: String,
+status: 
+
+(subcollection)
+Product Entity:
+quantity: Number,
+unit: String,
+product_name: String,
+model_name: String,
+brand_name: String,
+discount: Number,
+price: Number,
+other_remarks: String,
+
+
+Project:
+name: String,
+address: String,
+discount: Number
+
+(subcollection)
+Transactions:
+date: Date,
+mts: Number,
+amount: Number,
+balance: Number
+
+
+Products:
+unit: String,
+name: String,
+model_name: String,
+brand_name: String,
+price: Number,
+supplier: String,
+price_as_of: Date,
+other_remarks: String
+
+
+Products_Set:
+unit: String,
+price: Number
+supplier: String,
+
+(subcollection)
+Product_Set:
+quantity: Number,
+name: String,
+model_name: String,
+brand_name: String,
+price: Number,
