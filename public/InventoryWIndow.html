@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>MTS List</title>
+        <title>Inventory Window</title>
         
         <link href="css/template.css" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -46,16 +46,13 @@
             border-collapse: collapse;
             max-width: 100%;
             white-space: nowrap;
-            font-size:medium;
+            font-size:small;
             margin-left: auto;
             margin-right: auto;
             margin-top: 10px;
-            
-            
-           
         }
     
-        #btnQueue{
+        #btnPrice{
             box-shadow: 5px 10px #e73838;
         }
         #divUser{
@@ -100,11 +97,8 @@
                             <div class="col no-gutters">
                                 <div class="top-left">
                                     <form >
-                                        <div>Project Name: <input type="text" placeholder="Name" id="inpProjectName"></div>
-                                        <br>
-                                        <div style="margin-left:103px"><input type="text" placeholder="Name" id="inpProjectName"></div>
-                                       
-                                       
+                                        <div> <input type="text" placeholder="Search" id="inpSearch" style="width: 60%;"></div>
+                                   
                                     </form>
                                 </div>
                             </div>
@@ -112,9 +106,20 @@
                             <div class="col no-gutters">
                                 <div class="top-right">
                                     <form>
-                                        <div>Status: <input type="text" placeholder="Status" id="inpProjectName"></div>
-                                        <br>
-                                        <div style="margin-left:51px"><input type="text" placeholder="Status" id="inpProjectName"></div>
+                                        <label for="Category">Category:</label>
+
+                                        <select name="Category" id="cat">
+                                          <optgroup label="Supplier">
+                                            <option value="pipe">PVC Pipe</option>
+                                            <option value="adapter">PVC Adapter</option>
+                                            <option value="elbow"> PVC Elbow</option>
+                                          </optgroup>
+                                          <optgroup label="Supplier">
+                                            <option value="pipe">PVC Pipe</option>
+                                            <option value="adapter">PVC Adapter</option>
+                                            <option value="elbow"> PVC Elbow</option>
+                                          </optgroup>
+                                        </select>
                                     </form>
                                 </div>
                             </div>
@@ -136,7 +141,7 @@
     <script>
         $(document).ready(function(){
                
-               var vHeaderArray = ['Project Name', 'MTS No.', 'Status','View'];
+               var vHeaderArray = ['UNIT', 'ITEM NAME', 'BRAND','MODEL','COLOR','SUPPLIER','PRICE','REMARKS'];
                fncCreateTableHeader('TableContainer', vHeaderArray);
                fncCreateRow('myTable');
                //fncView();
@@ -163,16 +168,35 @@
            function fncAddRow()
            {
        
-               var vHeaderLength = $('#myTable > thead').find("th").length;
-       
-       
-               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpProjectName'/></td>");
-               $("#myTable > tbody > tr:last").append("<td><input type='text' id='MTSNo'/></td>");
-               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpStatus'/></td>");
-               $("#myTable > tbody > tr:last").append("<td><button class='btnThis'><i class='fa fa-search-plus'></i> View</button></td>");
-         
+               $("#myTable > tbody > tr:last").append("<td><input type='text'  onkeypress='validate(event)' id='inpUnit' style='width:40px'   /></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpItemName'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpBrand'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpModel'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpColor'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpSupplier'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text'  onkeypress='validate(event)' id='inpPrice'/></td>");
+               $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpRemarks'/></td>");
+
            }
        
+           function validate(evt)
+         {
+            var theEvent = evt || window.event;
+    
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+            // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\./;
+            if( !regex.test(key) ) {
+            theEvent.returnValue = false;
+            if(theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
        
        </script>
 

@@ -38,9 +38,12 @@ body{
     min-height: inherit;
   }
   
-  #btnLogout{
-    position: relative;
-    margin-top: 550px;
+  #btnPrice{
+    background-color: darkgreen !important;
+  }
+
+  #btnPrice:hover{
+    background-color: green !important;
   }
   
   /* Page Content CSS */
