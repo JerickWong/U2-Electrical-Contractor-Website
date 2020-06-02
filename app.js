@@ -6,6 +6,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const hbs = require('hbs')
 const app = express();
+const logger = require('morgan')
 
 const port = 9090;
 
