@@ -437,6 +437,7 @@
                     price = parseFloat(price)
                     let total = qty*price
                     $('.inpTotal').eq(row_number).val(total)
+                        .trigger('change')
                 }
             })
 
@@ -449,7 +450,21 @@
                     price = parseFloat(price)
                     let total = qty*price
                     $('.inpTotal').eq(row_number).val(total)
+                        .trigger('change')
                 }
+            })
+
+            $('.inpTotal').eq(row_number).change(() => {
+                console.log('detected change')
+                let total_cost = 0
+                console.log(row_number+1)
+                for(i=0; i<row_number+1; i++) {
+                    let cost = $('.inpTotal').eq(i).val()
+                    cost = parseFloat(cost)
+                    console.log(cost)
+                    total_cost = total_cost + cost
+                }
+                $('#inpTotalCost').val(total_cost)
             })
         }
         
@@ -626,6 +641,8 @@
                 alert("Confirmed to db");
     
         }
+
+        
 
         
     </script>
