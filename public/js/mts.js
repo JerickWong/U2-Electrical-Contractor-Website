@@ -286,20 +286,24 @@ function saveToQueueDB() {
     const address = document.querySelector('#inpAddress').value
     const delivered_from = document.querySelector('#inpFrom').value
 
-    const MTS_number = document.querySelector('#inpMTSNumber').value
+    let MTS_number = document.querySelector('#inpMTSNumber').value
     const date = document.querySelector('#datepicker').value
     
-    const total_cost = document.querySelector('#inpTotalCost').value
+    let total_cost = document.querySelector('#inpTotalCost').value
     const requested_by = document.querySelector('#inpRequestedBy').value
     const approved_by = document.querySelector('#inpApprovedBy').value
     const takenout_by = document.querySelector('#inpTakenOutBy').value
     const received_by = document.querySelector('#inpReceivedBy').value
     
+    MTS_number = parseInt(MTS_number)
+    total_cost = parseFloat(total_cost)
+
+    console.log(MTS_number)
 
     db.collection('MTS-Collection').get().then(snap => {
         // size = snap.size + 1// will return the collection size
 
-        const newID = MTS_number
+        const newID = MTS_number + ""
         db.collection('MTS-Collection').doc(newID).set({
             prepared_by: prepared_by,
             project_name: project_name,
