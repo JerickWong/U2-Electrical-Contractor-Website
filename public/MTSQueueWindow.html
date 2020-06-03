@@ -49,7 +49,7 @@
                 background-color: RoyalBlue;
         }
     
-        #btnDeleteRow {
+        .btnDeleteRow {
             background-color:darkred;
             border: none;
             color: white;
@@ -59,7 +59,7 @@
             text-align: center;
         }
     
-        #btnDeleteRow:hover {
+        .btnDeleteRow:hover {
             background-color: crimson ;
            
         }
@@ -381,6 +381,35 @@
         {
             $("#myTable").append("<tr></tr>");
             fncAddRow();	
+
+            // $('#myTable tr').each(function(index, elem) {
+            //     //     if (index > 0){
+            //     //         console.log(`quantity = ${elem[0].val()}`)
+            //     //         console.log(`unit = ${elem[1]}`)
+            //     //         console.log(`description = ${elem[2]}`)
+            //     //         console.log(`remarks = ${elem[3]}`)
+            //     //         console.log(`discount = ${elem[4]}`)
+            //     //         console.log(`price = ${elem[5]}`)
+            //     //         console.log(`total = ${elem[5]}`)
+            //     // }
+            //     // if (index==1)
+            //     //     alert(elem)
+            //     // if (index>0){
+            //     // var currentRow=$(this).closest("tr"); 
+
+            //     // var col1=currentRow.find("td:eq(0)").text();                 
+            //     // console.log(`this is current row: ${col1}`)
+            //     // }
+            //     if (index>0){
+            //         const row = document.querySelector('')
+
+            //         // const quant = $(this).find('td').each(function(){
+            //         //     alert($(this).html());
+            //         // })
+                    
+            //     }
+                
+            // })
         }
     
         function fncAddRow()
@@ -388,16 +417,38 @@
     
             var vHeaderLength = $('#myTable > thead').find("th").length;
     
-            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpQty' style='width:40px' /></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpUnit' style='width:50px'/></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpDescription' style='width:250px'/></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpRemarks'/></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpDiscount' /></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' id='inpPrice' /></td>");
-            $("#myTable > tbody > tr:last").append("<td><input type='text' id='inpTotal' disabled/></td>");
-            $("#myTable > tbody > tr:last").append("<td><button id='btnDeleteRow' value='Delete' onclick='deleteRow(this)'>X</button></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' class='inpQty' style='width:40px' /></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' class='inpUnit' style='width:50px'/></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' class='inpDescription' style='width:250px'/></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' class='inpRemarks'/></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' class='inpDiscount' /></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' onkeypress='validate(event)' class='inpPrice' /></td>");
+            $("#myTable > tbody > tr:last").append("<td><input type='text' class='inpTotal' disabled/></td>");
+            $("#myTable > tbody > tr:last").append("<td><button class='btnDeleteRow' value='Delete' onclick='deleteRow(this)'>X</button></td>");
             // <input type='checkbox' id='inpSelect'  name='selected'/>
-      
+            const row_number = document.querySelector('#myTable').rows.length-2
+
+            $('.inpQty').eq(row_number).keyup(() => {
+                let qty = $('.inpQty').eq(row_number).val()
+                let price = $('.inpPrice').eq(row_number).val()
+                console.log('change')
+                if (qty != "" && price != "") {
+                    qty = parseInt(qty)
+                    price = parseInt(price)
+                    $('.inpTotal').eq(row_number).val(qty*price)
+                }
+            })
+
+            $('.inpPrice').eq(row_number).keyup(() => {
+                let qty = $('.inpQty').eq(row_number).val()
+                let price = $('.inpPrice').eq(row_number).val()
+                console.log('change')
+                if (qty != "" && price != "") {
+                    qty = parseInt(qty)
+                    price = parseInt(price)
+                    $('.inpTotal').eq(row_number).val(qty*price)
+                }
+            })
         }
         
         function deleteRow(btn) {
@@ -544,6 +595,19 @@
         {   
             var vReq = $("#inpRequestedBy").val();
     
+            const number_products = document.querySelector('#myTable').rows.length-1
+
+            for (i=0; i<number_products; i++) {
+                let qty = document.querySelectorAll('.inpQty')[i].value
+                let unit = document.querySelectorAll('.inpUnit')[i].value
+                let product_name = document.querySelectorAll('.inpDescription')[i].value
+                let remarks = document.querySelectorAll('.inpRemarks')[i].value
+                let price = document.querySelectorAll('.inpUnit')[i].value
+
+                console.log(qty)
+            }
+
+
             if(vReq=="")
                 alert("Enter name into Requested By");
             else
@@ -560,6 +624,8 @@
                 alert("Confirmed to db");
     
         }
+
+        
     </script>
 
     
