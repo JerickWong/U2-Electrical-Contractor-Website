@@ -1,35 +1,3 @@
-function renderMTS(mts) {
-
-    console.log(mts.data())
-
-
-    db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
-        snapshot.docs.forEach(product => {
-            render(product)
-        })
-    })
-}
-
-
-
-function render(product) {
-  console.log(product.data())  
-}
-
-db.collection('MTS-Collection').get().then(mtsSnapshot => {
-    mtsSnapshot.docs.forEach(mts =>{
-        renderMTS(mts)
-    })
-
-    
-})
-
-// db.collection('MTS-Collection').doc('1uiJ3esNsDYRMerFZThW').collection('products').get().then(snapshot => {
-//     snapshot.docs.forEach(doc => {
-//         render(doc)
-//     })
-// })
-
 var gMtsNo=0;
 var gPanelBoardSize=0;
 var gPanelBoardPrice=0;
@@ -89,34 +57,6 @@ function fncCreateRow(vTableName)
     $("#myTable").append("<tr></tr>");
     fncAddRow();	
 
-    // $('#myTable tr').each(function(index, elem) {
-    //     //     if (index > 0){
-    //     //         console.log(`quantity = ${elem[0].val()}`)
-    //     //         console.log(`unit = ${elem[1]}`)
-    //     //         console.log(`description = ${elem[2]}`)
-    //     //         console.log(`remarks = ${elem[3]}`)
-    //     //         console.log(`discount = ${elem[4]}`)
-    //     //         console.log(`price = ${elem[5]}`)
-    //     //         console.log(`total = ${elem[5]}`)
-    //     // }
-    //     // if (index==1)
-    //     //     alert(elem)
-    //     // if (index>0){
-    //     // var currentRow=$(this).closest("tr"); 
-
-    //     // var col1=currentRow.find("td:eq(0)").text();                 
-    //     // console.log(`this is current row: ${col1}`)
-    //     // }
-    //     if (index>0){
-    //         const row = document.querySelector('')
-
-    //         // const quant = $(this).find('td').each(function(){
-    //         //     alert($(this).html());
-    //         // })
-            
-    //     }
-        
-    // })
 }
 
 function fncAddRow()
@@ -255,7 +195,7 @@ function fncMTSNoSave()
     else
     {
         console.log(gMtsNo);
-        $('#inpMTSNoTop').val(gMtsNo);
+        $('#inpMTSNumber').val(gMtsNo);
         var modal = document.getElementById("modalMTSNo");
         modal.style.display = "none";
     }
@@ -319,25 +259,10 @@ function fncSaveToDB()
 {   
     var vReq = $("#inpRequestedBy").val();
 
-    
-
-
     if(vReq=="")
         alert("Enter name into Requested By");
-    else {
-        const number_products = document.querySelector('#myTable').rows.length-1
-
-        for (i=0; i<number_products; i++) {
-            let qty = document.querySelectorAll('.inpQty')[i].value
-            let unit = document.querySelectorAll('.inpUnit')[i].value
-            let product_name = document.querySelectorAll('.inpDescription')[i].value
-            let remarks = document.querySelectorAll('.inpRemarks')[i].value
-            let price = document.querySelectorAll('.inpUnit')[i].value
-
-            console.log(qty)
-        }
-
-
+    else {        
+        saveToQueueDB()
         alert("save to db");
     }
         
@@ -353,3 +278,93 @@ function fncConfirmToDB()
         alert("Confirmed to db");
 
 }
+
+function saveToQueueDB() {
+    const number_products = document.querySelector('#myTable').rows.length-1
+    const prepared_by = document.querySelector('#inpPreparedBy').value
+    const project_name = document.querySelector('#inpProject').value
+    const address = document.querySelector('#inpAddress').value
+    const delivered_from = document.querySelector('#inpFrom').value
+
+    const MTS_number = document.querySelector('#inpMTSNumber').value
+    const date = document.querySelector('#datepicker').value
+    
+    const total_cost = document.querySelector('#inpTotalCost').value
+    const requested_by = document.querySelector('#inpRequestedBy').value
+    const approved_by = document.querySelector('#inpApprovedBy').value
+    const takenout_by = document.querySelector('#inpTakenOutBy').value
+    const received_by = document.querySelector('#inpReceivedBy').value
+    
+
+    db.collection('MTS-Collection').get().then(snap => {
+        // size = snap.size + 1// will return the collection size
+
+        const newID = MTS_number
+        db.collection('MTS-Collection').doc(newID).set({
+            prepared_by: prepared_by,
+            project_name: project_name,
+            address: address,
+            delivered_from: delivered_from,
+            MTS_number: MTS_number,
+            date: date,
+            total_cost: total_cost,
+            requested_by: requested_by,
+            approved_by: approved_by,
+            takenout_by: takenout_by,
+            received_by: received_by,
+            status: 'pending'
+        })
+
+        for (i=0; i<number_products; i++) {
+            let qty = document.querySelectorAll('.inpQty')[i].value
+            let unit = document.querySelectorAll('.inpUnit')[i].value
+            let product_name = document.querySelectorAll('.inpDescription')[i].value
+            let remarks = document.querySelectorAll('.inpRemarks')[i].value
+            let price = document.querySelectorAll('.inpUnit')[i].value
+
+            db.collection('MTS-Collection').doc(newID).collection('productsList').add({
+                qty: qty,
+                unit: unit,
+                product_name: product_name,
+                remarks: remarks,
+                price: price
+            })
+        }
+        
+     })
+
+    
+    alert('yay done')    
+}
+
+
+function renderMTS(mts) {
+
+    console.log(mts.data())
+
+
+    db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
+        snapshot.docs.forEach(product => {
+            render(product)
+        })
+    })
+}
+
+function render(product) {
+  console.log(product.data())  
+}
+
+// getting data
+db.collection('MTS-Collection').get().then(mtsSnapshot => {
+    mtsSnapshot.docs.forEach(mts =>{
+        renderMTS(mts)
+    })
+
+    
+})
+
+// db.collection('MTS-Collection').doc('1uiJ3esNsDYRMerFZThW').collection('products').get().then(snapshot => {
+//     snapshot.docs.forEach(doc => {
+//         render(doc)
+//     })
+// })
