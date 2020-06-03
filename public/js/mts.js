@@ -274,8 +274,10 @@ function fncConfirmToDB()
 
     if(vApp=="")
         alert("Enter name into Approved By");
-    else
+    else{
+        confirmToDB()
         alert("Confirmed to db");
+    }
 
 }
 
@@ -316,7 +318,7 @@ function saveToQueueDB() {
             approved_by: approved_by,
             takenout_by: takenout_by,
             received_by: received_by,
-            status: 'pending'
+            status: 'for approval'
         })
 
         for (i=0; i<number_products; i++) {
@@ -341,6 +343,12 @@ function saveToQueueDB() {
     alert('yay done')    
 }
 
+function confirmToDB() {
+    const MTS_number = document.querySelector('#inpMTSNumber').value
+    db.collection('MTS-Collection').doc(MTS_number).update({
+        status: 'confirmed'
+    })
+}
 
 function renderMTS(mts) {
 
