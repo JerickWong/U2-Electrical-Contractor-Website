@@ -434,8 +434,9 @@
                 console.log('change')
                 if (qty != "" && price != "") {
                     qty = parseInt(qty)
-                    price = parseInt(price)
-                    $('.inpTotal').eq(row_number).val(qty*price)
+                    price = parseFloat(price)
+                    let total = qty*price
+                    $('.inpTotal').eq(row_number).val(total)
                 }
             })
 
@@ -445,8 +446,9 @@
                 console.log('change')
                 if (qty != "" && price != "") {
                     qty = parseInt(qty)
-                    price = parseInt(price)
-                    $('.inpTotal').eq(row_number).val(qty*price)
+                    price = parseFloat(price)
+                    let total = qty*price
+                    $('.inpTotal').eq(row_number).val(total)
                 }
             })
         }
