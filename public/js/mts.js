@@ -78,7 +78,7 @@ function fncAddRow()
     $('.inpQty').eq(row_number).keyup(() => {
         let qty = $('.inpQty').eq(row_number).val()
         let price = $('.inpPrice').eq(row_number).val()
-        console.log('change')
+        // console.log('change')
         if (qty != "" && price != "") {
             qty = parseInt(qty)
             price = parseFloat(price)
@@ -91,7 +91,7 @@ function fncAddRow()
     $('.inpPrice').eq(row_number).keyup(() => {
         let qty = $('.inpQty').eq(row_number).val()
         let price = $('.inpPrice').eq(row_number).val()
-        console.log('change')
+        // console.log('change')
         if (qty != "" && price != "") {
             qty = parseInt(qty)
             price = parseFloat(price)
@@ -102,10 +102,11 @@ function fncAddRow()
     })
 
     $('.inpTotal').eq(row_number).change(() => {
-        console.log('detected change')
+        // console.log('detected change')
         let total_cost = 0
-        console.log(row_number+1)
-        for(i=0; i<row_number+1; i++) {
+        const updated_rows = document.querySelector('#myTable').rows.length-2
+        console.log(`updated rows: ${updated_rows+1}`)
+        for(i=0; i<updated_rows+1; i++) {
             let cost = $('.inpTotal').eq(i).val()
             cost = parseFloat(cost)
             console.log(cost)
