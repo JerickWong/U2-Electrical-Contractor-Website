@@ -266,12 +266,10 @@ function fncAddtoTable()
 
 function fncSaveToDB()
 {   
-    var vReq = $("#inpRequestedBy").val();
-
-    if(vReq=="")
-        alert("Enter name into Requested By");
+    if(!save_is_complete())
+        alert("Enter necessary fields");
     else {        
-        saveToQueueDB()
+        saveToMTSDB()
         alert("save to db");
     }
         
@@ -279,10 +277,8 @@ function fncSaveToDB()
 
 function fncConfirmToDB()
 {
-    var vApp = $("#inpApprovedBy").val();
-
-    if(vApp=="")
-        alert("Enter name into Approved By");
+    if(!confirm_is_complete())
+        alert("Missing Approved by or MTS Number");
     else{
         confirmToDB()
         alert("Confirmed to db");
@@ -290,7 +286,37 @@ function fncConfirmToDB()
 
 }
 
-function saveToQueueDB() {
+function save_is_complete() {
+    const number_products = document.querySelector('#myTable').rows.length-1
+    const prepared_by = document.querySelector('#inpPreparedBy').value
+    const project_name = document.querySelector('#inpProject').value
+    const address = document.querySelector('#inpAddress').value
+    const delivered_from = document.querySelector('#inpFrom').value
+
+    const MTS_number = document.querySelector('#inpMTSNumber').value
+    const date = document.querySelector('#datepicker').value
+    
+    const total_cost = document.querySelector('#inpTotalCost').value
+    const requested_by = document.querySelector('#inpRequestedBy').value    
+
+    if (number_products == '' || prepared_by == '' || project_name == '' || address == '' || delivered_from == '' || MTS_number == '' || 
+        date == '' || total_cost == '' || requested_by == '')
+        return false
+
+    return true
+}
+
+function confirm_is_complete() {
+    const approved_by = document.querySelector('#inpApprovedBy').value
+    const MTS_number = document.querySelector('#inpMTSNumber').value
+
+    if (approved_by == '' || MTS_number == '')
+        return false
+
+    return true
+}
+
+function saveToMTSDB() {
     const number_products = document.querySelector('#myTable').rows.length-1
     const prepared_by = document.querySelector('#inpPreparedBy').value
     const project_name = document.querySelector('#inpProject').value
@@ -362,30 +388,30 @@ function confirmToDB() {
     })
 }
 
-function renderMTS(mts) {
+// function renderMTS(mts) {
 
-    console.log(mts.data())
+//     console.log(mts.data())
 
 
-    db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
-        snapshot.docs.forEach(product => {
-            render(product)
-        })
-    })
-}
+//     db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
+//         snapshot.docs.forEach(product => {
+//             render(product)
+//         })
+//     })
+// }
 
-function render(product) {
-  console.log(product.data())  
-}
+// function render(product) {
+//   console.log(product.data())  
+// }
 
 // getting data
-db.collection('MTS-Collection').get().then(mtsSnapshot => {
-    mtsSnapshot.docs.forEach(mts =>{
-        renderMTS(mts)
-    })
+// db.collection('MTS-Collection').get().then(mtsSnapshot => {
+//     mtsSnapshot.docs.forEach(mts =>{
+//         renderMTS(mts)
+//     })
 
     
-})
+// })
 
 // db.collection('MTS-Collection').doc('1uiJ3esNsDYRMerFZThW').collection('products').get().then(snapshot => {
 //     snapshot.docs.forEach(doc => {
