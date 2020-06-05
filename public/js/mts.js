@@ -85,6 +85,9 @@ function fncAddRow()
             let total = qty*price
             $('.inpTotal').eq(row_number).val(total)
                 .trigger('change')
+        } else if (qty == '' || price == '') {
+            $('.inpTotal').eq(row_number).val('')
+                .trigger('change')
         }
     })
 
@@ -98,6 +101,9 @@ function fncAddRow()
             let total = qty*price
             $('.inpTotal').eq(row_number).val(total)
                 .trigger('change')
+        } else if (qty == '' || price == '') {
+            $('.inpTotal').eq(row_number).val('')
+                .trigger('change')
         }
     })
 
@@ -110,7 +116,9 @@ function fncAddRow()
             let cost = $('.inpTotal').eq(i).val()
             cost = parseFloat(cost)
             console.log(cost)
-            total_cost = total_cost + cost
+
+            if (!Number.isNaN(cost))
+                total_cost = total_cost + cost
         }
         $('#inpTotalCost').val(total_cost)
     })
@@ -346,7 +354,10 @@ function saveToQueueDB() {
 
 function confirmToDB() {
     const MTS_number = document.querySelector('#inpMTSNumber').value
+    const approved_by = document.querySelector('#inpApprovedBy').value
+
     db.collection('MTS-Collection').doc(MTS_number).update({
+        approved_by: approved_by,
         status: 'confirmed'
     })
 }
