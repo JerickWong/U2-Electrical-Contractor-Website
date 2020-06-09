@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faPlus, faCalendarAlt, faTruckLoading } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table, Button} from 'react-bootstrap';
 import { TextField } from '@material-ui/core';
-import './styles/mts.css';
+import {BrowserRouter as Router} from 'react-router-dom';
+import '../styles/mts.css';
+import { render } from '@testing-library/react';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,10 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App(){
-  const classes = useStyles();
+class MtsWindow extends Component(){
+  render(){
+    const classes = useStyles();
   return (
     <div className="App">
+      <Router>
       <Container>
         <div className="project">
           <Table className="headTable">
@@ -80,8 +84,10 @@ function App(){
               </tr>
           </Table>
       </Container>
+    </Router>
     </div>
   );
 }
+}
 
-export default App;
+export default MtsWindow;
