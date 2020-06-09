@@ -4,9 +4,19 @@ import {Form, Button, FormGroup, FormControl} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey, faUser} from "@fortawesome/free-solid-svg-icons";
 import './App.css';
+import { useHistory } from "react-router-dom";
+
 const avatar = require('./avatar.png');
 
 function Login() {
+
+  const history = useHistory();
+
+  const routeChange = () =>{ 
+    let path = `path`; 
+    history.push(path);
+  }
+
   return (
     <div className="center">
       <div className="box">
@@ -24,7 +34,7 @@ function Login() {
             <FormControl className="password" autofocus type="password" placeholder="Password"/>
           </FormGroup>
           </div>
-          <Button className="loginBtn" block size="lg" type="submit">LOGIN</Button>
+          <Button onclick="{this.routeChange}" className="loginBtn" block size="lg" type="submit">LOGIN</Button>
         </Form>
       </div>
     </div>
