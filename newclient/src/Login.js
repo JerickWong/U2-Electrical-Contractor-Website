@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
+import history from './History';
 import 'bootstrap/dist/css/bootstrap.css';
 import {Form, Button, FormGroup, FormControl} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey, faUser} from "@fortawesome/free-solid-svg-icons";
-import {BrowserRouter as Router} from 'react-router-dom';
 import './styles/login.css';
 const avatar = require('./img/avatar.png');
 
 export default class LoginBox extends Component {
   render(){
     return (
-      <Router>
         <div className="Login">
           <div className="box">
             <div className="avatar">
@@ -27,11 +26,10 @@ export default class LoginBox extends Component {
                     <FormControl className="password" autofocus type="password" placeholder="Password"/>
                   </FormGroup>
                 </div>
-                <Button className="loginBtn" block size="lg" type="submit">LOGIN</Button>
+                <Button className="loginBtn" block size="lg" type="submit" onClick={() => history.push('/MtsDisplay')}>LOGIN</Button>
               </Form>
           </div>
         </div>
-      </Router>
     );
   }
 }
