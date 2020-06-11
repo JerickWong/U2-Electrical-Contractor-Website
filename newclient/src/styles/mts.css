@@ -1,0 +1,54 @@
+table{
+  margin-top:40px;
+  text-align: center;
+}
+ #dropdown-basic-button{
+  background-color:white;
+  color:black;
+  border-color:#b0afb8;
+ }
+
+Col{
+  text-align: center;
+}
+
+.project{
+  margin-top:100px;
+}
+
+.view{
+  color:#8083FF;
+  display:inline-flex;
+  width:30%;
+}
+
+td:last-child{
+  border:none;
+}
+
+.mtsIcons{
+  color:#5963D9;
+  margin-left:6px;
+}
+
+.mtsAdd{
+  margin-right: 10px;
+}
+
+.addBtn{
+  background-color: #8083FF;
+  border:none;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-left: 5px;
+  padding:10px;
+}
+
+.headTable{
+  border:none;
+}
+
+.delete{
+  color:#e10808;
+}
+

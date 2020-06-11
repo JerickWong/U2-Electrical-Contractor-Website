@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap');
+.sidenav{
+    height:100%;
+    width:230px;
+    position:fixed;
+    z-index:1;
+    top:0;
+    left:0;
+    background-color:#474554;
+    overflow-x: hidden;
+    padding-top: 30px;
+}
+
+.sidenav a{
+    padding:6px 8px 20px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #ACA9BB;
+    display: block;
+}
+
+.sidenav a:hover{
+    color: #FAF8FF;
+}
+
+.navbar{
+    background-color:#8083FF;
+}
+
+a{
+    font-family:'Nunito', sans-serif;
+}
