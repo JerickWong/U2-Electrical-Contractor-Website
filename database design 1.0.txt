@@ -30,9 +30,8 @@ unit: String,
 product_name: String,
 model_name: String,
 brand_name: String,
-discount: Number,
 price: Number,
-other_remarks: String,
+remarks: String,
 
 
 Project:
