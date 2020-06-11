@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faPlus, faCalendarAlt, faTruckLoading } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table, Button} from 'react-bootstrap';
 import { TextField } from '@material-ui/core';
-import './styles/mts.css';
+import {BrowserRouter as Router} from 'react-router-dom';
+import '../styles/mts.css';
+import { render } from '@testing-library/react';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,12 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function MtsWindow(){
-  const classes = useStyles();
-  return (
     <div className="App">
+      <Router>
       <Container>
-        <div className="project">
           <Table className="headTable">
             <tr>
               <td><TextField id="standard-basic" label="Prepared by" size="small"/></td>
@@ -52,7 +51,6 @@ function MtsWindow(){
                   <Button className="addBtn" size="lg"><FontAwesomeIcon className="mtsAdd" icon={faPlus}/>Add Row</Button></td>
             </tr>
           </Table>
-        </div>
           <Table bordered hover>
             <thead>
               <tr>
@@ -80,8 +78,9 @@ function MtsWindow(){
               </tr>
           </Table>
       </Container>
-    </div>
+    </Router>
   );
 }
+}
 
-export default MtsWindows;
+export default MtsWindow;

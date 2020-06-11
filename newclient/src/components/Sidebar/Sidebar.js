@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileAlt, faClipboardList, faTags, faStickyNote} from "@fortawesome/free-solid-svg-icons";
-import './styles/navbar.css';
+import '../../styles/navbar.css';
 
 export const Sidebar = () => (
         <div className="sidenav">

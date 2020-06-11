@@ -1,14 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
+import {BrowserRouter as Router} from 'react-router-dom';
 import { Navbar } from 'reactstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import './nav.css';
+import '../styles/navbar.css';
 
-class Header extends Component{
-    render(){
-        return(
-            <Navbar className="hor-nav" expand="lg">
-                <FontAwesomeIcon icon={faAngleLeft}/>
+export default class Header extends Component{
+render(){
+    return(
+    <Router>
+        <Navbar className="navbar" expand="lg" sticky="top">
+            <FontAwesomeIcon icon={faAngleLeft}/>
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
                         Logged in as: Employee
@@ -17,8 +20,8 @@ class Header extends Component{
                         <FontAwesomeIcon icon={faSignOutAlt}/>
                     </Navbar.Text>
                 </Navbar.Collapse>
-            </Navbar>
-        );
+        </Navbar> 
+    </Router>  
+    );
     }
 }
-export default Header;

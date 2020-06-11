@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import {Header} from './Header';
-import {Sidebar} from './Sidebar';
+import {Header} from './components/Header/Header';
+import {Sidebar} from './components/Sidebar/Sidebar';
 
 export default class MtsDisplay extends Component{
     render(){
