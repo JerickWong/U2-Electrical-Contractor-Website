@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import LoginBox from './Login';
+import App from "./App";
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <LoginBox />, document.getElementById('root')
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>, document.getElementById('root')
 );
 serviceWorker.unregister();
