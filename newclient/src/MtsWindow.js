@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App(){
+function MtsWindow(){
   const classes = useStyles();
   return (
     <div className="App">
@@ -84,4 +84,4 @@ function App(){
   );
 }
 
-export default App;
+export default MtsWindows;
