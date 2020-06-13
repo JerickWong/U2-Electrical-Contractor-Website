@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import LoginBox from "./Login";
+import LoginBox from "./components/Login/Login";
 import MtsDisplay from "./pages/MtsDisplay";
 
 function App(){
@@ -8,8 +8,8 @@ function App(){
         <Router>
             <div className = "App">
                 <Switch>
-                    <Route path="/Login" component={LoginBox} />
-                    <Route exact path="/MtsDisplay" component={MtsDisplay}/>
+                    <Route path="/MtsDisplay" component={MtsDisplay} />
+                    <Route path="/" exact component={LoginBox} />                    
                 </Switch>
             </div>
         </Router>

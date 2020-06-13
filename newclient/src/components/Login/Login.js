@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import history from '../../History';
+// import history from '../../History';
+import { useHistory } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.css';
 import {Form, Button, FormGroup, FormControl} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +9,13 @@ import '../../styles/login.css';
 const avatar = require('../../assets/img/avatar.png');
 
 export default class LoginBox extends Component {
+
+  routeChange = () => {
+    let path = `/Mts`;
+    let history = useHistory();
+    history.push(path);
+  }
+
   render(){
     return (
         <div className="Login">
@@ -26,7 +34,7 @@ export default class LoginBox extends Component {
                     <FormControl className="password" autofocus type="password" placeholder="Password"/>
                   </FormGroup>
                 </div>
-                <Button className="loginBtn" block size="lg" type="submit" onClick={() => history.push('/MtsDisplay')}>LOGIN</Button>
+                <Button className="loginBtn" block size="lg" type="submit" onClick={this.routeChange}>LOGIN</Button>
               </Form>
           </div>
         </div>
