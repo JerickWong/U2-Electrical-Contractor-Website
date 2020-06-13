@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+// import history from '../../History';
+import { useHistory } from 'react-router-dom'
 import { Switch, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form, Button, FormGroup, FormControl } from 'react-bootstrap';
