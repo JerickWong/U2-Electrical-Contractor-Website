@@ -3,20 +3,24 @@ import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { Description, Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight, MailRounded } from '@material-ui/icons';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import indigo from '@material-ui/core/colors/indigo';
+import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 
-const drawerWidth = 240;
+const drawerWidth = 220;
+const light = indigo[50];
+const dark = grey[800];
+const primary = '#8083FF';
+const white = '#FFFFFF';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#EBE5FF',
       main: '#8083FF',
-      dark: '#474554',
-      contrastText: '#FAF8FF',
     },
   },
 });
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -38,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    color: white,
   },
   hide: {
     display: 'none',
@@ -46,8 +51,10 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
+    backgroundColor: dark
   },
   drawerOpen: {
+    backgroundColor: dark,
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -55,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   drawerClose: {
+    backgroundColor: dark,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -66,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolbar: {
-    color: theme.palette.primary.main,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -78,8 +85,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
-  log: {
-    flexGrow: 1,
+  login: {
+    textAlign: 'right'
+  },
+  listIcon: {
+    color: light,
   }
 }));
 
@@ -98,21 +108,23 @@ function Navbars() {
 
   return (
     <div className={classes.root}>
+       <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
-        <Toolbar>
+        <Toolbar style={{backgroundColor: primary}}>
           <IconButton
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
             className={clsx(classes.menuButton, { [classes.hide]: open, })}>
             <Menu />
-            <Typography>Logged in as: User1</Typography>
           </IconButton>
+          <Typography className={classes.login}>Logged in as: User1</Typography>
         </Toolbar>
       </AppBar>
       <Drawer 
         variant="permanent" 
+        style={{backgroundColor: dark}}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
@@ -124,30 +136,31 @@ function Navbars() {
             }),
           }}>
        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton style={{color: light}} onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </div>  
         <Divider />
         <List>
           <ListItem button key ="New MTS">
-            <ListItemIcon><NoteAdd/></ListItemIcon>
-            <ListItemText primary="New MTS"/>
+            <ListItemIcon className={classes.listIcon}><NoteAdd/></ListItemIcon>
+            <ListItemText className={classes.listIcon} primary="New MTS"/>
           </ListItem>
           <ListItem button key ="MTS List">
-            <ListItemIcon><Assignment/></ListItemIcon>
-            <ListItemText primary="MTS List"/>
+            <ListItemIcon className={classes.listIcon}><Assignment/></ListItemIcon>
+            <ListItemText className={classes.listIcon} primary="MTS List"/>
           </ListItem>
           <ListItem button key ="New Quotation">
-            <ListItemIcon><Description/></ListItemIcon>
-            <ListItemText primary="New Quotation"/>
+            <ListItemIcon className={classes.listIcon}><Description/></ListItemIcon>
+            <ListItemText className={classes.listIcon} primary="New Quotation"/>
           </ListItem>
           <ListItem button key ="Price List">
-            <ListItemIcon><LocalOffer/></ListItemIcon>
-            <ListItemText primary="Price List"/>
+            <ListItemIcon className={classes.listIcon}><LocalOffer/></ListItemIcon>
+            <ListItemText className={classes.listIcon}primary="Price List"/>
           </ListItem>
         </List>
       </Drawer>
+      </MuiThemeProvider>
     </div>
   );
 }
