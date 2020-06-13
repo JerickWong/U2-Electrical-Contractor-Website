@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -75,6 +75,47 @@ const useStyles = makeStyles((theme) => ({
 
 function MtsWindow() {
   const classes = useStyles();
+
+  const [invalid, setInvalid] = useState(true)
+  const [valid, setValid] = useState({
+      'mts_field': false,
+      'requested_by': false
+  })
+
+  function check_validity(e) {
+    const value = e.target.value
+
+    console.log(e.target.name)
+
+    if (!value) {
+      let newValid = { ...valid }
+      newValid[e.target.name] = false
+      console.log(newValid)
+
+      setValid(newValid)
+      console.log(valid)
+      // setValid(prevState => {
+      //   let required = {...prevState.required} ;  // creating copy of state variable jasper
+      //   required[e.target.name] = false;                     // update the name property, assign a new value                 
+      //   return { required };                                 // return new object jasper object
+      // })
+      setInvalid(true)
+    } else {
+
+      let newValid = { ...valid }
+      newValid[e.target.name] = true
+      console.log(newValid)
+
+      setValid(newValid)
+      console.log(valid)
+
+      if (valid['mts_field'] && valid['requested_by']) 
+        setInvalid(false)
+            
+      console.log(`mts_field: ${valid['mts_field']} and requested by: ${valid['requested_by']}`)
+    }
+  }
+
   return (
     <div className="MtsContent">
       <Container className="cont">
@@ -87,7 +128,7 @@ function MtsWindow() {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Prepared by"
-                    defaultValue="Employee Name"
+                    defaultValue="Employee Name"                    
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -133,6 +174,8 @@ function MtsWindow() {
                     className={classes.txt4}
                     label="MTS No."
                     defaultValue="71101"
+                    onChange={check_validity}
+                    name='mts_field'
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -259,7 +302,7 @@ function MtsWindow() {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Requested by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Requested by" defaultValue="Name" onChange={check_validity} name='requested_by' variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField className={classes.txt4} id="outlined-basic" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
@@ -274,7 +317,7 @@ function MtsWindow() {
                   <TextField className={classes.txt4} id="outlined-basic" size="small" label="Received by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>
+                  <Button variant="contained" color="primary" size="large" disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
                 </Grid>
               </Grid>
             </div>
