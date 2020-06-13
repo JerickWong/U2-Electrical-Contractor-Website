@@ -7,6 +7,7 @@ import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Pa
 import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import '../styles/mts.css';
+import MtsRow from "../components/MtsRow/MtsRow";
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -73,16 +74,22 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function MtsWindow() {
-  const classes = useStyles();
 
+function MtsWindow() {
+
+  const classes = useStyles();
+  let row_index = 0;
+  // --------STATES--------
   const [invalid, setInvalid] = useState(true)
   const [valid, setValid] = useState({
       'mts_field': false,
       'requested_by': false
   })
+  const [total, setTotal] = useState([])
+  const [grand_total, setGrandTotal] = useState(0)
 
-  function check_validity(e) {
+
+  function check_validity (e) {
     const value = e.target.value
 
     console.log(e.target.name)
@@ -116,6 +123,33 @@ function MtsWindow() {
     }
   }
 
+  function updateTotal (e) {
+    
+  }
+
+  function save_MTS () {
+    
+  }
+
+  const rows = [(
+    <MtsRow updateTotal={updateTotal} 
+                class1={classes.txt}
+                class2={classes.txt1}
+                class3={classes.txt2}
+                total={total[row_index]} />
+  )]
+
+  for (let i=0; i<5; i++) {
+    row_index++;
+    rows.push(
+      <MtsRow updateTotal={updateTotal} 
+                class1={classes.txt}
+                class2={classes.txt1}
+                class3={classes.txt2}
+                total={total[row_index]} />
+    )    
+  }
+
   return (
     <div className="MtsContent">
       <Container className="cont">
@@ -126,8 +160,9 @@ function MtsWindow() {
               <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
+                    className={`${classes.txt4} `}
                     label="Prepared by"
+                    id='prepared_by'
                     defaultValue="Employee Name"                    
                     size="normal"
                     InputProps={{
@@ -141,8 +176,9 @@ function MtsWindow() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
+                    className={`${classes.txt4} `}
                     label="Address"
+                    id='address'
                     defaultValue="Manila"
                     size="normal"
                     InputProps={{
@@ -156,8 +192,9 @@ function MtsWindow() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
+                    className={`${classes.txt4} `}
                     label="MTS No."
+                    id='mts_number'
                     defaultValue="71101"
                     size="normal"
                     onChange={check_validity}
@@ -173,8 +210,9 @@ function MtsWindow() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
+                    className={`${classes.txt4} `}
                     label="Project Name"
+                    id='project_name'
                     defaultValue="U2 Electrical"
                     size="normal"
                     InputProps={{
@@ -188,8 +226,9 @@ function MtsWindow() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
+                    className={`${classes.txt4} `}
                     label="From"
+                    id='delivered_from'
                     defaultValue="Delivered from"
                     size="normal"
                     InputProps={{
@@ -232,92 +271,93 @@ function MtsWindow() {
                   <th></th>
                 </tr>
               </thead>
-              <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>4</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+              {/* <tr>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                  <td>{total[0]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>46</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td>{total[1]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>468</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td>{total[0]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>4680</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td>{total[2]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>46800</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td>{total[3]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} variant="outlined" /></td>
-                <td><TextField id="standard-basic" size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" multiline variant="outlined" /></td>
-                <td><TextField id="standard-basic" className={classes.txt1} size="small" variant="outlined" /></td>
-                <td>468000</td>
-                <td><TextField id="standard-basic" className={classes.txt2} size="small" variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
+                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td>{total[4]}</td>
+                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
+              </tr> */}
+              {rows}
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Requested by" defaultValue="Name" onChange={check_validity} name='requested_by' variant="outlined" />
+                  <TextField className={classes.txt4} id="" size="small" label="Requested by" defaultValue="Name" onChange={check_validity} name='requested_by' variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: XXXX.XX</Typography></Paper>
+                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {grand_total}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Received by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="" size="small" label="Received by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color="primary" size="large" disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
+                  <Button variant="contained" color="primary" size="large"  disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
                 </Grid>
               </Grid>
             </div>
