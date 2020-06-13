@@ -1,15 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import LoginBox from "./components/Login/Login";
-import MtsDisplay from "./pages/MtsDisplay";
+import Mts from "./pages/Mts";
 
-function App(){
-    return(
+function App() {
+    return (
         <Router>
-            <div className = "App">
+            <div className="App">
                 <Switch>
-                    <Route path="/MtsDisplay" component={MtsDisplay} />
-                    <Route path="/" exact component={LoginBox} />                    
+                    <Route exact path="/" component={LoginBox} />
+                    <Route exact path="/Mts" component={Mts} />
                 </Switch>
             </div>
         </Router>
