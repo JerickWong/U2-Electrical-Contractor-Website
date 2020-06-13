@@ -101,21 +101,6 @@ function MtsWindow() {
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
-                    label="Project Name"
-                    defaultValue="U2 Electrical"
-                    size="normal"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Folder color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField id="input-with-icon-textfield"
-                    className={classes.txt4}
                     label="Address"
                     defaultValue="Manila"
                     size="normal"
@@ -138,6 +123,21 @@ function MtsWindow() {
                       endAdornment: (
                         <InputAdornment position="end">
                           <Edit color="primary" />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField id="input-with-icon-textfield"
+                    className={classes.txt4}
+                    label="Project Name"
+                    defaultValue="U2 Electrical"
+                    size="normal"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Folder color="primary" />
                         </InputAdornment>
                       ),
                     }}

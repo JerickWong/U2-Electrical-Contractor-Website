@@ -3,10 +3,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, ListItemLink, Typography } from '@material-ui/core';
 import { Description, Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { NavLink } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
+import MtsList from '../../pages/MtsList';
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -108,58 +110,60 @@ function Navbars() {
 
   return (
     <div className={classes.root}>
-       <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
-        <Toolbar style={{backgroundColor: primary}}>
-          <IconButton
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, { [classes.hide]: open, })}>
-            <Menu />
-          </IconButton>
-          <Typography className={classes.login}>Logged in as: User1</Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer 
-        variant="permanent" 
-        style={{backgroundColor: dark}}
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
+          <Toolbar style={{ backgroundColor: primary }}>
+            <IconButton
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, { [classes.hide]: open, })}>
+              <Menu />
+            </IconButton>
+            <Typography className={classes.login}>Logged in as: User1</Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          style={{ backgroundColor: dark }}
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          })}
           classes={{
             paper: clsx({
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open,
             }),
           }}>
-       <div className={classes.toolbar}>
-          <IconButton style={{color: light}} onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
-          </IconButton>
-        </div>  
-        <Divider />
-        <List>
-          <ListItem button key ="New MTS">
-            <ListItemIcon className={classes.listIcon}><NoteAdd/></ListItemIcon>
-            <ListItemText className={classes.listIcon} primary="New MTS"/>
-          </ListItem>
-          <ListItem button key ="MTS List">
-            <ListItemIcon className={classes.listIcon}><Assignment/></ListItemIcon>
-            <ListItemText className={classes.listIcon} primary="MTS List"/>
-          </ListItem>
-          <ListItem button key ="New Quotation">
-            <ListItemIcon className={classes.listIcon}><Description/></ListItemIcon>
-            <ListItemText className={classes.listIcon} primary="New Quotation"/>
-          </ListItem>
-          <ListItem button key ="Price List">
-            <ListItemIcon className={classes.listIcon}><LocalOffer/></ListItemIcon>
-            <ListItemText className={classes.listIcon}primary="Price List"/>
-          </ListItem>
-        </List>
-      </Drawer>
+          <div className={classes.toolbar}>
+            <IconButton style={{ color: light }} onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <ListItem button key="New MTS">
+              <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
+              <ListItemText className={classes.listIcon} primary="New MTS" />
+            </ListItem>
+            <NavLink exact to="/MtsList">
+              <ListItem button key="MTS List">
+                <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="MTS List" />
+              </ListItem>
+            </NavLink>
+            <ListItem button key="New Quotation">
+              <ListItemIcon className={classes.listIcon}><Description /></ListItemIcon>
+              <ListItemText className={classes.listIcon} primary="New Quotation" />
+            </ListItem>
+            <ListItem button key="Price List">
+              <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
+              <ListItemText className={classes.listIcon} primary="Price List" />
+            </ListItem>
+          </List>
+        </Drawer>
       </MuiThemeProvider>
     </div>
   );

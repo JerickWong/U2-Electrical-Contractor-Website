@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
       marginTop: theme.spacing(2),
   },
+  formControl: {
+    width: 260,
+    marginLeft: theme.spacing(7)
+  }
 }));
 
 
@@ -28,8 +32,8 @@ function MtsList() {
       <div className="App">
           <Container>
               <div className="project">
-                  <Grid container spacing={2}>
-                      <Grid item xs={2}>
+                  <Grid container spacing={3}>
+                      <Grid item xs={6}>
                           <FormControl className={classes.formControl}>
                               <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
                               <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
@@ -38,9 +42,7 @@ function MtsList() {
                               </Select>
                           </FormControl>
                       </Grid>
-                      <Grid item xs={8}>
-                      </Grid>
-                      <Grid item xs={2}>
+                      <Grid item xs={6}>
                           <FormControl className={classes.formControl}>
                               <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
                               <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
