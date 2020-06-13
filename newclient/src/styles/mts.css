@@ -22,10 +22,6 @@ Col{
   width:30%;
 }
 
-td:last-child{
-  border:none;
-}
-
 .mtsIcons{
   color:#5963D9;
   margin-left:6px;
@@ -52,7 +48,7 @@ td:last-child{
   color:#e10808;
 }
 .cont{
-  margin-top:90px;
+  margin-top:45px;
   margin-left:100px;
 }
 
@@ -64,3 +60,4 @@ td:last-child{
 .tbl1{
   margin-left:50px;
 }
+
