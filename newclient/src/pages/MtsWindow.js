@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function MtsWindow() {
+function MtsWindow(props) {
 
   const classes = useStyles();
   let row_index = 0;
@@ -85,11 +85,12 @@ function MtsWindow() {
       'mts_field': false,
       'requested_by': false
   })
-  const [total, setTotal] = useState([])
+  
+  const [total, setTotal] = useState([0, 0, 0, 0, 0])
   const [grand_total, setGrandTotal] = useState(0)
 
 
-  function check_validity (e) {
+  function checkValidity (e) {
     const value = e.target.value
 
     console.log(e.target.name)
@@ -126,29 +127,74 @@ function MtsWindow() {
   function updateTotal (e) {
     
   }
+  
+  function deleteRow(index, rows) {
+    let newrows = [...rowObject]
+    newrows.splice(index, 1)
+    setRows(newrows)
+  }
 
-  function save_MTS () {
+  function addRow() {
+    let newRows = [...rowObject]
+    newRows.push(
+      <MtsRow updateTotal={updateTotal} 
+                  class1={classes.txt}
+                  class2={classes.txt1}
+                  class3={classes.txt2}
+                  total={total[row_index]}
+                  click={() => deleteRow(row_index, rows)} />
+    )
+    setRows(newRows)
+    row_index++;
+  }
+
+  function saveMTS () {
     
   }
 
-  const rows = [(
-    <MtsRow updateTotal={updateTotal} 
-                class1={classes.txt}
-                class2={classes.txt1}
-                class3={classes.txt2}
-                total={total[row_index]} />
-  )]
+  const rows = []
 
-  for (let i=0; i<5; i++) {
-    row_index++;
-    rows.push(
-      <MtsRow updateTotal={updateTotal} 
-                class1={classes.txt}
-                class2={classes.txt1}
-                class3={classes.txt2}
-                total={total[row_index]} />
-    )    
+  if (props.edit) {
+    // for (let i=0; i<MtsRows.length; i++) {
+    //   row_index++;
+    //   rows.push(
+    //       (
+    //         MtsRows.map(mts => {
+    //           return <MtsRow updateTotal={updateTotal} 
+    //           class1={classes.txt}
+    //           class2={classes.txt1}
+    //           class3={classes.txt2}
+    //           total={total[row_index]}
+    //           qty={mts.qty}
+    //           unit={mts.unit}
+    //           description={mts.description}
+    //           brand={mts.brand}
+    //           model={mts.model}
+    //           price={mts.price}
+    //           remarks={mts.remarks}
+    //           click={}
+    //           />
+    //         })            
+    //     )
+    //   )    
+    // }
+  } else {
+    for (let i=0; i<5; i++) {
+      
+      rows.push(
+        <MtsRow updateTotal={updateTotal} 
+                  class1={classes.txt}
+                  class2={classes.txt1}
+                  class3={classes.txt2}
+                  total={total[row_index]}
+                  click={() => deleteRow(row_index, rows)} />
+      )    
+      row_index++;
+    }
+    // setRows(rows)
   }
+  
+  const [rowObject, setRows] = useState(rows)
 
   return (
     <div className="MtsContent">
@@ -197,7 +243,7 @@ function MtsWindow() {
                     id='mts_number'
                     defaultValue="71101"
                     size="normal"
-                    onChange={check_validity}
+                    onChange={checkValidity}
                     name='mts_field'
                     InputProps={{
                       endAdornment: (
@@ -252,7 +298,7 @@ function MtsWindow() {
                   />
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" size="large" className={classes.button} startIcon={<Add />}>Add Row</Button>
+                  <Button variant="contained" size="large" onClick={addRow} className={classes.button} startIcon={<Add />}>Add Row</Button>
                 </Grid>
                 <Grid item xs={8} />
               </Grid>
@@ -337,12 +383,12 @@ function MtsWindow() {
                 <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr> */}
-              {rows}
+              {rowObject}
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="" size="small" label="Requested by" defaultValue="Name" onChange={check_validity} name='requested_by' variant="outlined" />
+                  <TextField className={classes.txt4} id="" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField className={classes.txt4} id="" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
