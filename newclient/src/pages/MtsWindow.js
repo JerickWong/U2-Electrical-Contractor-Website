@@ -86,7 +86,7 @@ function MtsWindow(props) {
   })
   
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
-  const [grandTotal, setGrandTotal] = useState(0)
+  const [totalAmount, setTotalAmount] = useState(0)
 
 
   function checkValidity (e) {
@@ -136,7 +136,7 @@ function MtsWindow(props) {
     total.map(each => {
       newTotal = newTotal + each
     })
-    setGrandTotal(newTotal)
+    setTotalAmount(newTotal)
   }, [total])
 
   function updateTotal (e) {
@@ -160,20 +160,21 @@ function MtsWindow(props) {
         tr.querySelector('td[name="total"]').innerHTML = 0
       }
     }
-
-    updateGrandTotal()
+    let description = tr.querySelector('textarea[name="description"]').value
+    console.log(description)
+    updateTotalAmount()
   }
 
-  function updateGrandTotal() {
+  function updateTotalAmount() {
     const rows = getRows()
-    let totalAmount = 0.0
+    let tempTotal = 0.0
     rows.map(row => {
       let total = row.querySelector('td[name="total"]').innerHTML
       total = parseFloat(total)
-      totalAmount += total
+      tempTotal += total
     })
 
-    setGrandTotal(totalAmount)
+    setTotalAmount(tempTotal)
   }
   
   function deleteRow(index, rows) {
@@ -189,6 +190,7 @@ function MtsWindow(props) {
     setTotal(newTotal)    
         
     console.log(`row index: ${row_index}`)
+    
     
   }
 
@@ -232,6 +234,81 @@ function MtsWindow(props) {
   function saveMTS () {
     const rows = getRows()
 
+    // const number_products = document.querySelector('#myTable').rows.length-1
+    const prepared_by = document.querySelector('#preparedby').value
+    const project_name = document.querySelector('#projectname').value
+    const address = document.querySelector('#address').value
+    const delivered_from = document.querySelector('#deliveredfrom').value
+
+    let MTS_number = document.querySelector('#mtsnumber').value
+    const date = document.querySelector('#date').value
+    
+    let total_cost = totalAmount
+    const requested_by = document.querySelector('#requestedby').value
+    const approved_by = document.querySelector('#approvedby').value
+    const takenout_by = document.querySelector('#takenoutby').value
+    const received_by = document.querySelector('#receivedby').value
+    
+    MTS_number = parseInt(MTS_number)
+    total_cost = parseFloat(total_cost)
+
+    console.log(MTS_number)
+
+    db.collection('MTS-Collection').get().then(snap => {
+        // size = snap.size + 1// will return the collection size
+
+        const newID = MTS_number + ""
+        db.collection('MTS-Collection').doc(newID).set({
+            prepared_by: prepared_by,
+            project_name: project_name,
+            address: address,
+            delivered_from: delivered_from,
+            MTS_number: MTS_number,
+            date: date,
+            total_cost: total_cost,
+            requested_by: requested_by,
+            approved_by: approved_by,
+            takenout_by: takenout_by,
+            received_by: received_by,
+            status: 'for approval'
+        })
+
+        // for (i=0; i<rows.length; i++) {
+        //     let qty = document.querySelectorAll('.inpQty')[i].value
+        //     let unit = document.querySelectorAll('.inpUnit')[i].value
+        //     let product_name = document.querySelectorAll('.inpDescription')[i].value
+        //     let remarks = document.querySelectorAll('.inpRemarks')[i].value
+        //     let price = document.querySelectorAll('.inpUnit')[i].value
+
+        //     db.collection('MTS-Collection').doc(newID).collection('productsList').add({
+        //         qty: qty,
+        //         unit: unit,
+        //         product_name: product_name,
+        //         remarks: remarks,
+        //         price: price
+        //     })
+        // }
+        rows.map(row => {
+          let qty = row.querySelector('input[name="quantity"]').value
+          let unit = row.querySelector('input[name="unit"]').value
+          let description = row.querySelector('textarea[name="description"]').value
+          let remarks = row.querySelector('input[name="remarks"]').value
+          let price = row.querySelector('input[name="price"]').value
+
+          db.collection('MTS-Collection').doc(newID).collection('productsList').add({
+            qty: qty,
+            unit: unit,
+            description: description,
+            remarks: remarks,
+            price: price
+        })
+        
+     })
+    })
+
+    
+    alert('yay done')
+
   }
 
   function getRows() {
@@ -239,12 +316,8 @@ function MtsWindow(props) {
     tablerows.splice(0, 1)
     const filteredrows = tablerows.filter(row => {
       let total = row.querySelector('td[name="total"]').innerHTML
-      console.log(total)
-      if (total != '0') {
-        return row
-      } else {
-        console.log('0 siya')
-      }
+      if (total != '0')
+        return row      
         
     })
     return filteredrows
@@ -305,9 +378,9 @@ function MtsWindow(props) {
               <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={`${classes.txt4} `}
+                    className={classes.txt4}
                     label="Prepared by"
-                    id='prepared_by'
+                    id='preparedby'
                     defaultValue="Employee Name"                    
                     size="normal"
                     InputProps={{
@@ -321,7 +394,7 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={`${classes.txt4} `}
+                    className={classes.txt4}
                     label="Address"
                     id='address'
                     defaultValue="Manila"
@@ -337,9 +410,9 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={`${classes.txt4} `}
+                    className={classes.txt4}
                     label="MTS No."
-                    id='mts_number'
+                    id='mtsnumber'
                     defaultValue="71101"
                     size="normal"
                     onChange={checkValidity}
@@ -355,9 +428,9 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={`${classes.txt4} `}
+                    className={classes.txt4}
                     label="Project Name"
-                    id='project_name'
+                    id='projectname'
                     defaultValue="U2 Electrical"
                     size="normal"
                     InputProps={{
@@ -371,9 +444,9 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    className={`${classes.txt4} `}
+                    className={classes.txt4}
                     label="From"
-                    id='delivered_from'
+                    id='deliveredfrom'
                     defaultValue="Delivered from"
                     size="normal"
                     InputProps={{
@@ -417,69 +490,69 @@ function MtsWindow(props) {
                 </tr>
               </thead>
               {/* <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                   <td>{total[0]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                 <td>{total[1]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                 <td>{total[0]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                 <td>{total[2]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                 <td>{total[3]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr>
               <tr>
-                <td><TextField size="small" onChange={updateTotal} className={`${classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={`${classes.txt} unit`} variant="outlined" /></td>
+                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
+                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
                 <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={`${classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={`${classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={`${classes.txt1} price`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
+                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
+                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
                 <td>{total[4]}</td>
-                <td><TextField className={`${classes.txt2} remarks`} size="small" variant="outlined" /></td>
+                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
                 <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
               </tr> */}
               {rowObject}
@@ -487,19 +560,19 @@ function MtsWindow(props) {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" />
+                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {grandTotal}</Typography></Paper>
+                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="" size="small" label="Received by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
