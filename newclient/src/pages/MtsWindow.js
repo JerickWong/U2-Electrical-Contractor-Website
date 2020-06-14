@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Paper, Typography } from '@material-ui/core';
-import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping } from '@material-ui/icons';
+import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, CastConnectedSharp } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
+import db from '../components/Firestore/firestore'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -107,7 +106,7 @@ function MtsWindow(props) {
       //   required[e.target.name] = false;                     // update the name property, assign a new value                 
       //   return { required };                                 // return new object jasper object
       // })
-      setInvalid(true)
+      setInvalid(!invalid)
     } else {
 
       let newValid = { ...valid }
@@ -118,11 +117,16 @@ function MtsWindow(props) {
       console.log(valid)
 
       if (valid['mts_field'] && valid['requested_by']) 
-        setInvalid(false)
+        setInvalid(!invalid)
             
       console.log(`mts_field: ${valid['mts_field']} and requested by: ${valid['requested_by']}`)
     }
   }
+  useEffect(() => {
+    // di pa tapos invalid delay
+    const saveButton = document.querySelector('#save')
+    saveButton.disabled = invalid
+  }, [invalid])
 
   function updateTotal (e) {
     
@@ -135,20 +139,40 @@ function MtsWindow(props) {
   }
 
   function addRow() {
-    let newRows = [...rowObject]
-    newRows.push(
-      <MtsRow updateTotal={updateTotal} 
-                  class1={classes.txt}
-                  class2={classes.txt1}
-                  class3={classes.txt2}
-                  total={total[row_index]}
-                  click={() => deleteRow(row_index, rows)} />
-    )
-    setRows(newRows)
-    row_index++;
+    console.log(total.length)
+    let newTotal = [...total]
+    newTotal.push(0)
+    setTotal(newTotal)
+    console.log(newTotal.length)
+    console.log(total.length)    
+        
+    console.log(`row index: ${row_index}`)
   }
 
+  useEffect(() => {
+    let newRows = [...rowObject]
+      newRows.push(
+        <MtsRow updateTotal={updateTotal} 
+                    class1={classes.txt}
+                    class2={classes.txt1}
+                    class3={classes.txt2}
+                    total={total[row_index]}
+                    click={() => deleteRow(row_index, rows)} />
+      )
+      setRows(newRows)
+      row_index++;
+  }, [total])
+
   function saveMTS () {
+    const tablerows = [...rowObject.values()]
+    
+    tablerows.map(tablerow => {
+      // let tabledata = tablerow.values()
+      // tabledata.map(data => {
+      //   console.log(data)
+      // })
+      console.log(tablerow)
+    })
     
   }
 
@@ -179,7 +203,7 @@ function MtsWindow(props) {
     //   )    
     // }
   } else {
-    for (let i=0; i<5; i++) {
+    for (let i=0; i<4; i++) {
       
       rows.push(
         <MtsRow updateTotal={updateTotal} 
@@ -191,6 +215,7 @@ function MtsWindow(props) {
       )    
       row_index++;
     }
+    console.log(`row index: ${row_index}`)
     // setRows(rows)
   }
   
@@ -403,7 +428,7 @@ function MtsWindow(props) {
                   <TextField className={classes.txt4} id="" size="small" label="Received by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color="primary" size="large"  disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
+                  <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
                 </Grid>
               </Grid>
             </div>
