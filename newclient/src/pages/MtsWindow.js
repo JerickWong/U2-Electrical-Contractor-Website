@@ -86,7 +86,7 @@ function MtsWindow(props) {
   })
   
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
-  const [grand_total, setGrandTotal] = useState(0)
+  const [grandTotal, setGrandTotal] = useState(0)
 
 
   function checkValidity (e) {
@@ -131,8 +131,35 @@ function MtsWindow(props) {
         
   }, [valid])
 
+  useEffect(() => {
+    let newTotal = 0
+    total.map(each => {
+      newTotal = newTotal + each
+    })
+    setGrandTotal(newTotal)
+  }, [total])
+
   function updateTotal (e) {
-    
+    const tr = e.currentTarget
+    console.log(tr)
+
+    let quantity = tr.querySelector('input[name="quantity"]').value
+    let price = tr.querySelector('input[name="price"]').value
+    let total = tr.querySelector('td[name="total"]').innerHTML
+    console.log(`quantity: ${quantity} and price: ${price}`)
+    console.log(`total: ${total}`)
+    if (e.target.name === 'quantity' || e.target.name === 'price') {
+      if (quantity != '' && price != '') {
+        console.log('etits')
+        quantity = parseInt(quantity)
+        price = parseFloat(price)
+        total = quantity*price
+        tr.querySelector('td[name="total"]').innerHTML = total
+        // grand total
+      } else {
+        tr.querySelector('td[name="total"]').innerHTML = 0
+      }
+    }
   }
   
   function deleteRow(index, rows) {
@@ -142,16 +169,31 @@ function MtsWindow(props) {
   }
 
   function addRow() {
-    console.log(total.length)
+    
     let newTotal = [...total]
     newTotal.push(0)
-    setTotal(newTotal)
-    console.log(newTotal.length)
-    console.log(total.length)    
+    setTotal(newTotal)    
         
     console.log(`row index: ${row_index}`)
   }
 
+//   function renderMTS(mts) {
+
+//     console.log(mts.data())
+
+
+//     db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
+//         snapshot.docs.forEach(product => {
+//             render(product)
+//         })
+//     })
+// }
+
+// function render(product) {
+//   console.log(product.data())  
+// }
+
+  // use effect of adding rows
   useEffect(() => {
     let newRows = [...rowObject]
       newRows.push(
@@ -164,6 +206,12 @@ function MtsWindow(props) {
       )
       setRows(newRows)
       row_index++;
+
+      // db.collection('MTS-Collection').get().then(mtsSnapshot => {
+      //   mtsSnapshot.docs.forEach(mts => {
+      //     renderMTS(mts)
+      //   })
+      // })
   }, [total])
 
   function saveMTS () {
@@ -422,7 +470,7 @@ function MtsWindow(props) {
                   <TextField className={classes.txt4} id="" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {grand_total}</Typography></Paper>
+                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {grandTotal}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
                   <TextField className={classes.txt4} id="" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
