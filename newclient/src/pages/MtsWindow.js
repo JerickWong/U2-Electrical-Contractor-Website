@@ -131,14 +131,7 @@ function MtsWindow(props) {
         
   }, [valid])
 
-  useEffect(() => {
-    let newTotal = 0
-    total.map(each => {
-      newTotal = newTotal + each
-    })
-    setTotalAmount(newTotal)
-  }, [total])
-
+  // ON CHANGE UPDATE TOTAL ROW PRICE 
   function updateTotal (e) {
     const tr = e.currentTarget
     console.log(tr)
@@ -165,6 +158,7 @@ function MtsWindow(props) {
     updateTotalAmount()
   }
 
+  // ON CHANGE OF TOTAL ROW PRICE, UPDATE TOTAL AMOUNT
   function updateTotalAmount() {
     const rows = getRows()
     let tempTotal = 0.0
@@ -177,23 +171,22 @@ function MtsWindow(props) {
     setTotalAmount(tempTotal)
   }
   
-  function deleteRow(index, rows) {
-    let newrows = [...rowObject]
-    newrows.splice(index, 1)
-    setRows(newrows)
+  function deleteRow(e) {
+    e.currentTarget.parentNode.parentNode.remove()
+    updateTotalAmount()
+    row_index--;
   }
 
-  function addRow() {
-    
+  function addRow() {    
     let newTotal = [...total]
     newTotal.push(0)
     setTotal(newTotal)    
         
-    console.log(`row index: ${row_index}`)
-    
-    
+    console.log(`row index: ${row_index}`)        
   }
 
+
+////// GETTING DATA FROM DB TEST ///////
 //   function renderMTS(mts) {
 
 //     console.log(mts.data())
@@ -211,106 +204,101 @@ function MtsWindow(props) {
 // }
 
   // use effect of adding rows
-  useEffect(() => {
-    let newRows = [...rowObject]
-      newRows.push(
-        <MtsRow updateTotal={updateTotal} 
-                    class1={classes.txt}
-                    class2={classes.txt1}
-                    class3={classes.txt2}
-                    total={total[row_index]}
-                    click={() => deleteRow(row_index, rows)} />
-      )
-      setRows(newRows)
-      row_index++;
+useEffect(() => {
+  let newRows = [...rowObject]
+    newRows.push(
+      <MtsRow updateTotal={updateTotal} 
+                  class1={classes.txt}
+                  class2={classes.txt1}
+                  class3={classes.txt2}
+                  total={total[row_index]}
+                  click={deleteRow} />
+    )
+    setRows(newRows)
+    row_index++;
 
-      // db.collection('MTS-Collection').get().then(mtsSnapshot => {
-      //   mtsSnapshot.docs.forEach(mts => {
-      //     renderMTS(mts)
-      //   })
-      // })
+    // db.collection('MTS-Collection').get().then(mtsSnapshot => {
+    //   mtsSnapshot.docs.forEach(mts => {
+    //     renderMTS(mts)
+    //   })
+    // })
   }, [total])
 
+
+  // SAVING OF MTS TO DB
   function saveMTS () {
-    const rows = getRows()
 
-    // const number_products = document.querySelector('#myTable').rows.length-1
-    const prepared_by = document.querySelector('#preparedby').value
-    const project_name = document.querySelector('#projectname').value
-    const address = document.querySelector('#address').value
-    const delivered_from = document.querySelector('#deliveredfrom').value
+    if (totalAmount == 0) {
+      alert('please fill out required fields')
+    } else {
 
-    let MTS_number = document.querySelector('#mtsnumber').value
-    const date = document.querySelector('#date').value
-    
-    let total_cost = totalAmount
-    const requested_by = document.querySelector('#requestedby').value
-    const approved_by = document.querySelector('#approvedby').value
-    const takenout_by = document.querySelector('#takenoutby').value
-    const received_by = document.querySelector('#receivedby').value
-    
-    MTS_number = parseInt(MTS_number)
-    total_cost = parseFloat(total_cost)
+      // GETTING NECESSARY VALUES
+      const rows = getRows()
+      
+      const prepared_by = document.querySelector('#preparedby').value
+      const project_name = document.querySelector('#projectname').value
+      const address = document.querySelector('#address').value
+      const delivered_from = document.querySelector('#deliveredfrom').value
 
-    console.log(MTS_number)
+      let MTS_number = document.querySelector('#mtsnumber').value
+      const date = document.querySelector('#date').value
+      
+      let total_cost = totalAmount
+      const requested_by = document.querySelector('#requestedby').value
+      const approved_by = document.querySelector('#approvedby').value
+      const takenout_by = document.querySelector('#takenoutby').value
+      const received_by = document.querySelector('#receivedby').value
+      
+      MTS_number = parseInt(MTS_number)
+      total_cost = parseFloat(total_cost)
 
-    db.collection('MTS-Collection').get().then(snap => {
-        // size = snap.size + 1// will return the collection size
+      console.log(MTS_number)
 
-        const newID = MTS_number + ""
-        db.collection('MTS-Collection').doc(newID).set({
-            prepared_by: prepared_by,
-            project_name: project_name,
-            address: address,
-            delivered_from: delivered_from,
-            MTS_number: MTS_number,
-            date: date,
-            total_cost: total_cost,
-            requested_by: requested_by,
-            approved_by: approved_by,
-            takenout_by: takenout_by,
-            received_by: received_by,
-            status: 'for approval'
-        })
+      // ACTUAL SAVING TO DB
+      db.collection('MTS-Collection').get().then(snap => {
 
-        // for (i=0; i<rows.length; i++) {
-        //     let qty = document.querySelectorAll('.inpQty')[i].value
-        //     let unit = document.querySelectorAll('.inpUnit')[i].value
-        //     let product_name = document.querySelectorAll('.inpDescription')[i].value
-        //     let remarks = document.querySelectorAll('.inpRemarks')[i].value
-        //     let price = document.querySelectorAll('.inpUnit')[i].value
+          const newID = MTS_number + ""
+          db.collection('MTS-Collection').doc(newID).set({
+              prepared_by: prepared_by,
+              project_name: project_name,
+              address: address,
+              delivered_from: delivered_from,
+              MTS_number: MTS_number,
+              date: date,
+              total_cost: total_cost,
+              requested_by: requested_by,
+              approved_by: approved_by,
+              takenout_by: takenout_by,
+              received_by: received_by,
+              status: 'for approval'
+          })
 
-        //     db.collection('MTS-Collection').doc(newID).collection('productsList').add({
-        //         qty: qty,
-        //         unit: unit,
-        //         product_name: product_name,
-        //         remarks: remarks,
-        //         price: price
-        //     })
-        // }
-        rows.map(row => {
-          let qty = row.querySelector('input[name="quantity"]').value
-          let unit = row.querySelector('input[name="unit"]').value
-          let description = row.querySelector('textarea[name="description"]').value
-          let remarks = row.querySelector('input[name="remarks"]').value
-          let price = row.querySelector('input[name="price"]').value
+          // SUBCOLLECTION, PRODUCTS LIST AKA ROWS
+          rows.map(row => {
+            let qty = row.querySelector('input[name="quantity"]').value
+            let unit = row.querySelector('input[name="unit"]').value
+            let description = row.querySelector('textarea[name="description"]').value
+            let remarks = row.querySelector('input[name="remarks"]').value
+            let price = row.querySelector('input[name="price"]').value
 
-          db.collection('MTS-Collection').doc(newID).collection('productsList').add({
-            qty: qty,
-            unit: unit,
-            description: description,
-            remarks: remarks,
-            price: price
-        })
-        
-     })
-    })
+            db.collection('MTS-Collection').doc(newID).collection('productsList').add({
+              qty: qty,
+              unit: unit,
+              description: description,
+              remarks: remarks,
+              price: price
+          })
+          
+      })
+      })
 
-    
-    alert('yay done')
+      
+      alert('yay done')
+    }
 
   }
 
+  // RETURNS NON EMPTY HTML ROWS
   function getRows() {
     const tablerows = [...document.querySelectorAll('tr')]
     tablerows.splice(0, 1)
@@ -323,8 +311,10 @@ function MtsWindow(props) {
     return filteredrows
   }
 
+  // FOR STORING JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   const rows = []
 
+  // INITIAL ROWS, FIRST STATEMENT IS FOR EDITING, SHOW OLD MTS DATA
   if (props.edit) {
     // for (let i=0; i<MtsRows.length; i++) {
     //   row_index++;
@@ -358,7 +348,7 @@ function MtsWindow(props) {
                   class2={classes.txt1}
                   class3={classes.txt2}
                   total={total[row_index]}
-                  click={() => deleteRow(row_index, rows)} />
+                  click={deleteRow} />
       )    
       row_index++;
     }
@@ -488,74 +478,10 @@ function MtsWindow(props) {
                   <th>Remarks</th>
                   <th></th>
                 </tr>
-              </thead>
-              {/* <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                  <td>{total[0]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
-              <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                <td>{total[1]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
-              <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                <td>{total[0]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
-              <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                <td>{total[2]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
-              <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                <td>{total[3]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr>
-              <tr>
-                <td><TextField size="small" onChange={updateTotal} className={classes.txt} quantity`} variant="outlined" /></td>
-                <td><TextField size="small" className={classes.txt} unit`} variant="outlined" /></td>
-                <td><TextField size="small" multiline variant="outlined" className='description' /></td>
-                <td><TextField className={classes.txt1} brand`} size="small" multiline variant="outlined" /></td>
-                <td><TextField className={classes.txt1} model`} size="small" multiline variant="outlined" /></td>
-                <td><TextField onChange={updateTotal} className={classes.txt1} price`} size="small" variant="outlined" /></td>
-                <td>{total[4]}</td>
-                <td><TextField className={classes.txt2} remarks`} size="small" variant="outlined" /></td>
-                <td><FontAwesomeIcon className="delete" icon={faTimes} /></td>
-              </tr> */}
+              </thead>              
+              
               {rowObject}
+
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
