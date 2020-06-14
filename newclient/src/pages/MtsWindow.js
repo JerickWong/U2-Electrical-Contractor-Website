@@ -106,7 +106,7 @@ function MtsWindow(props) {
       //   required[e.target.name] = false;                     // update the name property, assign a new value                 
       //   return { required };                                 // return new object jasper object
       // })
-      setInvalid(!invalid)
+      setInvalid(true)
     } else {
 
       let newValid = { ...valid }
@@ -115,9 +115,6 @@ function MtsWindow(props) {
 
       setValid(newValid)
       console.log(valid)
-
-      if (valid['mts_field'] && valid['requested_by']) 
-        setInvalid(!invalid)
             
       console.log(`mts_field: ${valid['mts_field']} and requested by: ${valid['requested_by']}`)
     }
@@ -125,8 +122,14 @@ function MtsWindow(props) {
   useEffect(() => {
     // di pa tapos invalid delay
     const saveButton = document.querySelector('#save')
-    saveButton.disabled = invalid
-  }, [invalid])
+    
+    if (valid['mts_field'] && valid['requested_by']) {
+      
+      setInvalid(false)      
+      saveButton.disabled = invalid
+    }
+        
+  }, [valid])
 
   function updateTotal (e) {
     
