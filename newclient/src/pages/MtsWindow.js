@@ -160,6 +160,20 @@ function MtsWindow(props) {
         tr.querySelector('td[name="total"]').innerHTML = 0
       }
     }
+
+    updateGrandTotal()
+  }
+
+  function updateGrandTotal() {
+    const rows = getRows()
+    let totalAmount = 0.0
+    rows.map(row => {
+      let total = row.querySelector('td[name="total"]').innerHTML
+      total = parseFloat(total)
+      totalAmount += total
+    })
+
+    setGrandTotal(totalAmount)
   }
   
   function deleteRow(index, rows) {
@@ -175,6 +189,7 @@ function MtsWindow(props) {
     setTotal(newTotal)    
         
     console.log(`row index: ${row_index}`)
+    
   }
 
 //   function renderMTS(mts) {
@@ -215,16 +230,24 @@ function MtsWindow(props) {
   }, [total])
 
   function saveMTS () {
-    const tablerows = [...rowObject.values()]
-    
-    tablerows.map(tablerow => {
-      // let tabledata = tablerow.values()
-      // tabledata.map(data => {
-      //   console.log(data)
-      // })
-      console.log(tablerow)
+    const rows = getRows()
+
+  }
+
+  function getRows() {
+    const tablerows = [...document.querySelectorAll('tr')]
+    tablerows.splice(0, 1)
+    const filteredrows = tablerows.filter(row => {
+      let total = row.querySelector('td[name="total"]').innerHTML
+      console.log(total)
+      if (total != '0') {
+        return row
+      } else {
+        console.log('0 siya')
+      }
+        
     })
-    
+    return filteredrows
   }
 
   const rows = []
@@ -379,7 +402,7 @@ function MtsWindow(props) {
                 <Grid item xs={8} />
               </Grid>
             </div>
-            <Table hover bordercolor="#8f8f94" border="#8f8f94" >
+            <Table name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
               <thead>
                 <tr>
                   <th>Qty</th>
