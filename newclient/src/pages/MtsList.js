@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core'
 import '../styles/mts.css';
+import db from '../components/Firestore/firestore'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -20,11 +21,74 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const dbMTS = db.collection('MTS-Collection');
+const project_names = [] // for dropdown
+let firstproject = '' // initial project
 
-function MtsList() {
+dbMTS.get().then(mtsSnapshot => {
+    mtsSnapshot.docs.forEach((project, index) => {
+       renderMTS(project, index+1)
+    })
+})
+
+////// GETTING DATA FROM DB TEST ///////
+
+function renderMTS(project, value) {
+  if (value == 1) {
+      firstproject = project.data().name
+  }
+  console.log(project.data().name)
+  const name = project.data().name
+  project_names.push( (<MenuItem value={name}>{name}</MenuItem>) )
+}
+
+// dbMTS.limit(1).get().then(snap => {
+// firstproject =  snap.docs[0].data().name
+// console.log(firstproject)
+// console.log(snap.docs[0].data())
+// })
+
+
+function MtsList(props) {
   const classes = useStyles();
-  const [projName, setProject] = React.useState('');
+  const [projName, setProject] = useState(firstproject);
+  const [mtsRows, setMtsRows] = useState([])
+
+  let allMts = []
+  
+
+  function render(mts) {
+    const mtsData = mts.data()
+    const name = projName
+    let newRow = [...mtsRows]
+    newRow.push(
+        <tr>
+            <td>{name}</td>
+            <td>{mtsData.MTS_number}</td>
+            <td>{mtsData.status}</td>
+            <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+        </tr>
+    )
+    setMtsRows(newRow)
+    console.log(newRow)
+    console.log(mtsRows)
+    console.log(mtsData.MTS_number)
+    console.log('ILAN DAPAT TO')
+  }
+
+  useEffect(() => {
+      console.log('not inf loop')
+      console.log(projName)
+      setMtsRows([])
+      dbMTS.doc(projName).collection('MTS').get().then(snap => {
+        snap.docs.map(mts => {
+            render(mts)
+        })
+      })
+  }, [projName])
+
   const handleChange = (event) => {
+      console.log(event.target.value)
       setProject(event.target.value);
   };
 
@@ -37,8 +101,7 @@ function MtsList() {
                           <FormControl className={classes.formControl}>
                               <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
                               <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
-                                  <MenuItem value={1}>ASEANA 4</MenuItem>
-                                  <MenuItem value={2}>ASEANA 5</MenuItem>
+                                  {project_names}
                               </Select>
                           </FormControl>
                       </Grid>
@@ -62,7 +125,7 @@ function MtsList() {
                           <th></th>
                       </tr>
                   </thead>
-                  <tr>
+                  {/* <tr>
                       <td>Aseana 1</td>
                       <td>71101</td>
                       <td>Confirmed</td>
@@ -91,7 +154,8 @@ function MtsList() {
                       <td>71105</td>
                       <td>For Approval</td>
                       <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr>
+                  </tr> */}
+                  { mtsRows }
               </Table>
           </Container>
       </div>
