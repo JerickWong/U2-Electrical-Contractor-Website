@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
   },
   formControl: {
-    width: 260,
+    width: 300,
     marginLeft: theme.spacing(7)
   }
 }));
@@ -30,9 +30,9 @@ function MtsList() {
 
   return (
       <div className="App">
-          <Container>
+          <Container className="cont">
               <div className="project">
-                  <Grid container spacing={3}>
+                  <Grid container spacing={1}>
                       <Grid item xs={6}>
                           <FormControl className={classes.formControl}>
                               <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
@@ -42,7 +42,8 @@ function MtsList() {
                               </Select>
                           </FormControl>
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={1} />
+                      <Grid item xs={4}>
                           <FormControl className={classes.formControl}>
                               <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
                               <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
@@ -53,7 +54,7 @@ function MtsList() {
                       </Grid>
                   </Grid>
               </div>
-              <Table className="tbl1" bordered hover>
+              <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
                   <thead>
                       <tr>
                           <th>Project Name</th>

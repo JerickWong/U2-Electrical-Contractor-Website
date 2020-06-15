@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
+import MtsWindow from './MtsWindow';
 import Navbars from '../components/Navbar/Navbars';
-import MtsList from './MtsList';
 
-function Mts() {
+function MtsWindowDisplay() {
     return (
         <div>
             <Navbars />
-            <Route exact path="/Mts" component={MtsList}></Route>
+            <Route exact path="/MtsWindow" component={MtsWindow}></Route>
         </div>
     );
 }
 
-export default Mts;
+export default MtsWindowDisplay;

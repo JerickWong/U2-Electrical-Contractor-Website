@@ -3,12 +3,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, ListItemLink, Typography } from '@material-ui/core';
 import { Description, Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
-import MtsList from '../../pages/MtsList';
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -144,20 +143,18 @@ function Navbars() {
           </div>
           <Divider />
           <List>
-            <ListItem button key="New MTS">
-              <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="New MTS" />
-            </ListItem>
-            <NavLink exact to="/MtsList">
+            <Link to="/MtsWindow">
+              <ListItem button key="New MTS">
+                <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="New MTS" />
+              </ListItem>
+            </Link>
+            <Link to="/Mts">
               <ListItem button key="MTS List">
                 <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
-            </NavLink>
-            <ListItem button key="New Quotation">
-              <ListItemIcon className={classes.listIcon}><Description /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="New Quotation" />
-            </ListItem>
+            </Link>
             <ListItem button key="Price List">
               <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Price List" />

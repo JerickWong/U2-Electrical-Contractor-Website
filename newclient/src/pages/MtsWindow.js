@@ -87,7 +87,6 @@ function MtsWindow() {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Prepared by"
-                    defaultValue="Employee Name"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -102,7 +101,6 @@ function MtsWindow() {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Address"
-                    defaultValue="Manila"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -117,7 +115,6 @@ function MtsWindow() {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="MTS No."
-                    defaultValue="71101"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -132,7 +129,6 @@ function MtsWindow() {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Project Name"
-                    defaultValue="U2 Electrical"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -146,8 +142,7 @@ function MtsWindow() {
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
-                    label="From"
-                    defaultValue="Delivered from"
+                    label="Delivered From"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -164,7 +159,6 @@ function MtsWindow() {
                     label="Date"
                     type="date"
                     size="small"
-                    defaultValue="2017-05-24"
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
                   />
@@ -259,19 +253,19 @@ function MtsWindow() {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Requested by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Requested by" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Taken out by" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: XXXX.XX</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Approved by" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Received by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="outlined-basic" size="small" label="Received by" variant="outlined" />
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>

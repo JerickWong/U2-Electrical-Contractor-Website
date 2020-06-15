@@ -13,7 +13,7 @@ Col{
 }
 
 .project{
-  margin-top:100px;
+  margin-top:150px;
 }
 
 .view{
@@ -48,8 +48,9 @@ Col{
   color:#e10808;
 }
 .cont{
-  margin-top:45px;
-  margin-left:100px;
+  top: 50%;
+  vertical-align: middle;
+  position: relative;
 }
 
 .tbl{
