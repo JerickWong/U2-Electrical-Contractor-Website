@@ -255,43 +255,46 @@ useEffect(() => {
       console.log(MTS_number)
 
       // ACTUAL SAVING TO DB
-      db.collection('MTS-Collection').get().then(snap => {
-
-          const newID = MTS_number + ""
-          db.collection('MTS-Collection').doc(newID).set({
-              prepared_by: prepared_by,
-              project_name: project_name,
-              address: address,
-              delivered_from: delivered_from,
-              MTS_number: MTS_number,
-              date: date,
-              total_cost: total_cost,
-              requested_by: requested_by,
-              approved_by: approved_by,
-              takenout_by: takenout_by,
-              received_by: received_by,
-              status: 'for approval'
-          })
-
-          // SUBCOLLECTION, PRODUCTS LIST AKA ROWS
-          rows.map(row => {
-            let qty = row.querySelector('input[name="quantity"]').value
-            let unit = row.querySelector('input[name="unit"]').value
-            let description = row.querySelector('textarea[name="description"]').value
-            let remarks = row.querySelector('input[name="remarks"]').value
-            let price = row.querySelector('input[name="price"]').value
-
-            db.collection('MTS-Collection').doc(newID).collection('productsList').add({
-              qty: qty,
-              unit: unit,
-              description: description,
-              remarks: remarks,
-              price: price
-          })
-          
+      const newID = MTS_number + ""
+      db.collection('MTS-Collection').doc(project_name).set({ name: project_name })
+      const database = db.collection('MTS-Collection').doc(project_name).collection('MTS').doc(newID)      
+      database.set({
+        prepared_by: prepared_by,
+        project_name: project_name,
+        address: address,
+        delivered_from: delivered_from,
+        MTS_number: MTS_number,
+        date: date,
+        total_cost: total_cost,
+        requested_by: requested_by,
+        approved_by: approved_by,
+        takenout_by: takenout_by,
+        received_by: received_by,
+        status: 'For Approval'
       })
-      })
+      .catch(err => alert('something went wrong'))
 
+      // SUBCOLLECTION, PRODUCTS LIST AKA ROWS
+      let index = 0;
+      rows.map(row => {
+        let productID = newID + index
+        let qty = row.querySelector('input[name="quantity"]').value
+        let unit = row.querySelector('input[name="unit"]').value
+        let description = row.querySelector('textarea[name="description"]').value
+        let remarks = row.querySelector('input[name="remarks"]').value
+        let price = row.querySelector('input[name="price"]').value
+
+        database.collection('productsList').doc(productID).set({
+          qty: qty,
+          unit: unit,
+          description: description,
+          remarks: remarks,
+          price: price
+        })
+        .catch(err => alert('something went wrong'))
+        index++
+      })
+      
       
       alert('yay done')
     }
