@@ -43,6 +43,8 @@ dbMTS.get().then(projSnapshot => {
     })
 })
 
+
+
 function MtsList(props) {
     ////// STATES //////
     const [projName, setProject] = useState('');    
@@ -60,10 +62,6 @@ function MtsList(props) {
             setProject(firstproject)
         }, 500)
     }, [first])
-
-    useEffect(() => {
-        
-    }, [status])
 
     function renderRows(mts) {
         const mtsData = mts.data()
@@ -85,35 +83,60 @@ function MtsList(props) {
 
     useEffect(() => {
         console.log('not inf loop')
+        console.log(projName)
         if (projName != '') {
             setMtsRows([])
             temprows = []
             console.log(mtsRows)
-            setNewProject(!newProject)            
-            
+            setNewProject(!newProject)
         }        
-    }, [projName])
+    }, [projName, status])
 
     useEffect(() => {
         console.log(mtsRows)
+        console.log(status)
 
-        if (projName != '') {
-            dbMTS.doc(projName).collection('MTS').get().then(snap => {
-                snap.docs.map(mts => {
-                    renderRows(mts)
+        if (projName != '') {            
+
+            if (status == 'All') {
+
+                dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
                 })
-            })
-            .then(() => {
-                console.log(temprows)
-                setMtsRows(temprows)
-            })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+
+            } else {
+                dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
+                .then(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
+                })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+            }
         }
         
     }, [newProject])
 
     const handleChange = (event) => {
         console.log(event.target.value)
-        setProject(event.target.value);
+
+        console.log(event.target.name)
+        if (event.target.name === 'selectProject') {
+            setProject(event.target.value);
+            console.log('PASOK')
+        }
+            
+        else
+            setStatus(event.target.value)
     };
 
     return (
@@ -124,7 +147,7 @@ function MtsList(props) {
                         <Grid item xs={6}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
-                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
+                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} name="selectProject">
                                     {projDropDown}
                                 </Select>
                             </FormControl>
@@ -133,9 +156,10 @@ function MtsList(props) {
                         <Grid item xs={4}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
-                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
-                                    <MenuItem value={1}>Confirmed</MenuItem>
-                                    <MenuItem value={2}>For Approval</MenuItem>
+                                <Select labelId="demo-simple-select-label" defaultValue={'All'} size="large" onChange={handleChange} id="selectStatus">
+                                    <MenuItem value={'All'}>All</MenuItem>
+                                    <MenuItem value={'Confirmed'}>Confirmed</MenuItem>
+                                    <MenuItem value={'For Approval'}>For Approval</MenuItem>                                    
                                 </Select>
                             </FormControl>
                         </Grid>
