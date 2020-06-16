@@ -130,10 +130,8 @@ function MtsList(props) {
         console.log(event.target.value)
 
         console.log(event.target.name)
-        if (event.target.name === 'selectProject') {
+        if (event.target.name === 'selectProject') 
             setProject(event.target.value);
-            console.log('PASOK')
-        }
             
         else
             setStatus(event.target.value)

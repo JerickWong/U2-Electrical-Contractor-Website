@@ -7,6 +7,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
 import db from '../components/Firestore/firestore'
+import moment from 'moment'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -40,13 +41,13 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   txt: {
-    width: 50
+    width: 70
   },
   txt1: {
     width: 90
   },
   txt2: {
-    width: 100
+    width: 130
   },
   txt4: {
     width: 260
@@ -414,6 +415,8 @@ useEffect(() => {
                     size="normal"
                     onChange={checkValidity}
                     name='mts_field'
+                    pattern="[0-9*]"
+                    type="number"
                     inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -466,6 +469,7 @@ useEffect(() => {
                     label="Date"
                     type="date"
                     size="small"
+                    defaultValue={moment().format('YYYY-MM-DD')}
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
                   />
