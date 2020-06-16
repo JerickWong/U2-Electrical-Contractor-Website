@@ -82,7 +82,8 @@ function MtsWindow(props) {
   const [invalid, setInvalid] = useState(true)
   const [valid, setValid] = useState({
       'mts_field': false,
-      'requested_by': false
+      'requested_by': false,
+      'project_name': false
   })
   
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
@@ -123,7 +124,7 @@ function MtsWindow(props) {
     // di pa tapos invalid delay
     const saveButton = document.querySelector('#save')
     
-    if (valid['mts_field'] && valid['requested_by']) {
+    if (valid['mts_field'] && valid['requested_by'] && valid['project_name']) {
       
       setInvalid(false)      
       saveButton.disabled = invalid
@@ -376,13 +377,15 @@ useEffect(() => {
                     id='preparedby'
                     defaultValue="Employee Name"                    
                     size="normal"
-                    InputProps={{
+                    inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Person color="primary" />
                         </InputAdornment>
                       ),
+                      maxLength:50
                     }}
+                    
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -392,12 +395,13 @@ useEffect(() => {
                     id='address'
                     defaultValue="Manila"
                     size="normal"
-                    InputProps={{
+                    inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <LocationOn color="primary" />
                         </InputAdornment>
                       ),
+                      maxLength:75
                     }}
                   />
                 </Grid>
@@ -410,12 +414,13 @@ useEffect(() => {
                     size="normal"
                     onChange={checkValidity}
                     name='mts_field'
-                    InputProps={{
+                    inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Edit color="primary" />
                         </InputAdornment>
                       ),
+                      maxLength:50
                     }}
                   />
                 </Grid>
@@ -426,12 +431,15 @@ useEffect(() => {
                     id='projectname'
                     defaultValue="U2 Electrical"
                     size="normal"
-                    InputProps={{
+                    onChange={checkValidity}
+                    name='project_name'
+                    inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Folder color="primary" />
                         </InputAdornment>
                       ),
+                      maxLength:50
                     }}
                   />
                 </Grid>
@@ -442,12 +450,13 @@ useEffect(() => {
                     id='deliveredfrom'
                     defaultValue="Delivered from"
                     size="normal"
-                    InputProps={{
+                    inputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <LocalShipping color="primary" />
                         </InputAdornment>
                       ),
+                      maxLength:75
                     }}
                   />
                 </Grid>
@@ -488,19 +497,19 @@ useEffect(() => {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" />
+                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}} />
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>

@@ -13,7 +13,7 @@ const MtsRow = (props) => {
             <td><TextField name='model' className={props.class2} size="small" variant="outlined" multiline />{props.model}</td>
             <td><TextField name='price' className={props.class2} size="small" variant="outlined" />{props.price}</td>
                 <td name='total'>{props.total}</td>
-            <td><TextField name='remarks' className={props.class3} size="small" variant="outlined" />{props.remarks}</td>
+            <td><TextField name='remarks' className={props.class3} size="small" variant="outlined" inputProps={{maxLength:75}} />{props.remarks}</td>
             <td><FontAwesomeIcon onClick={props.click} className="delete" icon={faTimes} /></td>
         </tr>
     )
