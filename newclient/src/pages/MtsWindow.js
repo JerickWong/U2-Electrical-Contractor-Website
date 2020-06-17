@@ -3,12 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Paper, Typography } from '@material-ui/core';
 import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, CastConnectedSharp } from '@material-ui/icons';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
 import db from '../components/Firestore/firestore'
 import moment from 'moment'
 import UserAlert from '../components/UserAlert/UserAlert'
+import { red } from '@material-ui/core/colors';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -74,13 +75,28 @@ const useStyles = makeStyles((theme) => ({
   },
 
 }));
-
+const ValidationTextField = withStyles({
+  root: {
+    '& input:invalid + fieldset': {
+      borderColor: 'red',
+      borderBottomColor: 'red'
+    },
+    '& input:valid:focus + fieldset': {
+      borderLeftWidth: 6,
+      padding: '4px !important', // override inline-style
+    },
+    width: 260
+  },
+})(TextField);
 
 function MtsWindow(props) {
 
   const classes = useStyles();
   let row_index = 0;
-  // --------STATES--------
+  const styles = {
+    borderColor: 'red',
+  }
+  // --------STATES-------- //
   const [invalid, setInvalid] = useState(true)
   const [valid, setValid] = useState({
       'mts_field': false,
@@ -368,8 +384,8 @@ useEffect(() => {
                           <Person color="primary" />
                         </InputAdornment>
                       ),
-                      
                     }}
+                    style={{styles}}
                     inputProps={{maxLength:50}}
                     
                   />
@@ -392,7 +408,8 @@ useEffect(() => {
                   />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField id="input-with-icon-textfield"
+                  <ValidationTextField id="input-with-icon-textfield"
+                    error={!valid['mts_field']}
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
@@ -410,11 +427,12 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
-                    inputProps={{maxLength:50}}
+                    inputProps={{maxLength:6}}
                   />
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField id="input-with-icon-textfield"
+                  <ValidationTextField id="input-with-icon-textfield"
+                    error={!valid['project_name']}
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
@@ -490,7 +508,7 @@ useEffect(() => {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" required defaultValue={props.requested_by} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <ValidationTextField className={classes.txt4} id="requestedby" size="small" label="Requested by" required defaultValue={props.requested_by} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue={props.takenout_by} variant="outlined" inputProps={{maxLength:50}}/>
@@ -502,7 +520,7 @@ useEffect(() => {
                   <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue={props.approved_by} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue={props.received_by} variant="outlined" inputProps={{maxLength:50}} />
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue={props.received_by} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
