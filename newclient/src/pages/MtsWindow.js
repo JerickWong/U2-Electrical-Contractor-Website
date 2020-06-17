@@ -8,6 +8,7 @@ import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
 import db from '../components/Firestore/firestore'
 import moment from 'moment'
+import UserAlert from '../components/UserAlert/UserAlert'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -103,11 +104,6 @@ function MtsWindow(props) {
 
       setValid(newValid)
       console.log(valid)
-      // setValid(prevState => {
-      //   let required = {...prevState.required} ;  // creating copy of state variable jasper
-      //   required[e.target.name] = false;                     // update the name property, assign a new value                 
-      //   return { required };                                 // return new object jasper object
-      // })
       setInvalid(true)
     } else {
 
@@ -122,7 +118,6 @@ function MtsWindow(props) {
     }
   }
   useEffect(() => {
-    // di pa tapos invalid delay
     const saveButton = document.querySelector('#save')
     
     if (valid['mts_field'] && valid['requested_by'] && valid['project_name']) {
@@ -188,23 +183,6 @@ function MtsWindow(props) {
   }
 
 
-////// GETTING DATA FROM DB TEST ///////
-//   function renderMTS(mts) {
-
-//     console.log(mts.data())
-
-
-//     db.collection('MTS-Collection').doc(mts.id).collection('products').get().then(snapshot => {
-//         snapshot.docs.forEach(product => {
-//             render(product)
-//         })
-//     })
-// }
-
-// function render(product) {
-//   console.log(product.data())  
-// }
-
   // use effect of adding rows
 useEffect(() => {
   let newRows = [...rowObject]
@@ -219,11 +197,6 @@ useEffect(() => {
     setRows(newRows)
     row_index++;
 
-    // db.collection('MTS-Collection').get().then(mtsSnapshot => {
-    //   mtsSnapshot.docs.forEach(mts => {
-    //     renderMTS(mts)
-    //   })
-    // })
   }, [total])
 
 
@@ -278,18 +251,24 @@ useEffect(() => {
 
       // SUBCOLLECTION, PRODUCTS LIST AKA ROWS
       let index = 0;
+      console.log(rows)
       rows.map(row => {
         let productID = newID + index
         let qty = row.querySelector('input[name="quantity"]').value
         let unit = row.querySelector('input[name="unit"]').value
         let description = row.querySelector('textarea[name="description"]').value
-        let remarks = row.querySelector('input[name="remarks"]').value
+        let brand = row.querySelector('textarea[name="brand"]').value
+        let model = row.querySelector('textarea[name="model"]').value
+        let remarks = row.querySelector('textarea[name="remarks"]').value
         let price = row.querySelector('input[name="price"]').value
+        console.log(remarks)
 
         database.collection('productsList').doc(productID).set({
           qty: qty,
           unit: unit,
           description: description,
+          brand: brand,
+          model: model,
           remarks: remarks,
           price: price
         })
@@ -306,7 +285,11 @@ useEffect(() => {
   // RETURNS NON EMPTY HTML ROWS
   function getRows() {
     const tablerows = [...document.querySelectorAll('tr')]
+
+    // REMOVE HEADER
     tablerows.splice(0, 1)
+
+    // FILTER ROWS WITH TOTAL
     const filteredrows = tablerows.filter(row => {
       let total = row.querySelector('td[name="total"]').innerHTML
       if (total != '0')
@@ -316,7 +299,7 @@ useEffect(() => {
     return filteredrows
   }
 
-  // FOR STORING JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
+  // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   const rows = []
 
   // INITIAL ROWS, FIRST STATEMENT IS FOR EDITING, SHOW OLD MTS DATA
@@ -368,6 +351,7 @@ useEffect(() => {
       <Container className="cont">
         <main className={classes.content}>
           <div className={classes.toolbar} />
+          <UserAlert severity='info' message='hi po lagyan po projname mts tsaka requestedby tytyty'/>
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
               <Grid container spacing={3}>
@@ -376,16 +360,17 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Prepared by"
                     id='preparedby'
-                    defaultValue="Employee Name"                    
+                    defaultValue={props.prepared_by}
                     size="normal"
-                    inputProps={{
+                    InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Person color="primary" />
                         </InputAdornment>
                       ),
-                      maxLength:50
+                      
                     }}
+                    inputProps={{maxLength:50}}
                     
                   />
                 </Grid>
@@ -394,16 +379,16 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Address"
                     id='address'
-                    defaultValue="Manila"
+                    defaultValue={props.address}
                     size="normal"
-                    inputProps={{
+                    InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <LocationOn color="primary" />
                         </InputAdornment>
                       ),
-                      maxLength:75
                     }}
+                    inputProps={{maxLength:75}}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -411,20 +396,21 @@ useEffect(() => {
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
-                    defaultValue="71101"
+                    defaultValue={props.MTS_number}
+                    required
                     size="normal"
                     onChange={checkValidity}
                     name='mts_field'
                     pattern="[0-9*]"
                     type="number"
-                    inputProps={{
+                    InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Edit color="primary" />
                         </InputAdornment>
                       ),
-                      maxLength:50
                     }}
+                    inputProps={{maxLength:50}}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -432,11 +418,12 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
-                    defaultValue="U2 Electrical"
+                    defaultValue={props.project_name}
+                    required
                     size="normal"
                     onChange={checkValidity}
                     name='project_name'
-                    inputProps={{
+                    InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Folder color="primary" />
@@ -444,6 +431,7 @@ useEffect(() => {
                       ),
                       maxLength:50
                     }}
+                    inputProps={{maxLength:50}}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -451,9 +439,9 @@ useEffect(() => {
                     className={classes.txt4}
                     label="From"
                     id='deliveredfrom'
-                    defaultValue="Delivered from"
+                    defaultValue={props.delivered_from}
                     size="normal"
-                    inputProps={{
+                    InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <LocalShipping color="primary" />
@@ -461,6 +449,7 @@ useEffect(() => {
                       ),
                       maxLength:75
                     }}
+                    inputProps={{maxLength:50}}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -479,7 +468,7 @@ useEffect(() => {
                 </Grid>
                 <Grid item xs={8} />
               </Grid>
-            </div>
+            </div>            
             <Table name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
               <thead>
                 <tr>
@@ -501,19 +490,19 @@ useEffect(() => {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" required defaultValue={props.requested_by} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue={props.takenout_by} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue={props.approved_by} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue="Name" variant="outlined" inputProps={{maxLength:50}} />
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue={props.received_by} variant="outlined" inputProps={{maxLength:50}} />
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
@@ -522,7 +511,7 @@ useEffect(() => {
             </div>
           </MuiThemeProvider>
         </main>
-      </Container>
+      </Container>      
     </div>
   );
 }
