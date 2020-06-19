@@ -10,7 +10,6 @@ import db from '../components/Firestore/firestore'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
-const tbl = '#898a9c';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -75,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 function MtsWindow(props) {
-
   const classes = useStyles();
   let row_index = 0;
   // --------STATES--------
@@ -373,8 +371,7 @@ useEffect(() => {
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Prepared by"
-                    id='preparedby'
-                    defaultValue="Employee Name"                    
+                    id='preparedby'                  
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -383,6 +380,7 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -390,7 +388,6 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Address"
                     id='address'
-                    defaultValue="Manila"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -399,6 +396,7 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -406,7 +404,6 @@ useEffect(() => {
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
-                    defaultValue="71101"
                     size="normal"
                     onChange={checkValidity}
                     name='mts_field'
@@ -417,6 +414,7 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -424,7 +422,6 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
-                    defaultValue="U2 Electrical"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -433,6 +430,7 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -440,7 +438,6 @@ useEffect(() => {
                     className={classes.txt4}
                     label="From"
                     id='deliveredfrom'
-                    defaultValue="Delivered from"
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -449,6 +446,7 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -459,6 +457,7 @@ useEffect(() => {
                     size="small"
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
+                    required
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -488,19 +487,19 @@ useEffect(() => {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" defaultValue="Name" onChange={checkValidity} name='requested_by' variant="outlined" />
+                  <TextField className={classes.txt4} id="requestedby" size="small" label="Requested by" onChange={checkValidity} name='requested_by' variant="outlined" required/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by"  variant="outlined" required/>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by"  variant="outlined"  required/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue="Name" variant="outlined" />
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" variant="outlined" required/>
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>

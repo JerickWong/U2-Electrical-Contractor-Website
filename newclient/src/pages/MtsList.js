@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table} from 'react-bootstrap';
-import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core'
+import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
 import '../styles/mts.css';
-import db from '../components/Firestore/firestore'
+import db from '../components/Firestore/firestore';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {

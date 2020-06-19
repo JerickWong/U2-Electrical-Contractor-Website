@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import LoginBox from "./components/Login/Login";
 import Mts from "./pages/Mts";
 import MtsWindowDisplay from "./pages/MtsWindowDisplay";
+import PriceListDisplay from "./pages/PriceListDisplay";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                     <Route exact path="/" component={LoginBox} />
                     <Route exact path="/Mts" component={Mts} />
                     <Route exact path="/MtsWindow" component={MtsWindowDisplay} />
+                    <Route exact path="/Price" component={PriceListDisplay} />
                 </Switch>
             </div>
         </Router>
