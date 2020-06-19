@@ -22,145 +22,191 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const dbMTS = db.collection('MTS-Collection');
-const project_names = [] // for dropdown
-let firstproject = '' // initial project
+const projectnames = [] // for dropdown
+let firstproject = ''
 
-dbMTS.get().then(mtsSnapshot => {
-    mtsSnapshot.docs.forEach((project, index) => {
-       renderMTS(project, index+1)
+////// GETTING THE PROJECTS ///////
+function renderProjects(project, value) {
+    
+    if (value == 1) {
+        firstproject = project.data().name
+        console.log('THIS IS ONCE LANG')
+    }
+    console.log(project.data().name)
+    const name = project.data().name
+    projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+}
+
+dbMTS.get().then(projSnapshot => {
+    projSnapshot.docs.forEach((project, index) => {
+    renderProjects(project, index+1)
     })
 })
 
-////// GETTING DATA FROM DB TEST ///////
-
-function renderMTS(project, value) {
-  if (value == 1) {
-      firstproject = project.data().name
-  }
-  console.log(project.data().name)
-  const name = project.data().name
-  project_names.push( (<MenuItem value={name}>{name}</MenuItem>) )
-}
-
-// dbMTS.limit(1).get().then(snap => {
-// firstproject =  snap.docs[0].data().name
-// console.log(firstproject)
-// console.log(snap.docs[0].data())
-// })
 
 
 function MtsList(props) {
-  const classes = useStyles();
-  const [projName, setProject] = useState(firstproject);
-  const [mtsRows, setMtsRows] = useState([])
+    ////// STATES //////
+    const [projName, setProject] = useState('');    
+    const [projDropDown, setProjDrop] = useState([])
+    const [status, setStatus] = useState('For Approval')
+    const [mtsRows, setMtsRows] = useState([])
+    const [first, setFirst] = useState('')
+    const [newProject, setNewProject] = useState(true)
+    const classes = useStyles();    
+    let temprows = []
+    
+    useEffect(() => {
+        setTimeout(() => {
+            setProjDrop(projectnames)
+            setProject(firstproject)
+        }, 500)
+    }, [first])
 
-  let allMts = []
-  
+    function renderRows(mts) {
+        const mtsData = mts.data()
+        const name = projName
+        // let newRow = [...mtsRows]
+        temprows.push(
+            <tr>
+                <td>{name}</td>
+                <td>{mtsData.MTS_number}</td>
+                <td>{mtsData.status}</td>
+                <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+            </tr>
+        )
+        // setMtsRows(newRow)
+        console.log('RENDER ROW')
+        console.log(temprows)
+        // console.log(mtsRows)
+    }
 
-  function render(mts) {
-    const mtsData = mts.data()
-    const name = projName
-    let newRow = [...mtsRows]
-    newRow.push(
-        <tr>
-            <td>{name}</td>
-            <td>{mtsData.MTS_number}</td>
-            <td>{mtsData.status}</td>
-            <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-        </tr>
-    )
-    setMtsRows(newRow)
-    console.log(newRow)
-    console.log(mtsRows)
-    console.log(mtsData.MTS_number)
-    console.log('ILAN DAPAT TO')
-  }
+    useEffect(() => {
+        console.log('not inf loop')
+        console.log(projName)
+        if (projName != '') {
+            setMtsRows([])
+            temprows = []
+            console.log(mtsRows)
+            setNewProject(!newProject)
+        }        
+    }, [projName, status])
 
-  useEffect(() => {
-      console.log('not inf loop')
-      console.log(projName)
-      setMtsRows([])
-      dbMTS.doc(projName).collection('MTS').get().then(snap => {
-        snap.docs.map(mts => {
-            render(mts)
-        })
-      })
-  }, [projName])
+    useEffect(() => {
+        console.log(mtsRows)
+        console.log(status)
 
-  const handleChange = (event) => {
-      console.log(event.target.value)
-      setProject(event.target.value);
-  };
+        if (projName != '') {            
 
-  return (
-      <div className="App">
-          <Container className="cont">
-              <div className="project">
-                  <Grid container spacing={1}>
-                      <Grid item xs={6}>
-                          <FormControl className={classes.formControl}>
-                              <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
-                              <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
-                                  {project_names}
-                              </Select>
-                          </FormControl>
-                      </Grid>
-                      <Grid item xs={1} />
-                      <Grid item xs={4}>
-                          <FormControl className={classes.formControl}>
-                              <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
-                              <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} id="demo-simple-select">
-                                  <MenuItem value={1}>Confirmed</MenuItem>
-                                  <MenuItem value={2}>For Approval</MenuItem>
-                              </Select>
-                          </FormControl>
-                      </Grid>
-                  </Grid>
-              </div>
-              <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
-                  <thead>
-                      <tr>
-                          <th>Project Name</th>
-                          <th>MTS No.</th>
-                          <th>Status</th>
-                          <th></th>
-                      </tr>
-                  </thead>
-                  {/* <tr>
-                      <td>Aseana 1</td>
-                      <td>71101</td>
-                      <td>Confirmed</td>
-                      <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr>
-                  <tr>
-                      <td>Aseana 2</td>
-                      <td>71102</td>
-                      <td>For Approval</td>
-                      <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr>
-                  <tr>
-                      <td>Aseana 3</td>
-                      <td>71103</td>
-                      <td>Confirmed</td>
-                      <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr>
-                  <tr>
-                      <td>Aseana 4</td>
-                      <td>71104</td>
-                      <td>For Approval</td>
-                      <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr>
-                  <tr>
-                      <td>Aseana 5</td>
-                      <td>71105</td>
-                      <td>For Approval</td>
-                      <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                  </tr> */}
-                  { mtsRows }
-              </Table>
-          </Container>
-      </div>
-  );
+            if (status == 'All') {
+
+                dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
+                })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+
+            } else {
+                dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
+                .then(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
+                })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+            }
+        }
+        
+    }, [newProject])
+
+    const handleChange = (event) => {
+        console.log(event.target.value)
+
+        console.log(event.target.name)
+        if (event.target.name === 'selectProject') 
+            setProject(event.target.value);
+            
+        else
+            setStatus(event.target.value)
+    };
+
+    return (
+        <div className="App">
+            <Container className="cont">
+                <div className="project">
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
+                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} name="selectProject">
+                                    {projDropDown}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={1} />
+                        <Grid item xs={4}>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
+                                <Select labelId="demo-simple-select-label" defaultValue={'All'} size="large" onChange={handleChange} id="selectStatus">
+                                    <MenuItem value={'All'}>All</MenuItem>
+                                    <MenuItem value={'Confirmed'}>Confirmed</MenuItem>
+                                    <MenuItem value={'For Approval'}>For Approval</MenuItem>                                    
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </div>
+                <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>MTS No.</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {/* <tr>
+                        <td>Aseana 1</td>
+                        <td>71101</td>
+                        <td>Confirmed</td>
+                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                    </tr>
+                    <tr>
+                        <td>Aseana 2</td>
+                        <td>71102</td>
+                        <td>For Approval</td>
+                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                    </tr>
+                    <tr>
+                        <td>Aseana 3</td>
+                        <td>71103</td>
+                        <td>Confirmed</td>
+                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                    </tr>
+                    <tr>
+                        <td>Aseana 4</td>
+                        <td>71104</td>
+                        <td>For Approval</td>
+                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                    </tr>
+                    <tr>
+                        <td>Aseana 5</td>
+                        <td>71105</td>
+                        <td>For Approval</td>
+                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                    </tr> */}
+                    { mtsRows }
+                </Table>
+            </Container>
+        </div>
+    );
 }
 
-export default MtsList;
+    export default MtsList;
