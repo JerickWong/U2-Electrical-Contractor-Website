@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
-import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText,  Typography } from '@material-ui/core';
+import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight, ListAlt, TrendingUp, VerifiedUser, SupervisorAccount } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -143,22 +143,24 @@ function AdminNavbar() {
           </div>
           <Divider />
           <List>
-            <Link to="/MtsWindow">
+            <Link to="/AdminMtsWindow">
               <ListItem button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />
               </ListItem>
             </Link>
-            <Link to="/Mts">
+            <Link to="/AdminMts">
               <ListItem button key="MTS List">
                 <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
             </Link>
-            <ListItem button key="Price List">
-              <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="Price List" />
-            </ListItem>
+            <Link to="/AdminPrice">
+              <ListItem button key="Price List">
+                <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="Price List" />
+              </ListItem>
+            </Link>
             <ListItem button key="Activity Log">
               <ListItemIcon className={classes.listIcon}><ListAlt /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Activity Log" />

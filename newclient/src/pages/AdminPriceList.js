@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminNavbar from '../components/Navbar/AdminNavbar';
-import PriceList from './PriceList'
+import Price from './Price'
 
-function Mts() {
+function AdminPriceList() {
     return (
         <div>
             <AdminNavbar/>
-            <Route exact path="/Price" component={PriceList}></Route>
+            <Route exact path="/AdminPrice" component={Price}></Route>
         </div>
     );
 }
 
-export default Mts;
+export default AdminPriceList;

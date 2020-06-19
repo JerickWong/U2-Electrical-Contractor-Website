@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import LoginBox from "./components/Login/Login";
 import Mts from "./pages/Mts";
 import MtsWindowDisplay from "./pages/MtsWindowDisplay";
-import PriceListDisplay from "./pages/PriceListDisplay";
+import PriceList from "./pages/PriceList";
+import AdminPriceList from "./pages/AdminPriceList";
+import AdminMts from "./pages/AdminMtsList";
+import AdminMtsWindow from "./pages/AdminMtsWindow";
+import DeliverSummary from "./pages/DeliveredSummary";
 
 function App() {
     return (
@@ -13,7 +17,11 @@ function App() {
                     <Route exact path="/" component={LoginBox} />
                     <Route exact path="/Mts" component={Mts} />
                     <Route exact path="/MtsWindow" component={MtsWindowDisplay} />
-                    <Route exact path="/Price" component={PriceListDisplay} />
+                    <Route exact path="/Price" component={PriceList} />
+                    <Route exact path="/AdminPrice" component={AdminPriceList} />
+                    <Route exact path="/AdminMts" component={AdminMts}/>
+                    <Route exact path="/Deliver" component={DeliverSummary}/>
+                    <Route exact path="/AdminMtsWindow" component={AdminMtsWindow}/>
                 </Switch>
             </div>
         </Router>
