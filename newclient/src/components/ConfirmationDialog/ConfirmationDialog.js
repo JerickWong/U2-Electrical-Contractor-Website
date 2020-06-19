@@ -19,28 +19,21 @@ function ConfirmationDialogRaw(props) {
   const [value, setValue] = React.useState(valueProp);
   const radioGroupRef = React.useRef(null);
 
-//   const propempty = props.empty
-//   let empty = ''
-//   propempty.map(each => {
-//       console.log(each)
-//       empty.concat(`${each}, `)
-//       console.log(empty)
-//   })
-//   empty.substring(0, empty.length -2)
-//   console.log(empty)
-let empty = props.empty.join(', ')
-empty.substring(0, empty.length -2)
+  let empty = props.empty.join(', ')
+  empty.substring(0, empty.length -2)
 
-  React.useEffect(() => {
-    if (!open) {
-      setValue(valueProp);
-    }
-  }, [valueProp, open]);
+  // React.useEffect(() => {
+  //   if (!open) {
+  //     setValue(valueProp);
+  //   }
+  // }, [valueProp, open]);
 
   const handleEntering = () => {
     if (radioGroupRef.current != null) {
+      console.log(radioGroupRef.current)
       radioGroupRef.current.focus();
     }
+    console.log(radioGroupRef.current)
   };
 
   const handleCancel = () => {
@@ -49,13 +42,13 @@ empty.substring(0, empty.length -2)
 
   const handleOk = () => {
     onClose(value);
+    props.handle()
   };
 
   const handleChange = (event) => {
     setValue(event.target.value);
   };
 
-  const confirm = props.confirm
   return (
     <Dialog
       disableBackdropClick
@@ -70,6 +63,7 @@ empty.substring(0, empty.length -2)
       <DialogContent dividers>
         <DialogContentText >
             By proceeding, you are leaving out the following empty:
+            <br></br>
             {empty}
         </DialogContentText>
       </DialogContent>
@@ -77,7 +71,7 @@ empty.substring(0, empty.length -2)
         <Button autoFocus onClick={handleCancel} style={{backgroundColor:'red', color: 'white'}} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => {handleOk(); confirm();}} color="primary">
+        <Button onClick={() => {handleOk()}} color="primary">
           Ok
         </Button>
       </DialogActions>
@@ -105,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ConfirmationDialog(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [value, setValue] = React.useState('Dione');
 
   const handleClickListItem = () => {
@@ -114,6 +108,7 @@ export default function ConfirmationDialog(props) {
 
   const handleClose = (newValue) => {
     setOpen(false);
+    props.closing();
 
     if (newValue) {
       setValue(newValue);
@@ -122,7 +117,7 @@ export default function ConfirmationDialog(props) {
 
   return (
     <div className={classes.root}>
-      <List component="div" role="list">
+      {/* <List component="div" role="list">
         <ListItem button divider disabled role="listitem">
           <ListItemText primary="Interruptions" />
         </ListItem>
@@ -149,9 +144,24 @@ export default function ConfirmationDialog(props) {
           open={open}
           onClose={handleClose}
           value={value}
-          empty={props.empty} confirm={props.handleConfirm}
+          empty={props.empty} 
+          handle={props.confirm}
         />
-      </List>
+      </List> */}
+
+        <ConfirmationDialogRaw
+          classes={{
+            paper: classes.paper,
+          }}
+          id="ringtone-menu"
+          keepMounted
+          open={open}
+          onClose={handleClose}
+          value={value}
+          empty={props.empty} 
+          handle={props.confirm}
+        />
     </div>
+    
   );
 }

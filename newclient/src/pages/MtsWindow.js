@@ -231,7 +231,7 @@ useEffect(() => {
     })
 
     if (empty.length != 0) {
-      setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} /> )
+      setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
     }
       
   }
@@ -306,7 +306,12 @@ useEffect(() => {
       index++
     })
 
-    alert('yay done')
+    alert('yay done')    
+    closeConfirmDialog();
+  }
+
+  function closeConfirmDialog() {
+    setConfirmationDialog('')
   }
 
   useEffect(() => {
