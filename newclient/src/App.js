@@ -8,6 +8,8 @@ import AdminPriceList from "./pages/AdminPriceList";
 import AdminMts from "./pages/AdminMtsList";
 import AdminMtsWindow from "./pages/AdminMtsWindow";
 import DeliverSummary from "./pages/DeliveredSummary";
+import DeliveryWindow from "./pages/DeliveryWindow";
+import CostDisplay from "./pages/CostDisplay";
 
 function App() {
     return (
@@ -20,8 +22,10 @@ function App() {
                     <Route exact path="/Price" component={PriceList} />
                     <Route exact path="/AdminPrice" component={AdminPriceList} />
                     <Route exact path="/AdminMts" component={AdminMts}/>
-                    <Route exact path="/Deliver" component={DeliverSummary}/>
+                    <Route exact path="/DeliverSummary" component={DeliverSummary}/>
+                    <Route exact path="/Deliver" component={DeliveryWindow}/>
                     <Route exact path="/AdminMtsWindow" component={AdminMtsWindow}/>
+                    <Route exact path="/Cost" component={CostDisplay}/>
                 </Switch>
             </div>
         </Router>

@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminNavbar from '../components/Navbar/AdminNavbar';
-import DeliverSum from './DeliverSum';
+import Cost from './Cost'
 
-function DeliverSummary() {
+function CostDisplay() {
     return (
         <div>
-            <AdminNavbar />
-            <Route exact path="/DeliverSummary" component={DeliverSum}></Route>
+            <AdminNavbar/>
+            <Route exact path="/Cost" component={Cost}></Route>
         </div>
     );
 }
 
-export default DeliverSummary;
+export default CostDisplay;

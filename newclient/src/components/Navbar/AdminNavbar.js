@@ -1,9 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
-import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { makeStyles, Button, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight, ListAlt, TrendingUp, VerifiedUser, SupervisorAccount } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
@@ -14,6 +16,7 @@ const light = indigo[50];
 const dark = grey[800];
 const primary = '#8083FF';
 const white = '#FFFFFF';
+const lightIndigo = '#CDCFEF';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -87,7 +90,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   login: {
-    textAlign: 'right'
+    marginLeft: 1150,
+    color: lightIndigo
+  },
+  logout: {
+    marginLeft: 40,
+    color: white,
   },
   listIcon: {
     color: light,
@@ -121,6 +129,7 @@ function AdminNavbar() {
               <Menu />
             </IconButton>
             <Typography className={classes.login}>Logged in as: User1</Typography>
+            <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -165,14 +174,18 @@ function AdminNavbar() {
               <ListItemIcon className={classes.listIcon}><ListAlt /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Activity Log" />
             </ListItem>
+            <Link to="/Cost">
             <ListItem button key="Cost">
               <ListItemIcon className={classes.listIcon}><TrendingUp /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Cost" />
             </ListItem>
-            <ListItem button key="Delivered">
-              <ListItemIcon className={classes.listIcon}><VerifiedUser /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="Delivered" />
-            </ListItem>
+            </Link>
+            <Link to="/Deliver">
+              <ListItem button key="Delivered">
+                <ListItemIcon className={classes.listIcon}><VerifiedUser /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="Delivered" />
+              </ListItem>
+            </Link>
             <ListItem button key="Accounts">
               <ListItemIcon className={classes.listIcon}><SupervisorAccount /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Accounts" />

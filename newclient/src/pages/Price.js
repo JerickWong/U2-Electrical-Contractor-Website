@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
-import { Save, Clear } from '@material-ui/icons';
+import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
+import { Save, Clear, Search } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     txt: {
+        width: 390,
+        marginTop: 15
+    },
+    txt1: {
         width: 390
     },
     content: {
@@ -73,12 +77,24 @@ function Price() {
                         <div className={classes.root}>
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>
-                                    <TextField className={classes.txt} placeholder="Search" variant="outlined" size="normal" />
+                                    <TextField
+                                        className={classes.txt}
+                                        size="normal"
+                                        placeholder="Search"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Search />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
                                 </Grid>
                                 <Grid item xs={2} />
                                 <Grid item xs={5}>
                                     <FormControl>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={category} onChange={handleChange} size="normal" variant="outlined" id="demo-simple-select">
+                                        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt1} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
                                             <MenuItem value={1}>Category1</MenuItem>
                                             <MenuItem value={2}>Category2</MenuItem>
                                             <MenuItem value={3}>Category3</MenuItem>
@@ -92,8 +108,8 @@ function Price() {
                                 <tr>
                                     <th>Unit</th>
                                     <th>Description</th>
-                                    <th>Model</th>
                                     <th>Brand</th>
+                                    <th>Model</th>
                                     <th>Color</th>
                                     <th>Supplier</th>
                                     <th>Price</th>

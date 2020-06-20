@@ -1,9 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
-import { makeStyles, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, ListItemLink, Typography } from '@material-ui/core';
+import { makeStyles, useTheme, Button, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, ListItemLink, Typography } from '@material-ui/core';
 import { Description, Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
@@ -14,6 +16,7 @@ const light = indigo[50];
 const dark = grey[800];
 const primary = '#8083FF';
 const white = '#FFFFFF';
+const lightIndigo = '#CDCFEF';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -87,7 +90,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   login: {
-    textAlign: 'right'
+    marginLeft: 1150,
+    color: lightIndigo
+  },
+  logout:{
+    marginLeft: 40,
+    color: white,
   },
   listIcon: {
     color: light,
@@ -121,6 +129,7 @@ function Navbars() {
               <Menu />
             </IconButton>
             <Typography className={classes.login}>Logged in as: User1</Typography>
+            <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -155,10 +164,12 @@ function Navbars() {
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
             </Link>
-            <ListItem button key="Price List">
-              <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="Price List" />
-            </ListItem>
+            <Link to="/Price">
+              <ListItem button key="Price List">
+                <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="Price List" />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
       </MuiThemeProvider>
