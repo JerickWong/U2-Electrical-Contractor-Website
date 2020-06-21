@@ -129,8 +129,8 @@ function Navbars() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: {Authenticate.user.displayName}</Typography>
-            <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
+            <Typography className={classes.login}>Logged in as: </Typography>
+            <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
           </Toolbar>
         </AppBar>
         <Drawer

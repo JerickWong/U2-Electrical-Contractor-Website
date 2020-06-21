@@ -6,6 +6,7 @@ import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
 import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
+import UserAlert from '../components/UserAlert/UserAlert'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -22,32 +23,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const dbMTS = db.collection('MTS-Collection');
-const projectnames = [] // for dropdown
-let firstproject = ''
-
-////// GETTING THE PROJECTS ///////
-function renderProjects(project, value) {
-    
-    if (value == 1) {
-        firstproject = project.data().name
-        console.log('THIS IS ONCE LANG')
-    }
-    console.log(project.data().name)
-    const name = project.data().name
-    projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
-}
-
-dbMTS.onSnapshot(projSnapshot => {
-    projSnapshot.docs.forEach((project, index) => {
-    renderProjects(project, index+1)
-    })
-})
-
-
 
 function MtsList(props) {
     ////// STATES //////
     const [projName, setProject] = useState('');    
+    const [errMessage, setError] = useState('')
     const [projDropDown, setProjDrop] = useState([])
     const [status, setStatus] = useState('For Approval')
     const [mtsRows, setMtsRows] = useState([])
@@ -57,11 +37,44 @@ function MtsList(props) {
     let temprows = []
     
     useEffect(() => {
-        setTimeout(() => {
+                
+        const projectnames = [] // for dropdown
+        let firstproject = ''
+
+        ////// GETTING THE PROJECTS ///////
+        function renderProjects(project, value) {
+            
+            if (value == 1) {
+                firstproject = project.data().name
+                console.log('THIS IS ONCE LANG')
+            }
+            console.log(project.data().name)
+            const name = project.data().name
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+        }
+
+        dbMTS.get().then(projSnapshot => {
+            projSnapshot.docs.forEach((project, index) => {
+            renderProjects(project, index+1)
+            })
+        })
+        .then(() => {
             setProjDrop(projectnames)
             setProject(firstproject)
-        }, 500)
+            setError('')
+        })
+        .catch(err => {
+            setError(err.message)
+        })
+
     }, [first])
+
+    function renderError() {
+        if (errMessage) 
+            return <UserAlert severity='error' message={errMessage} />
+        else 
+            return ''
+    }
 
     function renderRows(mts) {
         const mtsData = mts.data()
@@ -74,11 +87,7 @@ function MtsList(props) {
                 <td>{mtsData.status}</td>
                 <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
             </tr>
-        )
-        // setMtsRows(newRow)
-        console.log('RENDER ROW')
-        console.log(temprows)
-        // console.log(mtsRows)
+        )        
     }
 
     useEffect(() => {
@@ -139,8 +148,9 @@ function MtsList(props) {
 
     return (
         <div className="App">
-            <Container className="cont">
+            <Container className="cont">                
                 <div className="project">
+                    {renderError()}
                     <Grid container spacing={1}>
                         <Grid item xs={6}>
                             <FormControl className={classes.formControl}>
@@ -172,38 +182,10 @@ function MtsList(props) {
                             <th></th>
                         </tr>
                     </thead>
-                    {/* <tr>
-                        <td>Aseana 1</td>
-                        <td>71101</td>
-                        <td>Confirmed</td>
-                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                    </tr>
-                    <tr>
-                        <td>Aseana 2</td>
-                        <td>71102</td>
-                        <td>For Approval</td>
-                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                    </tr>
-                    <tr>
-                        <td>Aseana 3</td>
-                        <td>71103</td>
-                        <td>Confirmed</td>
-                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                    </tr>
-                    <tr>
-                        <td>Aseana 4</td>
-                        <td>71104</td>
-                        <td>For Approval</td>
-                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                    </tr>
-                    <tr>
-                        <td>Aseana 5</td>
-                        <td>71105</td>
-                        <td>For Approval</td>
-                        <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
-                    </tr> */}
+                    
                     { mtsRows }
                 </Table>
+                
             </Container>
         </div>
     );

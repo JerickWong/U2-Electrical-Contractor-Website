@@ -25,11 +25,125 @@ const useStyles = makeStyles((theme) => ({
 
 
 function Cost() {
-    const classes = useStyles();
-    const [projName, setProject] = React.useState('');
+    ////// STATES //////
+    const [projName, setProject] = useState('');    
+    const [errMessage, setError] = useState('')
+    const [projDropDown, setProjDrop] = useState([])
+    const [status, setStatus] = useState('For Approval')
+    const [mtsRows, setMtsRows] = useState([])
+    const [first, setFirst] = useState('')
+    const [newProject, setNewProject] = useState(true)
+    const classes = useStyles();    
+    let temprows = []
+    
+    useEffect(() => {
+                
+        const projectnames = [] // for dropdown
+        let firstproject = ''
+
+        ////// GETTING THE PROJECTS ///////
+        function renderProjects(project, value) {
+            
+            if (value == 1) {
+                firstproject = project.data().name
+                console.log('THIS IS ONCE LANG')
+            }
+            console.log(project.data().name)
+            const name = project.data().name
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+        }
+
+        dbMTS.get().then(projSnapshot => {
+            projSnapshot.docs.forEach((project, index) => {
+            renderProjects(project, index+1)
+            })
+        })
+        .then(() => {
+            setProjDrop(projectnames)
+            setProject(firstproject)
+            setError('')
+        })
+        .catch(err => {
+            setError(err.message)
+        })
+
+    }, [first])
+
+    function renderError() {
+        if (errMessage) 
+            return <UserAlert severity='error' message={errMessage} />
+        else 
+            return ''
+    }
+
+    function renderRows(mts) {
+        const mtsData = mts.data()
+        const name = projName
+        // let newRow = [...mtsRows]
+        temprows.push(
+            <tr>
+                <td>{name}</td>
+                <td>{mtsData.MTS_number}</td>
+                <td>{mtsData.status}</td>
+                <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+            </tr>
+        )        
+    }
+
+    useEffect(() => {
+        console.log('not inf loop')
+        console.log(projName)
+        if (projName != '') {
+            setMtsRows([])
+            temprows = []
+            console.log(mtsRows)
+            setNewProject(!newProject)
+        }        
+    }, [projName, status])
+
+    useEffect(() => {
+        console.log(mtsRows)
+        console.log(status)
+
+        if (projName != '') {            
+
+            if (status == 'All') {
+
+                dbMTS.doc(projName).collection('MTS').onSnapshot(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
+                })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+
+            } else {
+                dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
+                .then(snap => {
+                    snap.docs.map(mts => {
+                        renderRows(mts)
+                    })
+                })
+                .then(() => {
+                    console.log(temprows)
+                    setMtsRows(temprows)
+                })
+            }
+        }
+        
+    }, [newProject])
 
     const handleChange = (event) => {
-        setProject(event.target.value);
+        console.log(event.target.value)
+
+        console.log(event.target.name)
+        if (event.target.name === 'selectProject') 
+            setProject(event.target.value);
+            
+        else
+            setStatus(event.target.value)
     };
 
     return (
@@ -41,8 +155,7 @@ function Cost() {
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
                                 <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange}>
-                                    <MenuItem value={1}>Aseana 4</MenuItem>
-                                    <MenuItem value={2}>Aseana 5</MenuItem>
+                                    {projDropDown}
                                 </Select>
                             </FormControl>
                         </Grid>

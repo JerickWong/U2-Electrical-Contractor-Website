@@ -6,13 +6,13 @@ const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log(user)
-        Authenticate.user = user
+        console.log(auth.currentUser)        
+        
     } else {
         // redirect to login page
         console.log(user)
-        Authenticate.user = user
     }
+    Authenticate.user = user
 })
 
 export default class Authenticate {
@@ -29,19 +29,23 @@ export default class Authenticate {
     }
     
     static login(email, password, redirect) {
-        auth.signInWithEmailAndPassword(email, password).then(cred => {
-            console.log(`signed in successfully: ${cred.user}`)
-            redirect(true, null)
-            // if employee redirect to employee view
-    
-            // if admin redirect to admin view
+
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+            auth.signInWithEmailAndPassword(email, password).then(cred => {
+                console.log(`signed in successfully: ${cred.user}`)
+                redirect(true, null)
+                // if employee redirect to employee view
+        
+                // if admin redirect to admin view
+            })
+            .catch(err => {
+                redirect(false, err.message)
+            })
         })
-        .catch(err => {
-            redirect(false, err.message)
-        })
+        
     }
     
-    static signout() {
+    static logout() {
         auth.signOut().then(() => {
             console.log('logged out succesfully')
     
