@@ -4,6 +4,8 @@ import { Container, Table } from 'react-bootstrap';
 import { makeStyles, MenuItem, TextField, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
 import '../styles/mts.css';
 import moment from 'moment'
+import db from '../components/Firestore/firestore';
+import UserAlert from '../components/UserAlert/UserAlert'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -23,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const dbMTS = db.collection('MTS-Collection');
 
 function Cost() {
     ////// STATES //////
@@ -36,12 +39,13 @@ function Cost() {
     const classes = useStyles();    
     let temprows = []
     
+    ////// INITIAL //////
     useEffect(() => {
                 
         const projectnames = [] // for dropdown
         let firstproject = ''
 
-        ////// GETTING THE PROJECTS ///////
+        ////// GETTING THE PROJECTS //////
         function renderProjects(project, value) {
             
             if (value == 1) {
@@ -82,10 +86,10 @@ function Cost() {
         // let newRow = [...mtsRows]
         temprows.push(
             <tr>
-                <td>{name}</td>
+                <td>{mtsData.date}</td>
                 <td>{mtsData.MTS_number}</td>
-                <td>{mtsData.status}</td>
-                <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                <td>{mtsData.total_cost}</td>
+                <td></td>
             </tr>
         )        
     }
@@ -154,7 +158,7 @@ function Cost() {
                         <Grid item xs={6}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
-                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange}>
+                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} name='selectProject'>
                                     {projDropDown}
                                 </Select>
                             </FormControl>
@@ -183,33 +187,8 @@ function Cost() {
                             <th>Balance</th>
                         </tr>
                     </thead>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr> <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr> <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr> <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    
+                    {mtsRows}
 
                 </Table>
             </Container>
