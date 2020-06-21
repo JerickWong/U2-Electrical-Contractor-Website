@@ -37,7 +37,7 @@ function renderProjects(project, value) {
     projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
 }
 
-dbMTS.get().then(projSnapshot => {
+dbMTS.onSnapshot(projSnapshot => {
     projSnapshot.docs.forEach((project, index) => {
     renderProjects(project, index+1)
     })
@@ -100,7 +100,7 @@ function MtsList(props) {
 
             if (status == 'All') {
 
-                dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                dbMTS.doc(projName).collection('MTS').onSnapshot(snap => {
                     snap.docs.map(mts => {
                         renderRows(mts)
                     })

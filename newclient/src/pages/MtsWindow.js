@@ -204,7 +204,7 @@ useEffect(() => {
     const empty = []
 
     restArgs.map(field => {
-      if (field[0] == '')
+      if (field[0] === '')
         empty.push(field[1])
     })
 
@@ -216,17 +216,17 @@ useEffect(() => {
       let model = row.querySelector('textarea[name="model"]').value
       let remarks = row.querySelector('textarea[name="remarks"]').value
 
-      if (qty == '')
+      if (qty === '')
         empty.push(`Quantity at row ${index+1}`)
-      if (unit =='')
+      if (unit === '')
         empty.push(`Unit at row ${index+1}`)
-      if (description =='')
+      if (description === '')
         empty.push(`Description at row ${index+1}`)
-      if (brand =='')
+      if (brand === '')
        empty.push(`Brand at row ${index+1}`)
-      if (model =='')
+      if (model === '')
         empty.push(`Model at row ${index+1}`)
-      if (remarks =='')
+      if (remarks === '')
         empty.push(`Remarks at row ${index+1}`)
     })
 
