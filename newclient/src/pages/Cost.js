@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Table } from 'react-bootstrap';
-import { makeStyles, MenuItem, TextField, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
+import { Save } from '@material-ui/icons'
+import { makeStyles, MenuItem, TextField, InputLabel, Button, Grid, Select, FormControl } from '@material-ui/core';
 import '../styles/mts.css';
 import moment from 'moment'
 import db from '../components/Firestore/firestore';
@@ -50,7 +51,6 @@ function Cost() {
             
             if (value == 1) {
                 firstproject = project.data().name
-                console.log('THIS IS ONCE LANG')
             }
             console.log(project.data().name)
             const name = project.data().name
@@ -176,6 +176,10 @@ function Cost() {
                                 required
                             />
                         </Grid>
+                        {/* <Grid item xs={2}>
+                            <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>
+                        </Grid> */}
+                        
                     </Grid>
                 </div>
                 <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
@@ -187,8 +191,10 @@ function Cost() {
                             <th>Balance</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        {mtsRows}
+                    </tbody>
                     
-                    {mtsRows}
 
                 </Table>
             </Container>

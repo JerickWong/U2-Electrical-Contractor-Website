@@ -8,7 +8,7 @@ function MtsWindowDisplay() {
     return (
         <div>
             <Navbars />
-            <Route exact path="/MtsWindow" component={MtsWindow}></Route>
+            <Route path="/MtsWindow" component={MtsWindow}></Route>
         </div>
     );
 }

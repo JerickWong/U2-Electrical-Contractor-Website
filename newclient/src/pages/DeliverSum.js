@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
-import { Save, Clear } from '@material-ui/icons';
+import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
+import { Save, Clear, Search } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -67,8 +67,8 @@ function Price() {
                         <div className={classes.root}>
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>
-                                <FormControl>
-                                <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
+                                    <FormControl>
+                                    <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt} value={category} onChange={handleChange} id="demo-simple-select">
                                             <MenuItem value={1}>Aseana 4</MenuItem>
                                             <MenuItem value={2}>Aseana 5</MenuItem>
@@ -78,12 +78,20 @@ function Price() {
                                 <Grid item xs={2} />
                                 <Grid item xs={5}>
                                     <FormControl>
-                                    <InputLabel className={classes.label} id="demo-simple-select-label">Item</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={category} onChange={handleChange}  id="demo-simple-select">
-                                            <MenuItem value={1}>PVC Pipe</MenuItem>
-                                            <MenuItem value={2}>PVC Adapter</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                        <TextField
+                                                className={classes.txt}
+                                                size="normal"
+                                                placeholder="Search"
+                                                type='search'
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Search />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                    </FormControl>                                    
                                 </Grid>
                                 <Grid item xs={12}></Grid>
                                 <Grid item xs={12}></Grid>
@@ -99,36 +107,39 @@ function Price() {
                                     <th>Total</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>625</td>
-                                <td>PVC Pipe 4"</td>
-                                <td>500</td>
-                            </tr>
-                            <tr>
-                                <td>1250</td>
-                                <td>PVC Pipe 3"</td>
-                                <td>750</td>
-                            </tr>
-                            <tr>
-                                <td>625</td>
-                                <td>PVC Pipe 4"</td>
-                                <td>500</td>
-                            </tr>
-                            <tr>
-                                <td>1250</td>
-                                <td>PVC Pipe 3"</td>
-                                <td>750</td>
-                            </tr>
-                            <tr>
-                                <td>625</td>
-                                <td>PVC Pipe 4"</td>
-                                <td>500</td>
-                            </tr>
-                            <tr>
-                                <td>1250</td>
-                                <td>PVC Pipe 3"</td>
-                                <td>750</td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>625</td>
+                                    <td>PVC Pipe 4"</td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>1250</td>
+                                    <td>PVC Pipe 3"</td>
+                                    <td>750</td>
+                                </tr>
+                                <tr>
+                                    <td>625</td>
+                                    <td>PVC Pipe 4"</td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>1250</td>
+                                    <td>PVC Pipe 3"</td>
+                                    <td>750</td>
+                                </tr>
+                                <tr>
+                                    <td>625</td>
+                                    <td>PVC Pipe 4"</td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>1250</td>
+                                    <td>PVC Pipe 3"</td>
+                                    <td>750</td>
+                                </tr>
+                            </tbody>
+                            
                         </Table>
                     </MuiThemeProvider>
                 </main>

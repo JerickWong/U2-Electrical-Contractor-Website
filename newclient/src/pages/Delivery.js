@@ -87,6 +87,7 @@ function Price() {
                                         className={classes.txt1}
                                         size="normal"
                                         placeholder="Search"
+                                        type='search'
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -112,26 +113,28 @@ function Price() {
                                     <th>Qty</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>5/25/2020</td>
-                                <td>PVC Pipe 4"</td>
-                                <td>50</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>PVC Pipe 5"</td>
-                                <td>50</td>
-                            </tr>
-                            <tr>
-                                <td>5/26/2020</td>
-                                <td>PVC Adapter 4"</td>
-                                <td>50</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>PVC Adapter 1"</td>
-                                <td>50</td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>5/25/2020</td>
+                                    <td>PVC Pipe 4"</td>
+                                    <td>50</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>PVC Pipe 5"</td>
+                                    <td>50</td>
+                                </tr>
+                                <tr>
+                                    <td>5/26/2020</td>
+                                    <td>PVC Adapter 4"</td>
+                                    <td>50</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>PVC Adapter 1"</td>
+                                    <td>50</td>
+                                </tr>
+                            </tbody>                            
                         </Table>
                     </MuiThemeProvider>
                 </main>

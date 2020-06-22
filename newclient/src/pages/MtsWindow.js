@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MtsWindow(props) {
   const classes = useStyles();
-  let row_index = 0;
+  // let row_index = 0;
   
   // --------STATES-------- //
   const [confirmDialog, setConfirmationDialog] = useState('')
@@ -87,10 +87,135 @@ function MtsWindow(props) {
       'requested_by': false,
       'project_name': false
   })
-  
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
   const [totalAmount, setTotalAmount] = useState(0)
+  const [first, setFirst] = ('')
+  const [rowObject, setRows] = useState([])
+  const [row_index, setRowIndex] = useState(0)
 
+  // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
+  const rows = []
+  const [mtsObject, setMtsObject] = useState({})
+  useEffect(() => {
+    if (props.location.state.mts_number != '') {
+      const mts_number = props.location.state.mts_number
+      const projName = props.location.state.projName
+      console.log(mts_number, projName)
+      const tempmtsObject = {}
+      const dbMts = db.collection('MTS-Collection').doc(projName).collection('MTS').doc(mts_number + '')
+      dbMts.get().then((snapshot) => {
+        const mtsData = snapshot.data()
+        console.log(mtsData)
+        // document.querySelector('#preparedby').value = mtsData.prepared_by
+        // document.querySelector('#projectname').value = mtsData.project_name
+        // document.querySelector('#address').value = mtsData.address
+        // document.querySelector('#deliveredfrom').value = mtsData.delivered_from
+        // document.querySelector('#mtsnumber').value = mtsData.mts_number + ''
+        // document.querySelector('#date').value = mtsData.date
+        // document.querySelector('#requestedby').value = mtsData.requested_by
+        // document.querySelector('#approvedby').value = mtsData.approved_by
+        // document.querySelector('#takenoutby').value = mtsData.takenout_by
+        // document.querySelector('#receivedby').value = mtsData.received_by
+
+        tempmtsObject.prepared_by = mtsData.prepared_by
+        tempmtsObject.project_name = mtsData.project_name
+        tempmtsObject.address = mtsData.address
+        tempmtsObject.delivered_from = mtsData.delivered_from
+        tempmtsObject.mts_number = mts_number + ''
+        tempmtsObject.date = mtsData.date
+        tempmtsObject.requested_by = mtsData.requested_by
+        tempmtsObject.approved_by = mtsData.approved_by
+        tempmtsObject.takenout_by = mtsData.takenout_by
+        tempmtsObject.received_by = mtsData.received_by
+
+        console.log(tempmtsObject)
+  
+        setTotalAmount(mtsData.total_cost)        
+      })
+      .then(() => {
+        setMtsObject(tempmtsObject)
+      })      
+      dbMts.collection('productsList').get().then(snap => {
+        snap.docs.map((each, index) => {
+          console.log(each.data())
+          const row = each.data()
+          // row.querySelector('input[name="quantity"]').value = row.qty
+          // row.querySelector('input[name="unit"]').value = row.unit
+          // row.querySelector('textarea[name="description"]').value = row.description
+          // row.querySelector('textarea[name="brand"]').value = row.brand
+          // row.querySelector('textarea[name="model"]').value = row.model
+          // row.querySelector('textarea[name="remarks"]').value = row.remarks
+          console.log(row)
+          rows.push(
+            <MtsRow updateTotal={updateTotal} 
+            class1={classes.txt}
+            class2={classes.txt1}
+            class3={classes.txt2}
+            total={row.qty*row.price}
+            qty={row.qty}
+            unit={row.unit}
+            description={row.description}
+            brand={row.brand}
+            model={row.model}
+            price={row.price}
+            remarks={row.remarks}
+            click={deleteRow}
+            key={index}
+            />
+          )
+          setRowIndex(index)
+        })
+      })
+      .then(() => {
+        setRows(rows)
+      })
+    } else {
+      for (let i=0; i<5; i++) {
+        
+        rows.push(
+          <MtsRow updateTotal={updateTotal} 
+                    class1={classes.txt}
+                    class2={classes.txt1}
+                    class3={classes.txt2}
+                    total={0}
+                    click={deleteRow}
+                    key={i} />
+        )    
+        setRowIndex(i)
+      }
+      console.log(`row index: ${row_index}`)
+      setRows(rows)
+    }
+  }, [first])
+  
+  useEffect(() => {
+    let rownum = rowObject.length
+    let tempindex = row_index
+    if (rownum<5) {
+      let temprow = [...rowObject]
+
+      for (let i=rownum; i<5+1; i++) {
+        temprow.push(
+          <MtsRow updateTotal={updateTotal} 
+                    class1={classes.txt}
+                    class2={classes.txt1}
+                    class3={classes.txt2}
+                    total={0}
+                    click={deleteRow}
+                    key={tempindex} />
+        )
+        tempindex++;
+      }
+      setRowIndex(tempindex)
+    }
+  }, [rowObject])
+
+  useEffect(() => {
+    console.log(mtsObject)
+    if (!mtsObject) {
+      console.log(mtsObject)
+    }
+  }, [mtsObject])
 
   function checkValidity (e) {
     const value = e.target.value
@@ -171,7 +296,6 @@ function MtsWindow(props) {
   function deleteRow(e) {
     e.currentTarget.parentNode.parentNode.remove()
     updateTotalAmount()
-    row_index--;
   }
 
   function addRow() {    
@@ -184,57 +308,61 @@ function MtsWindow(props) {
 
 
   // use effect of adding rows
-useEffect(() => {
-  let newRows = [...rowObject]
-    newRows.push(
-      <MtsRow updateTotal={updateTotal} 
-                  class1={classes.txt}
-                  class2={classes.txt1}
-                  class3={classes.txt2}
-                  total={total[row_index]}
-                  click={deleteRow}
-                  key={row_index} />
-    )
-    setRows(newRows)
-    row_index++;
+  useEffect(() => {
+    if (total.length != 5) {
+      let newRows = [...rowObject]
+      newRows.push(
+        <MtsRow updateTotal={updateTotal} 
+                    class1={classes.txt}
+                    class2={classes.txt1}
+                    class3={classes.txt2}
+                    total={0}
+                    click={deleteRow}
+                    key={row_index} />
+      )
+      setRows(newRows)
+      setRowIndex(row_index+1)
+    }
 
   }, [total])
 
-  function showConfirmationDialog(rows, ...restArgs) {
-    const empty = []
+    function showConfirmationDialog(rows, ...restArgs) {
+      const empty = []
 
-    restArgs.map(field => {
-      if (field[0] === '')
-        empty.push(field[1])
-    })
+      restArgs.map(field => {
+        if (field[0] === '')
+          empty.push(field[1])
+      })
 
-    rows.map((row, index) => {
-      let qty = row.querySelector('input[name="quantity"]').value
-      let unit = row.querySelector('input[name="unit"]').value
-      let description = row.querySelector('textarea[name="description"]').value
-      let brand = row.querySelector('textarea[name="brand"]').value
-      let model = row.querySelector('textarea[name="model"]').value
-      let remarks = row.querySelector('textarea[name="remarks"]').value
+      rows.map((row, index) => {
+        let qty = row.querySelector('input[name="quantity"]').value
+        let unit = row.querySelector('input[name="unit"]').value
+        let description = row.querySelector('textarea[name="description"]').value
+        let brand = row.querySelector('textarea[name="brand"]').value
+        let model = row.querySelector('textarea[name="model"]').value
+        let remarks = row.querySelector('textarea[name="remarks"]').value
 
-      if (qty === '')
-        empty.push(`Quantity at row ${index+1}`)
-      if (unit === '')
-        empty.push(`Unit at row ${index+1}`)
-      if (description === '')
-        empty.push(`Description at row ${index+1}`)
-      if (brand === '')
-       empty.push(`Brand at row ${index+1}`)
-      if (model === '')
-        empty.push(`Model at row ${index+1}`)
-      if (remarks === '')
-        empty.push(`Remarks at row ${index+1}`)
-    })
+        if (qty === '')
+          empty.push(`Quantity at row ${index+1}`)
+        if (unit === '')
+          empty.push(`Unit at row ${index+1}`)
+        if (description === '')
+          empty.push(`Description at row ${index+1}`)
+        if (brand === '')
+          empty.push(`Brand at row ${index+1}`)
+        if (model === '')
+          empty.push(`Model at row ${index+1}`)
+        if (remarks === '')
+          empty.push(`Remarks at row ${index+1}`)
+      })
 
-    if (empty.length != 0) {
-      setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
+      if (empty.length != 0) {
+        setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
+      } else {
+        handleConfirm()
+      }      
+        
     }
-      
-  }
 
   function handleConfirm() {
     // GETTING NECESSARY VALUES
@@ -314,14 +442,6 @@ useEffect(() => {
     setConfirmationDialog('')
   }
 
-  useEffect(() => {
-
-    if (confirmDialog != '') {
-      console.log('DAPAT LALABAS')
-      console.log(confirmDialog)
-    }
-  }, [confirmDialog])
-
   // SAVING OF MTS TO DB
   function saveMTS () {
 
@@ -369,52 +489,8 @@ useEffect(() => {
     return filteredrows
   }
 
-  // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
-  const rows = []
-
-  // INITIAL ROWS, FIRST STATEMENT IS FOR EDITING, SHOW OLD MTS DATA
-  if (props.edit) {
-    // for (let i=0; i<MtsRows.length; i++) {
-    //   row_index++;
-    //   rows.push(
-    //       (
-    //         MtsRows.map(mts => {
-    //           return <MtsRow updateTotal={updateTotal} 
-    //           class1={classes.txt}
-    //           class2={classes.txt1}
-    //           class3={classes.txt2}
-    //           total={total[row_index]}
-    //           qty={mts.qty}
-    //           unit={mts.unit}
-    //           description={mts.description}
-    //           brand={mts.brand}
-    //           model={mts.model}
-    //           price={mts.price}
-    //           remarks={mts.remarks}
-    //           click={}
-    //           />
-    //         })            
-    //     )
-    //   )    
-    // }
-  } else {
-    for (let i=0; i<4; i++) {
-      
-      rows.push(
-        <MtsRow updateTotal={updateTotal} 
-                  class1={classes.txt}
-                  class2={classes.txt1}
-                  class3={classes.txt2}
-                  total={total[row_index]}
-                  click={deleteRow} />
-      )    
-      row_index++;
-    }
-    console.log(`row index: ${row_index}`)
-    // setRows(rows)
-  }
   
-  const [rowObject, setRows] = useState(rows)
+  
 
   return (
     
@@ -423,7 +499,7 @@ useEffect(() => {
       <Container className="cont">
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <UserAlert severity='info' message='hi po lagyan po projname mts tsaka requestedby tytyty'/>
+          <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be fill-up before saving.'/>
           
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
@@ -433,7 +509,7 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Prepared by"
                     id='preparedby'
-                    defaultValue={props.prepared_by}
+                    value={mtsObject.prepared_by || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -442,16 +518,17 @@ useEffect(() => {
                         </InputAdornment>
                       ),
                     }}
-                    inputProps={{maxLength:50}}
+                    inputProps={{maxLength:50}} >
+                      {mtsObject.prepared_by}
+                    </TextField>
                     
-                  />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Address"
                     id='address'
-                    defaultValue={props.address}
+                    value={mtsObject.address || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -469,7 +546,7 @@ useEffect(() => {
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
-                    defaultValue={props.MTS_number}
+                    value={mtsObject.mts_number || ''}
                     required
                     size="normal"
                     onChange={checkValidity}
@@ -492,7 +569,7 @@ useEffect(() => {
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
-                    defaultValue={props.project_name}
+                    value={mtsObject.project_name || ''}
                     required
                     size="normal"
                     onChange={checkValidity}
@@ -513,7 +590,7 @@ useEffect(() => {
                     className={classes.txt4}
                     label="From"
                     id='deliveredfrom'
-                    defaultValue={props.delivered_from}
+                    value={mtsObject.delivered_from || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -532,7 +609,7 @@ useEffect(() => {
                     label="Date"
                     type="date"
                     size="small"
-                    defaultValue={moment().format('YYYY-MM-DD')}
+                    value={mtsObject.date || moment().format('YYYY-MM-DD')}
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
                     required
@@ -561,26 +638,28 @@ useEffect(() => {
                   <th></th>
                 </tr>
               </thead>              
+              <tbody>
+                {rowObject}
+              </tbody>
               
-              {rowObject}
 
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required defaultValue={props.requested_by} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required value={mtsObject.requested_by || ''} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" defaultValue={props.takenout_by} variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" value={mtsObject.takenout_by || ''} variant="outlined" inputProps={{maxLength:50}}>{mtsObject.takenout_by}</TextField>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" defaultValue={props.approved_by} variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" value={mtsObject.approved_by || ''} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" defaultValue={props.received_by} variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" value={mtsObject.received_by || ''} variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>

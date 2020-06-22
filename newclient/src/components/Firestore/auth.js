@@ -6,8 +6,7 @@ const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log(auth.currentUser)        
-        
+        console.log(auth.currentUser)
     } else {
         // redirect to login page
         console.log(user)
@@ -17,6 +16,10 @@ auth.onAuthStateChanged(user => {
 
 export default class Authenticate {
     
+    // static async getUser() {
+    //     return await auth.currentUser
+    // }
+
     static user;
 
     static signup(email, password) {

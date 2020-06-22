@@ -106,7 +106,10 @@ const useStyles = makeStyles((theme) => ({
 function Navbars() {
   const classes = useStyles();
   const theme = useTheme();
+  const [user, setUser] = React.useState('')
+  const [first, setFirst] = React.useState('')
   const [open, setOpen] = React.useState(false);
+  // let user;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -116,6 +119,23 @@ function Navbars() {
     setOpen(false);
   };
 
+  // React.useEffect(() => {
+  //   console.log(user)
+  // }, [user])
+
+  
+
+  // function showUser() {
+  //   console.log('AWIW')
+  //   return user;
+  // }
+  React.useEffect(() => {
+    setTimeout(() => {
+      let user = Authenticate.user
+      setUser(user.displayName)
+    }, 2500)
+  }, [first])
+  
   return (
     <div className={classes.root}>
       <MuiThemeProvider theme={theme}>
@@ -129,8 +149,10 @@ function Navbars() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: </Typography>
-            <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
+            <Typography className={classes.login}>Logged in as: {user}</Typography>
+            <Link to='/'>
+              <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
+            </Link>            
           </Toolbar>
         </AppBar>
         <Drawer
@@ -153,7 +175,13 @@ function Navbars() {
           </div>
           <Divider />
           <List>
-            <Link to="/MtsWindow">
+            <Link to={{
+                pathname:'/MtsWindow',
+                state: {
+                    projName: '',
+                    mts_number: ''
+                }                    
+            }}>
               <ListItem button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />

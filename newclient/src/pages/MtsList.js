@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
+import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
@@ -46,7 +47,6 @@ function MtsList(props) {
             
             if (value == 1) {
                 firstproject = project.data().name
-                console.log('THIS IS ONCE LANG')
             }
             console.log(project.data().name)
             const name = project.data().name
@@ -85,7 +85,13 @@ function MtsList(props) {
                 <td>{name}</td>
                 <td>{mtsData.MTS_number}</td>
                 <td>{mtsData.status}</td>
-                <td><a href="#"><FontAwesomeIcon className="view" icon={faEye} /></a></td>
+                <td><Link to={{
+                    pathname:'/MtsWindow',
+                    state: {
+                        projName: name,
+                        mts_number: mtsData.MTS_number
+                    }                    
+                }}><FontAwesomeIcon className="view" icon={faEye} /></Link></td>
             </tr>
         )        
     }
@@ -183,7 +189,9 @@ function MtsList(props) {
                         </tr>
                     </thead>
                     
-                    { mtsRows }
+                    <tbody>
+                        {mtsRows}
+                    </tbody>
                 </Table>
                 
             </Container>
