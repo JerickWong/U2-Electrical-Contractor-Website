@@ -96,6 +96,8 @@ function MtsWindow(props) {
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   const rows = []
   const [mtsObject, setMtsObject] = useState({})
+
+
   useEffect(() => {
     if (props.location.state.mts_number != '') {
       const mts_number = props.location.state.mts_number
@@ -106,22 +108,22 @@ function MtsWindow(props) {
       dbMts.get().then((snapshot) => {
         const mtsData = snapshot.data()
         console.log(mtsData)
-        // document.querySelector('#preparedby').value = mtsData.prepared_by
-        // document.querySelector('#projectname').value = mtsData.project_name
-        // document.querySelector('#address').value = mtsData.address
-        // document.querySelector('#deliveredfrom').value = mtsData.delivered_from
-        // document.querySelector('#mtsnumber').value = mtsData.mts_number + ''
-        // document.querySelector('#date').value = mtsData.date
-        // document.querySelector('#requestedby').value = mtsData.requested_by
-        // document.querySelector('#approvedby').value = mtsData.approved_by
-        // document.querySelector('#takenoutby').value = mtsData.takenout_by
-        // document.querySelector('#receivedby').value = mtsData.received_by
+        document.querySelector('#preparedby').value = mtsData.prepared_by || ''
+        document.querySelector('#projectname').value = mtsData.project_name || ''
+        document.querySelector('#address').value = mtsData.address || ''
+        document.querySelector('#deliveredfrom').value = mtsData.delivered_from || ''
+        document.querySelector('#mtsnumber').value = mtsData.MTS_number || ''
+        document.querySelector('#date').value = mtsData.date 
+        document.querySelector('#requestedby').value = mtsData.requested_by || ''
+        document.querySelector('#approvedby').value = mtsData.approved_by || ''
+        document.querySelector('#takenoutby').value = mtsData.takenout_by || ''
+        document.querySelector('#receivedby').value = mtsData.received_by || ''
 
         tempmtsObject.prepared_by = mtsData.prepared_by
         tempmtsObject.project_name = mtsData.project_name
         tempmtsObject.address = mtsData.address
         tempmtsObject.delivered_from = mtsData.delivered_from
-        tempmtsObject.mts_number = mts_number + ''
+        tempmtsObject.mts_number = mtsData.MTS_number + ''
         tempmtsObject.date = mtsData.date
         tempmtsObject.requested_by = mtsData.requested_by
         tempmtsObject.approved_by = mtsData.approved_by
@@ -139,12 +141,7 @@ function MtsWindow(props) {
         snap.docs.map((each, index) => {
           console.log(each.data())
           const row = each.data()
-          // row.querySelector('input[name="quantity"]').value = row.qty
-          // row.querySelector('input[name="unit"]').value = row.unit
-          // row.querySelector('textarea[name="description"]').value = row.description
-          // row.querySelector('textarea[name="brand"]').value = row.brand
-          // row.querySelector('textarea[name="model"]').value = row.model
-          // row.querySelector('textarea[name="remarks"]').value = row.remarks
+
           console.log(row)
           rows.push(
             <MtsRow updateTotal={updateTotal} 
@@ -169,6 +166,13 @@ function MtsWindow(props) {
       .then(() => {
         setRows(rows)
       })
+
+      setValid({
+        mts_field: true,
+        requested_by: true,
+        project_name: true
+      })
+
     } else {
       for (let i=0; i<5; i++) {
         
@@ -509,7 +513,7 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="Prepared by"
                     id='preparedby'
-                    value={mtsObject.prepared_by || ''}
+                    // value={mtsObject.prepared_by || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -528,7 +532,7 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="Address"
                     id='address'
-                    value={mtsObject.address || ''}
+                    // value={mtsObject.address || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -546,7 +550,7 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
-                    value={mtsObject.mts_number || ''}
+                    // value={mtsObject.mts_number || ''}
                     required
                     size="normal"
                     onChange={checkValidity}
@@ -569,7 +573,7 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
-                    value={mtsObject.project_name || ''}
+                    // value={mtsObject.project_name}
                     required
                     size="normal"
                     onChange={checkValidity}
@@ -590,7 +594,7 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="From"
                     id='deliveredfrom'
-                    value={mtsObject.delivered_from || ''}
+                    // value={mtsObject.delivered_from || ''}
                     size="normal"
                     InputProps={{
                       endAdornment: (
@@ -609,7 +613,8 @@ function MtsWindow(props) {
                     label="Date"
                     type="date"
                     size="small"
-                    value={mtsObject.date || moment().format('YYYY-MM-DD')}
+                    // value={mtsObject.date || }
+                    defaultValue={moment().format('YYYY-MM-DD')}
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
                     required
@@ -647,19 +652,19 @@ function MtsWindow(props) {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required value={mtsObject.requested_by || ''} onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" value={mtsObject.takenout_by || ''} variant="outlined" inputProps={{maxLength:50}}>{mtsObject.takenout_by}</TextField>
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}>{mtsObject.takenout_by}</TextField>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" value={mtsObject.approved_by || ''} variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" value={mtsObject.received_by || ''} variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
