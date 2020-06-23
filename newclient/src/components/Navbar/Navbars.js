@@ -129,10 +129,12 @@ function Navbars() {
   //   console.log('AWIW')
   //   return user;
   // }
+
   React.useEffect(() => {
     setTimeout(() => {
       let user = Authenticate.user
-      setUser(user.displayName)
+      if (user != null)
+        setUser(user.displayName)
     }, 2500)
   }, [first])
   
