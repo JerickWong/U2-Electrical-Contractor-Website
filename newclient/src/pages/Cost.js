@@ -33,12 +33,14 @@ function Cost() {
     const [projName, setProject] = useState('');    
     const [errMessage, setError] = useState('')
     const [projDropDown, setProjDrop] = useState([])
-    const [status, setStatus] = useState('For Approval')
+    const [view, setView] = useState('Daily')
     const [mtsRows, setMtsRows] = useState([])
     const [first, setFirst] = useState('')
-    const [newProject, setNewProject] = useState(true)
+    const [changeProject, setChangeProject] = useState(true)
+    const [balance, setBalance] = useState(0)
     const classes = useStyles();    
     let temprows = []
+    let tempbalance = 0
     
     ////// INITIAL //////
     useEffect(() => {
@@ -54,7 +56,7 @@ function Cost() {
             }
             console.log(project.data().name)
             const name = project.data().name
-            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )
         }
 
         dbMTS.get().then(projSnapshot => {
@@ -83,15 +85,15 @@ function Cost() {
     function renderRows(mts) {
         const mtsData = mts.data()
         const name = projName
-        // let newRow = [...mtsRows]
+        tempbalance = mtsData.total_cost + tempbalance
         temprows.push(
             <tr>
                 <td>{mtsData.date}</td>
                 <td>{mtsData.MTS_number}</td>
                 <td>{mtsData.total_cost}</td>
-                <td></td>
+                <td>{tempbalance}</td>
             </tr>
-        )        
+        )
     }
 
     useEffect(() => {
@@ -100,20 +102,21 @@ function Cost() {
         if (projName != '') {
             setMtsRows([])
             temprows = []
+            tempbalance = 0
             console.log(mtsRows)
-            setNewProject(!newProject)
+            setChangeProject(!changeProject)
         }        
-    }, [projName, status])
+    }, [projName, view])
 
     useEffect(() => {
         console.log(mtsRows)
-        console.log(status)
+        console.log(view)
 
         if (projName != '') {            
 
-            if (status == 'All') {
+            if (view == 'Daily') {
 
-                dbMTS.doc(projName).collection('MTS').onSnapshot(snap => {
+                dbMTS.doc(projName).collection('MTS').get().then(snap => {
                     snap.docs.map(mts => {
                         renderRows(mts)
                     })
@@ -121,23 +124,26 @@ function Cost() {
                 .then(() => {
                     console.log(temprows)
                     setMtsRows(temprows)
+                    setBalance(tempbalance)
                 })
 
             } else {
-                dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
-                .then(snap => {
-                    snap.docs.map(mts => {
-                        renderRows(mts)
-                    })
-                })
-                .then(() => {
-                    console.log(temprows)
-                    setMtsRows(temprows)
-                })
+                // dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
+                // .then(snap => {
+                //     snap.docs.map(mts => {
+                //         renderRows(mts)
+                //     })
+                // })
+                // .then(() => {
+                //     console.log(temprows)
+                //     setMtsRows(temprows)
+                // })
+
+                // MONTHLY VIEW
             }
         }
         
-    }, [newProject])
+    }, [changeProject])
 
     const handleChange = (event) => {
         console.log(event.target.value)
@@ -147,7 +153,7 @@ function Cost() {
             setProject(event.target.value);
             
         else
-            setStatus(event.target.value)
+            setView(event.target.value)
     };
 
     return (
@@ -165,16 +171,13 @@ function Cost() {
                         </Grid>
                         <Grid item xs={3} />
                         <Grid item xs={2}>
-                            <TextField
-                                id="date"
-                                label="Date"
-                                type="date"
-                                size="small"
-                                defaultValue={moment().format('YYYY-MM-DD')}
-                                className={classes.textField}
-                                InputLabelProps={{ shrink: true }}
-                                required
-                            />
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-label">View</InputLabel>
+                                <Select labelId="demo-simple-select-label" defaultValue='Daily' value={view} size="large" name='selectView'>
+                                    <MenuItem value='Daily'>Daily</MenuItem>
+                                    <MenuItem value='Monthly'>Monthly</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         {/* <Grid item xs={2}>
                             <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>
