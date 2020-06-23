@@ -152,13 +152,7 @@ function AdminNavbar() {
           </div>
           <Divider />
           <List>
-            <Link to={{
-                pathname:'/AdminMtsWindow',
-                state: {
-                    projName: '',
-                    mts_number: ''
-                }                    
-            }}>
+            <Link to='/AdminMtsWindow'>
               <ListItem button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />

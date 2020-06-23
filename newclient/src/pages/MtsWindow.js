@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Paper, Typography } from '@material-ui/core';
-import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, CastConnectedSharp } from '@material-ui/icons';
+import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, ArrowBack, CastConnectedSharp } from '@material-ui/icons';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
 import db from '../components/Firestore/firestore'
@@ -95,15 +96,15 @@ function MtsWindow(props) {
 
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   const rows = []
-  const [mtsObject, setMtsObject] = useState({})
+  const [backToMTS, setBackToMTS] = useState('')
 
 
   useEffect(() => {
-    if (props.location.state.mts_number != '') {
+    if (props.location.state) {
       const mts_number = props.location.state.mts_number
       const projName = props.location.state.projName
       console.log(mts_number, projName)
-      const tempmtsObject = {}
+      // const tempmtsObject = {}
       const dbMts = db.collection('MTS-Collection').doc(projName).collection('MTS').doc(mts_number + '')
       dbMts.get().then((snapshot) => {
         const mtsData = snapshot.data()
@@ -119,23 +120,27 @@ function MtsWindow(props) {
         document.querySelector('#takenoutby').value = mtsData.takenout_by || ''
         document.querySelector('#receivedby').value = mtsData.received_by || ''
 
-        tempmtsObject.prepared_by = mtsData.prepared_by
-        tempmtsObject.project_name = mtsData.project_name
-        tempmtsObject.address = mtsData.address
-        tempmtsObject.delivered_from = mtsData.delivered_from
-        tempmtsObject.mts_number = mtsData.MTS_number + ''
-        tempmtsObject.date = mtsData.date
-        tempmtsObject.requested_by = mtsData.requested_by
-        tempmtsObject.approved_by = mtsData.approved_by
-        tempmtsObject.takenout_by = mtsData.takenout_by
-        tempmtsObject.received_by = mtsData.received_by
+        // tempmtsObject.prepared_by = mtsData.prepared_by
+        // tempmtsObject.project_name = mtsData.project_name
+        // tempmtsObject.address = mtsData.address
+        // tempmtsObject.delivered_from = mtsData.delivered_from
+        // tempmtsObject.mts_number = mtsData.MTS_number + ''
+        // tempmtsObject.date = mtsData.date
+        // tempmtsObject.requested_by = mtsData.requested_by
+        // tempmtsObject.approved_by = mtsData.approved_by
+        // tempmtsObject.takenout_by = mtsData.takenout_by
+        // tempmtsObject.received_by = mtsData.received_by
 
-        console.log(tempmtsObject)
+        // console.log(tempmtsObject)
   
         setTotalAmount(mtsData.total_cost)        
       })
       .then(() => {
-        setMtsObject(tempmtsObject)
+        setBackToMTS(
+          <Link to='/Mts'>
+            <Button variant="contained" className={classes.button} startIcon={<ArrowBack />}>Back to MTS List</Button>
+          </Link>
+        )
       })      
       dbMts.collection('productsList').get().then(snap => {
         snap.docs.map((each, index) => {
@@ -214,12 +219,6 @@ function MtsWindow(props) {
     }
   }, [rowObject])
 
-  useEffect(() => {
-    console.log(mtsObject)
-    if (!mtsObject) {
-      console.log(mtsObject)
-    }
-  }, [mtsObject])
 
   function checkValidity (e) {
     const value = e.target.value
@@ -500,9 +499,10 @@ function MtsWindow(props) {
     
     <div className="MtsContent">
       
-      <Container className="cont">
+      <Container className="cont">        
         <main className={classes.content}>
           <div className={classes.toolbar} />
+          {backToMTS}
           <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be fill-up before saving.'/>
           
           <MuiThemeProvider theme={theme}>
@@ -523,7 +523,6 @@ function MtsWindow(props) {
                       ),
                     }}
                     inputProps={{maxLength:50}} >
-                      {mtsObject.prepared_by}
                     </TextField>
                     
                 </Grid>
@@ -655,7 +654,7 @@ function MtsWindow(props) {
                   <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}>{mtsObject.takenout_by}</TextField>
+                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
