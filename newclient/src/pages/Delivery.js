@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { Button, InputAdornment, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import db from '../components/Firestore/firestore'
+import UserAlert from '../components/UserAlert/UserAlert'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import '../styles/mts.css';
@@ -57,13 +59,217 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
+const dbMTS = db.collection('MTS-Collection');
+
 function Price() {
-    const classes = useStyles();
-    const [category, setCategory] = React.useState('');
+    ////// STATES //////
+    const [projName, setProject] = useState('');    
+    const [errMessage, setError] = useState('')
+    const [projDropDown, setProjDrop] = useState([])
+    const [mtsRows, setMtsRows] = useState([])
+    const [first, setFirst] = useState('')
+    const [changeProject, setChangeProject] = useState(true)
+    const classes = useStyles();    
+    let temprows = []
+    let dates = []
+    let objects = []
+    
+    ////// INITIAL //////
+    useEffect(() => {
+                
+        const projectnames = [] // for dropdown
+        let firstproject = ''
+
+        ////// GETTING THE PROJECTS //////
+        function renderProjects(project, value) {
+            
+            if (value == 1) {
+                firstproject = project.data().name
+            }
+            console.log(project.data().name)
+            const name = project.data().name
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )
+        }
+
+        dbMTS.get().then(projSnapshot => {
+            projSnapshot.docs.forEach((project, index) => {
+            renderProjects(project, index+1)
+            })
+        })
+        .then(() => {
+            setProjDrop(projectnames)
+            setProject(firstproject)
+            setError('')
+        })
+        .catch(err => {
+            setError(err.message)
+        })
+
+    }, [first])
+
+    function renderError() {
+        if (errMessage) 
+            return <UserAlert severity='error' message={errMessage} />
+        else 
+            return ''
+    }
+
+    // TODO
+    function renderRows() {
+
+        dates.map(date => {
+            
+            // let index = 0
+            // let products = []
+            let mtsnumbers = []
+            dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
+            .then(snap => {
+                snap.docs.map(mts => {
+                    // renderRows(mts)
+                    let mtsData = mts.data()
+                    
+                    // mtsData.collection('productsList').get().then(snap => {
+                        // snap.docs.map(row => {
+                        //     let description = row.data().description
+                        //     let qty = row.data().qty
+                        //     if ( !objects.some( object => object['description'] === description) ) {
+                        //         console.log('pushing product')
+                        //         objects.push({
+                        //             date: date,
+                        //             description: description,
+                        //             qty: qty
+                        //         })
+                        //     } else {
+                        //         objects.map( object => {
+                        //             if (object.description === description) {
+                        //                 object.qty += qty
+                        //                 console.log('qty plus plus')
+                        //             }
+                                        
+                        //         })
+                        //     }
+                        // })
+                    // })
+                    mtsnumbers.push(mtsData.MTS_number + '')
+
+                }) // map
+                
+            }) // db
+            .then(() => {
+
+                mtsnumbers.map(mtsnumber => {
+                    dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get().then(snap => {
+                        snap.docs.map(row => {
+                            let description = row.data().description
+                            let qty = row.data().qty
+                            if ( !objects.some( object => object['description'] === description) ) {
+                                console.log('pushing product')
+                                objects.push({
+                                    date: date,
+                                    description: description,
+                                    qty: qty
+                                })
+                            } else {
+                                objects.map( object => {
+                                    if (object.description === description) {
+                                        object.qty += qty
+                                        console.log('qty plus plus')
+                                    }
+                                        
+                                })
+                            }
+                        })
+                    })
+                    .then(() => {
+                        objects.map((object, index) => {
+                            if (index == 0) {
+                                temprows.push(
+                                    <tr>
+                                        <td>{date}</td>
+                                        <td>{object.description}</td>
+                                        <td>{object.qty}</td>
+                                    </tr>
+                                )
+                            } else {
+                                temprows.push(
+                                    <tr>
+                                        <td></td>
+                                        <td>{object.description}</td>
+                                        <td>{object.qty}</td>
+                                    </tr>
+                                )
+                            }
+                        })
+                        setMtsRows(temprows)
+                        console.log(temprows)
+                        console.log(objects)
+                    })
+                })
+                
+            })
+        })        
+
+        // const mtsData = mts.data()
+        // const name = projName
+        // temprows.push(
+        //     <tr>
+        //         <td>{mtsData.date}</td>
+        //         <td>{mtsData.MTS_number}</td>
+        //         <td>{mtsData.total_cost}</td>
+        //         <td>{tempbalance}</td>
+        //     </tr>
+        // )
+    }    
+
+    useEffect(() => {
+        console.log('not inf loop')
+        console.log(projName)
+        if (projName != '') {
+            setMtsRows([])
+            temprows = []
+            console.log(mtsRows)
+            setChangeProject(!changeProject)
+        }
+    }, [projName])
+
+    useEffect(() => {
+        console.log(mtsRows)
+
+        if (projName != '') {            
+
+            dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                snap.docs.map(mts => {
+                    // renderRows(mts)
+                    if ( !dates.includes(mts.data().date) ) {
+                        dates.push(mts.data().date)
+                    }
+                })
+            })
+            .then(() => {
+                // console.log(temprows)
+                // setMtsRows(temprows)
+                dates = dates.sort((a, b) => {
+                    let bb = new Date(b)
+                    let aa = new Date(a)
+                    return bb - aa;
+                })
+                console.log(dates)
+                renderRows()                
+            })
+
+        }
+        
+    }, [changeProject])
 
     const handleChange = (event) => {
-        setCategory(event.target.value);
+        console.log(event.target.value)
+
+        console.log(event.target.name)
+        
+        setProject(event.target.value);
     };
+
+
     return (
         <div className="PriceList">
             <Container className="cont">
@@ -75,9 +281,8 @@ function Price() {
                                 <Grid item xs={3}>
                                 <FormControl>
                                 <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={category} onChange={handleChange} id="demo-simple-select">
-                                            <MenuItem value={1}>Aseana 4</MenuItem>
-                                            <MenuItem value={2}>Aseana 5</MenuItem>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={projName} onChange={handleChange} id="demo-simple-select">
+                                            {projDropDown}
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -114,7 +319,7 @@ function Price() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {/* <tr>
                                     <td>5/25/2020</td>
                                     <td>PVC Pipe 4"</td>
                                     <td>50</td>
@@ -133,7 +338,8 @@ function Price() {
                                     <td></td>
                                     <td>PVC Adapter 1"</td>
                                     <td>50</td>
-                                </tr>
+                                </tr> */}
+                                {mtsRows}
                             </tbody>                            
                         </Table>
                     </MuiThemeProvider>
