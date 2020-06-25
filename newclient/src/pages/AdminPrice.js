@@ -64,14 +64,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function Price() {
+function AdminPrice() {
     const classes = useStyles();
     const [category, setCategory] = React.useState('');
 
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
-
+    
     return (
         <div className="PriceList">
             <Container className="cont">
@@ -94,7 +94,11 @@ function Price() {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={2} />
+                                <Grid item xs={2}>
+                                    <Badge color="secondary" badgeContent={1}>
+                                        <Button variant="contained" color="primary" size="small" startIconclassName={classes.button}>Pending Items</Button>
+                                    </Badge>
+                                </Grid>
                                 <Grid item xs={5}>
                                     <FormControl>
                                         <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
@@ -172,13 +176,23 @@ function Price() {
                             </tr>
                         </Table>
                         <div className="tbl">
-                            <Grid container spacing={2}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={2}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Item</Button>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Supplier</Button>
+                                </Grid>
                                 <Grid item xs={3}>
                                     <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
                                 </Grid>
 
+                                {/* <Grid item xs={3} /> */}
                                 <Grid item xs={2}>
                                     <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<GetAppIcon />}>Download</Button>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<Save />}> Save Changes </Button>
                                 </Grid>
                             </Grid>
                         </div>
@@ -189,4 +203,4 @@ function Price() {
     );
 }
 
-export default Price;
+export default AdminPrice;
