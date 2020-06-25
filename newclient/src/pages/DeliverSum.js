@@ -156,73 +156,7 @@ function Price() {
         })
 
         setMtsRows(temprows)
-        //     const mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
-        //     const mtsnumbers = []
-        //     mtsSnap.docs.map(mts => {
-        //         mtsnumbers.push(mts.data().MTS_number + '')
-        //     })
-        //     console.log(mtsnumbers)
-        //     // array of productsList snaps, array accdg to mts 
-        //     const productsSnapsArray = await Promise.all(mtsnumbers.map(async mtsnumber => {
-        //         console.log('MTS NUMBER', mtsnumber)
-        //         return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
-        //     }))
-        //     console.log('ANO TONG ARRAY', productsSnapsArray, date)
-            
-        //     const deliverObject = []
-        //     productsSnapsArray.map(productsSnap => {
-        //         console.log(productsSnap.docs.length, date)
-        //         productsSnap.docs.map(row => {
-        //             console.log('ROW DATA', row.data())
-        //             const qty = parseInt(row.data().qty)
-        //             const description = row.data().description
-        //             if ( !deliverObject.some( deliverRow => deliverRow['description'] == description)) {
-        //                 deliverObject.push({
-        //                     date: date,
-        //                     qty: qty,
-        //                     description: description
-        //                 })
-        //             } else {
-        //                 deliverObject.map( deliverRow => {
-        //                     if (deliverRow['description'] == description) {
-        //                         deliverRow.qty += qty
-        //                     }
-        //                 })
-        //             }                    
-        //         })
-                
-        //     })
-
-        //     console.log('DELIVER OBJECT', deliverObject)
-
-        //     // this should return a deliverObject
-        //     return deliverObject
-        // }))
-        // console.log('DELIVER OBJECT ARRAY', deliverObjectArray)
-        // console.log('TEMPROWS SHOULD BE EMPTY', temprows)
-        // deliverObjectArray.map(deliverObject => {
-        //     deliverObject.map((deliverRow, index) => {
-        //         if (index == 0) {
-        //             temprows.push(
-        //                 <tr>
-        //                     <td>{deliverRow.date}</td>
-        //                     <td>{deliverRow.description}</td>
-        //                     <td>{deliverRow.qty}</td>
-        //                 </tr>
-        //             )
-        //         } else {
-        //             temprows.push(
-        //                 <tr>
-        //                     <td></td>
-        //                     <td>{deliverRow.description}</td>
-        //                     <td>{deliverRow.qty}</td>
-        //                 </tr>
-        //             )
-        //         }
-        //     })
-        // })
-        // console.log('TEMPROWS SHOULD BE DELIVEROBJECT ARRAY TOTAL', temprows)
-        // setMtsRows(temprows)
+        
     }
 
     useEffect(() => {

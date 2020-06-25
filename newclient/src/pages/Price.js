@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
 import { Save, Clear, Search } from '@material-ui/icons';
+import AddSharpIcon from '@material-ui/icons/AddSharp';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
 
 const primary = '#8083FF';
@@ -90,10 +93,14 @@ function Price() {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={2} />
+                                <Grid item xs={2}>
+                                    <Badge color="secondary" badgeContent={1}>
+                                        <Button variant="contained" color="primary" size="small" startIconclassName={classes.button}>Pending Items</Button>
+                                    </Badge>
+                                </Grid>
                                 <Grid item xs={5}>
                                     <FormControl>
-                                        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                                        <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt1} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
                                             <MenuItem value={1}>Category1</MenuItem>
                                             <MenuItem value={2}>Category2</MenuItem>
@@ -110,7 +117,6 @@ function Price() {
                                     <th>Description</th>
                                     <th>Brand</th>
                                     <th>Model</th>
-                                    <th>Color</th>
                                     <th>Supplier</th>
                                     <th>Price</th>
                                     <th>Remarks</th>
@@ -121,8 +127,7 @@ function Price() {
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
+                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
                                 <td><TextField variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
@@ -132,8 +137,7 @@ function Price() {
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
+                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
                                 <td><TextField variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
@@ -143,8 +147,7 @@ function Price() {
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
+                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
                                 <td><TextField variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
@@ -154,8 +157,7 @@ function Price() {
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
+                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
                                 <td><TextField variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
@@ -165,8 +167,7 @@ function Price() {
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
+                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
                                 <td><TextField variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
@@ -174,16 +175,23 @@ function Price() {
                             </tr>
                         </Table>
                         <div className="tbl">
-                            <Grid container spacing={4}>
-                                <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="large" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Import Excel File </Button>
-                                </Grid>
-                                <Grid item xs={3} />
-                                <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="large" startIconclassName={classes.button} startIcon={<Save />}> Save as Excel </Button>
+                            <Grid container spacing={1}>
+                                <Grid item xs={2}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Item</Button>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="large" startIconclassName={classes.button} startIcon={<Save />}> Save Changes </Button>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Supplier</Button>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
+                                </Grid>
+
+                                {/* <Grid item xs={3} /> */}
+                                <Grid item xs={2}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<GetAppIcon />}>Download</Button>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<Save />}> Save Changes </Button>
                                 </Grid>
                             </Grid>
                         </div>

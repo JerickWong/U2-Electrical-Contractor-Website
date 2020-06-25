@@ -370,7 +370,7 @@ function Price() {
     useEffect(() => {
         console.log(mtsRows)
 
-        if (projName != '') {            
+        if (projName != '') {
 
             dbMTS.doc(projName).collection('MTS').get().then(snap => {
                 snap.docs.map(mts => {

@@ -108,9 +108,7 @@ function Navbars() {
   const classes = useStyles();
   const theme = useTheme();
   const [user, setUser] = React.useState('')
-  const [first, setFirst] = React.useState('')
   const [open, setOpen] = React.useState(false);
-  // let user;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -120,33 +118,13 @@ function Navbars() {
     setOpen(false);
   };
 
-  // React.useEffect(() => {
-  //   console.log(user)
-  // }, [user])
-
-  
-
-  // function showUser() {
-  //   console.log('AWIW')
-  //   return user;
-  // }
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
         setUser(user.displayName)
     } else {
-        // redirect to login page
         setUser('')
     }
   })
-
-  React.useEffect(() => {
-    // setTimeout(() => {
-    //   let user = Authenticate.user
-    //   if (user != null)
-    //     setUser(user.displayName)
-    // }, 2500)
-    
-  }, [first])
   
   return (
     <div className={classes.root}>

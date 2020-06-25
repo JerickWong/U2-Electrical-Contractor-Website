@@ -121,7 +121,6 @@ function AdminNavbar() {
     if (user) {
         setUser(user.displayName)
     } else {
-        // redirect to login page
         setUser('')
     }
   })
