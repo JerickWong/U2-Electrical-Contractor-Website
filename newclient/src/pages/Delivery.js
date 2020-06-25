@@ -115,99 +115,235 @@ function Price() {
     }
 
     // TODO
-    function renderRows() {
-
-        dates.map(date => {
+    async function renderRows() {
+        
+        // let countperdate = []
+        // returns array of array
+        let deliverObjectArray = await Promise.all(dates.map( async date => {
+            const mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()            
+            const mtsnumbers = []
+            mtsSnap.docs.map(mts => {
+                mtsnumbers.push(mts.data().MTS_number + '')
+            })
+            console.log(mtsnumbers)
+            // array of productsList snaps, array accdg to mts 
+            const productsSnapsArray = await Promise.all(mtsnumbers.map(async mtsnumber => {
+                console.log('MTS NUMBER', mtsnumber)
+                return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
+            }))
+            console.log('ANO TONG ARRAY', productsSnapsArray, date)
             
-            // let index = 0
-            // let products = []
-            let mtsnumbers = []
-            dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
-            .then(snap => {
-                snap.docs.map(mts => {
-                    // renderRows(mts)
-                    let mtsData = mts.data()
-                    
-                    // mtsData.collection('productsList').get().then(snap => {
-                        // snap.docs.map(row => {
-                        //     let description = row.data().description
-                        //     let qty = row.data().qty
-                        //     if ( !objects.some( object => object['description'] === description) ) {
-                        //         console.log('pushing product')
-                        //         objects.push({
-                        //             date: date,
-                        //             description: description,
-                        //             qty: qty
-                        //         })
-                        //     } else {
-                        //         objects.map( object => {
-                        //             if (object.description === description) {
-                        //                 object.qty += qty
-                        //                 console.log('qty plus plus')
-                        //             }
-                                        
-                        //         })
-                        //     }
-                        // })
-                    // })
-                    mtsnumbers.push(mtsData.MTS_number + '')
-
-                }) // map
-                
-            }) // db
-            .then(() => {
-
-                mtsnumbers.map(mtsnumber => {
-                    dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get().then(snap => {
-                        snap.docs.map(row => {
-                            let description = row.data().description
-                            let qty = row.data().qty
-                            if ( !objects.some( object => object['description'] === description) ) {
-                                console.log('pushing product')
-                                objects.push({
-                                    date: date,
-                                    description: description,
-                                    qty: qty
-                                })
-                            } else {
-                                objects.map( object => {
-                                    if (object.description === description) {
-                                        object.qty += qty
-                                        console.log('qty plus plus')
-                                    }
-                                        
-                                })
+            const deliverObject = []
+            productsSnapsArray.map(productsSnap => {
+                console.log(productsSnap.docs.length, date)
+                productsSnap.docs.map(row => {
+                    console.log('ROW DATA', row.data())
+                    const qty = parseInt(row.data().qty)
+                    const description = row.data().description
+                    if ( !deliverObject.some( deliverRow => deliverRow['description'] == description)) {
+                        deliverObject.push({
+                            date: date,
+                            qty: qty,
+                            description: description
+                        })
+                    } else {
+                        deliverObject.map( deliverRow => {
+                            if (deliverRow['description'] == description) {
+                                deliverRow.qty += qty
                             }
                         })
-                    })
-                    .then(() => {
-                        objects.map((object, index) => {
-                            if (index == 0) {
-                                temprows.push(
-                                    <tr>
-                                        <td>{date}</td>
-                                        <td>{object.description}</td>
-                                        <td>{object.qty}</td>
-                                    </tr>
-                                )
-                            } else {
-                                temprows.push(
-                                    <tr>
-                                        <td></td>
-                                        <td>{object.description}</td>
-                                        <td>{object.qty}</td>
-                                    </tr>
-                                )
-                            }
-                        })
-                        setMtsRows(temprows)
-                        console.log(temprows)
-                        console.log(objects)
-                    })
+                    }                    
                 })
                 
             })
-        })        
+
+            console.log('DELIVER OBJECT', deliverObject)
+
+            // this should return a deliverObject
+            return deliverObject
+        }))
+        console.log('DELIVER OBJECT ARRAY', deliverObjectArray)
+        console.log('TEMPROWS SHOULD BE EMPTY', temprows)
+        deliverObjectArray.map(deliverObject => {
+            deliverObject.map((deliverRow, index) => {
+                if (index == 0) {
+                    temprows.push(
+                        <tr>
+                            <td>{deliverRow.date}</td>
+                            <td>{deliverRow.description}</td>
+                            <td>{deliverRow.qty}</td>
+                        </tr>
+                    )
+                } else {
+                    temprows.push(
+                        <tr>
+                            <td></td>
+                            <td>{deliverRow.description}</td>
+                            <td>{deliverRow.qty}</td>
+                        </tr>
+                    )
+                }
+            })
+        })
+        console.log('TEMPROWS SHOULD BE DELIVEROBJECT ARRAY TOTAL', temprows)
+        setMtsRows(temprows)
+        // let mtsnumbersSnap = []
+        // dates.map( async date => {
+        //     let mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
+        //     mtsnumbersSnap.push({date: date, mtsSnap: mtsSnap})
+        // })
+        
+        // const products = []
+
+        // const deliverObjectMtsArray = []
+        // mtsnumbersSnap.map(snap => {
+        //     const mtsnumbers = []
+        //     snap.mtsSnap.docs.map(mts => 
+        //         mtsnumbers.push({
+        //         date: snap.date,
+        //         mtsnumber: mts.data().MTS_number + ''
+        //     }))
+        //     deliverObjectMtsArray.push(mtsnumbers)
+        // })
+
+        // console.log(mtsnumbers)
+        // console.log('DELIVEROBJECTMTS ',deliverObjectMtsArray)
+
+        // const deliverObjectProductsSnapsArray = await Promise.all(deliverObjectMtsArray.map( async deliverObjectMts => {
+        //     // const mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
+        //     // return {date: date, mtsSnap: mtsSnap}
+        //     const mtsnumbers = []
+        //     const mtsSnap = await Promise.all(deliverObjectMts.map(async mtsRow => {
+        //         const productsSnap = await dbMTS.doc(projName).collection('MTS').doc(mtsRow.mtsnumber).get()
+        //     }))
+        // }))
+        // const products = []
+        // const productsSnap = await Promise.all(mtsnumbers.map( async mtsnumber => {
+        //     const product = await dbMTS.doc(projName).collection('MTS').doc(mtsnumber.mtsnumber).get()
+        //     product.docs.map(row => {
+        //         row.data().qty
+        //         products.push({
+        //             date: mtsnumber.date,
+        //             mtsnumber: mtsnumber.mtsnumber,
+
+        //         })
+        //     })
+        //     // snap.mtsSnap.docs.map(mts => {
+        //     //     console.log(mts)
+        //     //     console.log(mts.data())
+        //     //     // console.log('DATE QTY DESC', snap.date, mts.data().qty, mts.data().description)
+        //     //     products.push({
+        //     //         date: snap.date,
+        //     //         qty: mts.data().qty,
+        //     //         description: mts.data().description
+        //     //     })
+        //     // })
+        // }))
+
+        // console.log('PRODUCTS', products)
+        // console.log('MTSNUMBERSSNAP1',mtsnumbersSnap)
+        // const mtsnumbers = []
+        // mtsnumbersSnap.map(mts => {
+        //     let mtsData = mts.data()
+        //     mtsnumbers.push(mtsData.MTS_number + '')
+        // })
+        // console.log(mtsnumbers)
+
+        // const products = await Promise.all( mtsnumbers.map( async mtsnumber => {
+        //     await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).get()
+        // }))
+
+        // products.map(snap => {
+        //     snap.docs.map(product => {
+        //         let description = product.data().description
+        //         let qty = product.data().qty
+        //     })
+        // })
+
+
+        // dates.map((date, i) => {
+            
+        //     // let index = 0            
+        //     let mtsnumbers = []
+        //     let products = []
+        //     dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
+        //     .then(snap => {
+        //         let count = 0
+        //         snap.docs.map(mts => {
+        //             // renderRows(mts)
+        //             let mtsData = mts.data()
+                                        
+        //             console.log(mtsData.MTS_number)
+        //             mtsnumbers.push(mtsData.MTS_number + '')
+        //             count++
+        //         }) // map
+        //         countperdate.push(count)
+        //     }) // db
+        //     .then(() => {
+        //         // console.log('countperdate ',countperdate)
+        //         console.log('AFTER GET DB DATE ')
+        //         mtsnumbers.map(mtsnumber => {
+        //             console.log('MAPPING MTSNUMBERSS')
+        //             dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get().then(snap => {
+        //                 snap.docs.map(row => {
+        //                     let description = row.data().description
+        //                     let qty = parseInt(row.data().qty)
+        //                     // console.log(description, qty)
+                            
+        //                     if ( !products.some( product => product['description'] == description) ) {
+        //                         // console.log('pushing')
+        //                         products.push({                                    
+        //                             description: description,
+        //                             qty: parseInt(qty)
+        //                         })
+        //                     } else {
+        //                         products.map( product => {
+        //                             // console.log('appending')
+        //                             if (product.description == description) {
+        //                                 // console.log(product.qty, qty)
+        //                                 product.qty += qty                                        
+        //                                 console.log(product.qty)
+        //                             }
+                                        
+        //                         })
+        //                     }
+        //                     console.log('GETTING PRODUCTS PER MTS')
+        //                 })
+        //             })
+        //             .then(() => {
+        //                 // console.log('PRODUCTS', products)
+        //                 console.log('AFTER GET DB PRODUCTS')
+
+        //                 products.map((product, index) => {
+                            // if (index == 0) {
+                            //     temprows.push(
+                            //         <tr>
+                            //             <td>{date}</td>
+                            //             <td>{product.description}</td>
+                            //             <td>{product.qty}</td>
+                            //         </tr>
+                            //     )
+                            // } else {
+                            //     temprows.push(
+                            //         <tr>
+                            //             <td></td>
+                            //             <td>{product.description}</td>
+                            //             <td>{product.qty}</td>
+                            //         </tr>
+                            //     )
+                            // }
+        //                     console.log('MAPPING OF PRODUCTS', product)
+        //                 })
+        //                 let ryanrows = [...mtsRows, ...temprows]                        
+        //                 setMtsRows(ryanrows)
+        //                 console.log('ryanrows ', ryanrows)
+        //                 // console.log(objects)
+        //                 console.log('COUNT PER DATE !!!!!!!', countperdate)
+        //             })
+        //         })
+                
+        //     })
+        // })
 
         // const mtsData = mts.data()
         // const name = projName
@@ -240,6 +376,7 @@ function Price() {
             dbMTS.doc(projName).collection('MTS').get().then(snap => {
                 snap.docs.map(mts => {
                     // renderRows(mts)
+                    console.log(mts.data().date)
                     if ( !dates.includes(mts.data().date) ) {
                         dates.push(mts.data().date)
                     }
@@ -251,10 +388,10 @@ function Price() {
                 dates = dates.sort((a, b) => {
                     let bb = new Date(b)
                     let aa = new Date(a)
-                    return bb - aa;
+                    return aa - bb;
                 })
                 console.log(dates)
-                renderRows()                
+                renderRows()
             })
 
         }
