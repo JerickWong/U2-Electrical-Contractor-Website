@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
@@ -37,12 +37,11 @@ function MtsList(props) {
     const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
     let temprows = []
-
-    let currentUser;
+    const [user, setUser] = useState('')
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            currentUser = user.displayName            
+            setUser(user.displayName)
         } else {
             console.log(user)
         }
@@ -132,7 +131,7 @@ function MtsList(props) {
 
             if (status == 'All') {
 
-                dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                dbMTS.doc(projName).collection('MTS').where('prepared_by', '==', user).get().then(snap => {
                     snap.docs.map(mts => {
                         renderRows(mts)
                     })
@@ -143,7 +142,7 @@ function MtsList(props) {
                 })
 
             } else {
-                dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
+                dbMTS.doc(projName).collection('MTS').where('prepared_by', '==', user).where('status', '==', status).get()
                 .then(snap => {
                     snap.docs.map(mts => {
                         renderRows(mts)
