@@ -5,7 +5,7 @@ import Mts from "./pages/Mts";
 import MtsWindowDisplay from "./pages/MtsWindowDisplay";
 import PriceList from "./pages/PriceList";
 import AdminPriceList from "./pages/AdminPriceList";
-import AdminMts from "./pages/AdminMtsList";
+import AdminMtsList from "./pages/AdminMtsList";
 import AdminMtsWindow from "./pages/AdminMtsWindow";
 import DeliverSummary from "./pages/DeliveredSummary";
 import DeliveryWindow from "./pages/DeliveryWindow";
@@ -21,7 +21,7 @@ function App() {
                     <Route exact path="/MtsWindow" component={MtsWindowDisplay} />
                     <Route exact path="/Price" component={PriceList} />
                     <Route exact path="/AdminPrice" component={AdminPriceList} />
-                    <Route exact path="/AdminMts" component={AdminMts}/>
+                    <Route exact path="/AdminMts" component={AdminMtsList}/>
                     <Route exact path="/DeliverSummary" component={DeliverSummary}/>
                     <Route exact path="/Deliver" component={DeliveryWindow}/>
                     <Route exact path="/AdminMtsWindow" component={AdminMtsWindow}/>

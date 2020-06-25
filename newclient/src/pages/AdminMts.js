@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
-import firebase from 'firebase'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const dbMTS = db.collection('MTS-Collection');
 
-function MtsList(props) {
+function AdminMts(props) {
     ////// STATES //////
     const [projName, setProject] = useState('');    
     const [errMessage, setError] = useState('')
@@ -36,51 +35,37 @@ function MtsList(props) {
     const [first, setFirst] = useState('')
     const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
-    let temprows = []
-
-    let currentUser;
-
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user.displayName            
-        } else {
-            console.log(user)
-        }
-        setFirst('First')
-    })
-
+    let temprows = []    
     
     useEffect(() => {
-
-        if (first != '') {
-            const projectnames = [] // for dropdown
-            let firstproject = ''
-    
-            ////// GETTING THE PROJECTS ///////
-            function renderProjects(project, value) {
                 
-                if (value == 1) {
-                    firstproject = project.data().name
-                }
-                console.log(project.data().name)
-                const name = project.data().name
-                projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+        const projectnames = [] // for dropdown
+        let firstproject = ''
+
+        ////// GETTING THE PROJECTS ///////
+        function renderProjects(project, value) {
+            
+            if (value == 1) {
+                firstproject = project.data().name
             }
-    
-            dbMTS.get().then(projSnapshot => {
-                projSnapshot.docs.forEach((project, index) => {
-                renderProjects(project, index+1)
-                })
+            console.log(project.data().name)
+            const name = project.data().name
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+        }
+
+        dbMTS.get().then(projSnapshot => {
+            projSnapshot.docs.forEach((project, index) => {
+            renderProjects(project, index+1)
             })
-            .then(() => {
-                setProjDrop(projectnames)
-                setProject(firstproject)
-                setError('')
-            })
-            .catch(err => {
-                setError(err.message)
-            })
-        }        
+        })
+        .then(() => {
+            setProjDrop(projectnames)
+            setProject(firstproject)
+            setError('')
+        })
+        .catch(err => {
+            setError(err.message)
+        })
 
     }, [first])
 
@@ -99,6 +84,7 @@ function MtsList(props) {
             <tr>
                 <td>{name}</td>
                 <td>{mtsData.MTS_number}</td>
+                <td>{mtsData.prepared_by}</td>
                 <td>{mtsData.date_created}</td>
                 <td>{mtsData.status}</td>
                 <td><Link to={{
@@ -107,10 +93,22 @@ function MtsList(props) {
                         projName: name,
                         mts_number: mtsData.MTS_number
                     }                    
-                }}><FontAwesomeIcon className="view" icon={faEye} /></Link>
+                }}><FontAwesomeIcon className="view" icon={faEye} /></Link> &nbsp; &nbsp;
+                <Link href='#' onClick={(e) => {confirmMTS(e, mtsData.MTS_number)}}>Confirm</Link>
                 </td>
             </tr>
         )        
+    }
+
+    function confirmMTS(e, mtsnumber) {
+        e.preventDefault();
+        dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').update({ status: 'Confirmed' })
+        .then(() => {            
+            console.log(projName)
+            setProject(projName)
+            setChangeProject(!changeProject)
+            alert('Success!')
+        })
     }
 
     useEffect(() => {
@@ -201,6 +199,7 @@ function MtsList(props) {
                         <tr>
                             <th>Project Name</th>
                             <th>MTS No.</th>
+                            <th>Prepared By</th>
                             <th>Date Created</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -217,4 +216,4 @@ function MtsList(props) {
     );
 }
 
-    export default MtsList;
+    export default AdminMts;

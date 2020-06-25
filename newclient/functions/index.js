@@ -1,5 +1,5 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin')
+import functions from 'firebase-functions'
+import admin from 'firebase-admin'
 admin.initializeApp();
 
 exports.makeManagerRole = functions.https.onCall((data, context) => {
