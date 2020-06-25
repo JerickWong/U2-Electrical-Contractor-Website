@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function MtsWindow(props) {
+function MtsWindow(props) {  
   const classes = useStyles();
   // let row_index = 0;
   
@@ -406,7 +406,8 @@ function MtsWindow(props) {
       approved_by: approved_by,
       takenout_by: takenout_by,
       received_by: received_by,
-      status: 'For Approval'
+      status: 'For Approval',
+      date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
     })
     .catch(err => alert('something went wrong'))
 

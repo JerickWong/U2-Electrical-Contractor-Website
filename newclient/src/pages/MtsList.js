@@ -84,6 +84,8 @@ function MtsList(props) {
             <tr>
                 <td>{name}</td>
                 <td>{mtsData.MTS_number}</td>
+                <td>{mtsData.prepared_by}</td>
+                <td>{mtsData.date_created}</td>
                 <td>{mtsData.status}</td>
                 <td><Link to={{
                     pathname:'/MtsWindow',
@@ -91,7 +93,15 @@ function MtsList(props) {
                         projName: name,
                         mts_number: mtsData.MTS_number
                     }                    
-                }}><FontAwesomeIcon className="view" icon={faEye} /></Link></td>
+                }}><FontAwesomeIcon className="view" icon={faEye} /></Link> &nbsp; &nbsp;
+                <Link to={{
+                    pathname:'/MtsWindow',
+                    state: {
+                        projName: name,
+                        mts_number: mtsData.MTS_number
+                    }                    
+                }}><FontAwesomeIcon className="view" icon={faEye} /></Link>
+                </td>
             </tr>
         )        
     }
@@ -184,8 +194,10 @@ function MtsList(props) {
                         <tr>
                             <th>Project Name</th>
                             <th>MTS No.</th>
+                            <th>Prepared By</th>
+                            <th>Date Created</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     
