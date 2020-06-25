@@ -116,7 +116,7 @@ function Cost() {
 
             if (view == 'Daily') {
 
-                dbMTS.doc(projName).collection('MTS').where('status', '==', 'For Approval').get().then(snap => {
+                dbMTS.doc(projName).collection('MTS').where('status', '==', 'Confirmed').get().then(snap => {
                     snap.docs.map(mts => {
                         renderRows(mts)
                     })
