@@ -10,6 +10,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
+import firebase from 'firebase'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -106,6 +107,7 @@ function AdminNavbar() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [user, setUser] = React.useState('')
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -114,6 +116,15 @@ function AdminNavbar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        setUser(user.displayName)
+    } else {
+        // redirect to login page
+        setUser('')
+    }
+  })
 
   return (
     <div className={classes.root}>
@@ -128,7 +139,7 @@ function AdminNavbar() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: User1</Typography>
+            <Typography className={classes.login}>Logged in as: {user}</Typography>
             <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
           </Toolbar>
         </AppBar>

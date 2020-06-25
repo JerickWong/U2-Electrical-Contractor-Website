@@ -72,7 +72,6 @@ function Price() {
     const classes = useStyles();    
     let temprows = []
     let dates = []
-    let objects = []
     
     ////// INITIAL //////
     useEffect(() => {

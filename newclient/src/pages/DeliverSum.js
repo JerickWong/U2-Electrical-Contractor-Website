@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
 import { Save, Clear, Search } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
+import db from '../components/Firestore/firestore';
+import UserAlert from '../components/UserAlert/UserAlert'
 import '../styles/mts.css';
 
 const primary = '#8083FF';
@@ -51,12 +53,209 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
+const dbMTS = db.collection('MTS-Collection');
+
 function Price() {
     const classes = useStyles();
-    const [category, setCategory] = React.useState('');
+    const [projName, setProject] = useState('');    
+    const [errMessage, setError] = useState('')
+    const [projDropDown, setProjDrop] = useState([])
+    const [mtsRows, setMtsRows] = useState([])
+    const [first, setFirst] = useState('')
+    const [datesState, setDatesState] = useState([])
+    const [changeProject, setChangeProject] = useState(true)
+    let temprows = []
+    let dates = []
+
+    ////// INITIAL //////
+    useEffect(() => {
+                
+        const projectnames = [] // for dropdown
+        let firstproject = ''
+
+        ////// GETTING THE PROJECTS //////
+        function renderProjects(project, value) {
+            
+            if (value == 1) {
+                firstproject = project.data().name
+            }
+            console.log(project.data().name)
+            const name = project.data().name
+            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )
+        }
+
+        dbMTS.get().then(projSnapshot => {
+            projSnapshot.docs.forEach((project, index) => {
+            renderProjects(project, index+1)
+            })
+        })
+        .then(() => {
+            setProjDrop(projectnames)
+            setProject(firstproject)
+            setError('')
+        })
+        .catch(err => {
+            setError(err.message)
+        })
+
+    }, [first])
+
+    function renderError() {
+        if (errMessage) 
+            return <UserAlert severity='error' message={errMessage} />
+        else 
+            return ''
+    }
+
+    async function renderRows() {
+        
+        let mtsSnapshot = await dbMTS.doc(projName).collection('MTS').get()
+        let mtsnumbers = []
+        mtsSnapshot.docs.map(mts => {
+            mtsnumbers.push(mts.data().MTS_number)
+        })
+        const productsSnapsArray = await Promise.all(mtsnumbers.map( async mtsnumber => {
+            return await dbMTS.doc(projName).collection('MTS').doc().collection('productsList').get()
+        }))
+        
+        const deliverSumObject = []
+        productsSnapsArray.map(productsSnaps => {
+            productsSnaps.docs.map(row => {
+                const qty = parseInt(row.data().qty)
+                const description = row.data().description
+                if ( !deliverSumObject.some( deliverRow => deliverRow['description'] == description)) {
+                    deliverSumObject.push({
+                        description: description,
+                        qty: qty
+                    })
+                } else {
+                    deliverSumObject.map( deliverRow => {
+                        if (deliverRow['description'] == description) {
+                            deliverRow['qty'] += qty
+                        }
+                    })
+                }
+            })
+        })
+
+        console.log('DELIVER SUM OBJECT', deliverSumObject)
+        //     const mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
+        //     const mtsnumbers = []
+        //     mtsSnap.docs.map(mts => {
+        //         mtsnumbers.push(mts.data().MTS_number + '')
+        //     })
+        //     console.log(mtsnumbers)
+        //     // array of productsList snaps, array accdg to mts 
+        //     const productsSnapsArray = await Promise.all(mtsnumbers.map(async mtsnumber => {
+        //         console.log('MTS NUMBER', mtsnumber)
+        //         return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
+        //     }))
+        //     console.log('ANO TONG ARRAY', productsSnapsArray, date)
+            
+        //     const deliverObject = []
+        //     productsSnapsArray.map(productsSnap => {
+        //         console.log(productsSnap.docs.length, date)
+        //         productsSnap.docs.map(row => {
+        //             console.log('ROW DATA', row.data())
+        //             const qty = parseInt(row.data().qty)
+        //             const description = row.data().description
+        //             if ( !deliverObject.some( deliverRow => deliverRow['description'] == description)) {
+        //                 deliverObject.push({
+        //                     date: date,
+        //                     qty: qty,
+        //                     description: description
+        //                 })
+        //             } else {
+        //                 deliverObject.map( deliverRow => {
+        //                     if (deliverRow['description'] == description) {
+        //                         deliverRow.qty += qty
+        //                     }
+        //                 })
+        //             }                    
+        //         })
+                
+        //     })
+
+        //     console.log('DELIVER OBJECT', deliverObject)
+
+        //     // this should return a deliverObject
+        //     return deliverObject
+        // }))
+        // console.log('DELIVER OBJECT ARRAY', deliverObjectArray)
+        // console.log('TEMPROWS SHOULD BE EMPTY', temprows)
+        // deliverObjectArray.map(deliverObject => {
+        //     deliverObject.map((deliverRow, index) => {
+        //         if (index == 0) {
+        //             temprows.push(
+        //                 <tr>
+        //                     <td>{deliverRow.date}</td>
+        //                     <td>{deliverRow.description}</td>
+        //                     <td>{deliverRow.qty}</td>
+        //                 </tr>
+        //             )
+        //         } else {
+        //             temprows.push(
+        //                 <tr>
+        //                     <td></td>
+        //                     <td>{deliverRow.description}</td>
+        //                     <td>{deliverRow.qty}</td>
+        //                 </tr>
+        //             )
+        //         }
+        //     })
+        // })
+        // console.log('TEMPROWS SHOULD BE DELIVEROBJECT ARRAY TOTAL', temprows)
+        // setMtsRows(temprows)
+    }
+
+    useEffect(() => {
+        console.log('not inf loop')
+        console.log(projName)
+        if (projName != '') {
+            setMtsRows([])
+            temprows = []
+            console.log(mtsRows)
+            setChangeProject(!changeProject)
+        }
+    }, [projName])
+
+    useEffect(() => {
+        console.log(mtsRows)
+
+        if (projName != '') {
+
+            dbMTS.doc(projName).collection('MTS').get().then(snap => {
+                snap.docs.map(mts => {
+                    // renderRows(mts)
+                    console.log(mts.data().date)
+                    if ( !dates.includes(mts.data().date) ) {
+                        dates.push(mts.data().date)
+                    }
+                })
+            })
+            .then(() => {
+                // console.log(temprows)
+                // setMtsRows(temprows)
+                dates = dates.sort((a, b) => {
+                    let bb = new Date(b)
+                    let aa = new Date(a)
+                    return aa - bb;
+                })
+                console.log(dates)
+                setDatesState(dates)
+                renderRows()
+            })
+
+        }
+        
+    }, [changeProject])
 
     const handleChange = (event) => {
-        setCategory(event.target.value);
+        console.log(event.target.value)
+
+        console.log(event.target.name)
+        
+        setProject(event.target.value);
     };
     return (
         <div className="PriceList">
@@ -69,9 +268,8 @@ function Price() {
                                 <Grid item xs={5}>
                                     <FormControl>
                                     <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={category} onChange={handleChange} id="demo-simple-select">
-                                            <MenuItem value={1}>Aseana 4</MenuItem>
-                                            <MenuItem value={2}>Aseana 5</MenuItem>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={projName} onChange={handleChange} id="demo-simple-select">
+                                            {projDropDown}
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -96,7 +294,7 @@ function Price() {
                                 <Grid item xs={12}></Grid>
                                 <Grid item xs={12}></Grid>
                                 <Grid item xs={12}></Grid>
-                                <Grid item xs={5}><Typography>Date: 1/12/19-7/13/19</Typography></Grid>
+                                <Grid item xs={5}><Typography>Date: {datesState[0]} - {datesState[datesState.length-1]}</Typography></Grid>
                             </Grid>
                         </div>
                         <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
@@ -108,7 +306,7 @@ function Price() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {/* <tr>
                                     <td>625</td>
                                     <td>PVC Pipe 4"</td>
                                     <td>500</td>
@@ -137,7 +335,8 @@ function Price() {
                                     <td>1250</td>
                                     <td>PVC Pipe 3"</td>
                                     <td>750</td>
-                                </tr>
+                                </tr> */}
+                                {mtsRows}
                             </tbody>
                             
                         </Table>

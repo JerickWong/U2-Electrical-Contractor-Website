@@ -33,7 +33,7 @@ function MtsList(props) {
     const [status, setStatus] = useState('For Approval')
     const [mtsRows, setMtsRows] = useState([])
     const [first, setFirst] = useState('')
-    const [newProject, setNewProject] = useState(true)
+    const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
     let temprows = []
     
@@ -103,7 +103,7 @@ function MtsList(props) {
             setMtsRows([])
             temprows = []
             console.log(mtsRows)
-            setNewProject(!newProject)
+            setChangeProject(!changeProject)
         }        
     }, [projName, status])
 
@@ -139,7 +139,7 @@ function MtsList(props) {
             }
         }
         
-    }, [newProject])
+    }, [changeProject])
 
     const handleChange = (event) => {
         console.log(event.target.value)

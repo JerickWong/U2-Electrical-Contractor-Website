@@ -2,7 +2,7 @@ import db from './firestore'
 import firebase from 'firebase'
 // import auth from 'firebase-auth'
 
-const auth = firebase.auth();
+export const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
     if (user) {

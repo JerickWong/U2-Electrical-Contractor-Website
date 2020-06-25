@@ -11,6 +11,7 @@ import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 import Authenticate from '../Firestore/auth'
+import firebase from 'firebase'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -129,13 +130,22 @@ function Navbars() {
   //   console.log('AWIW')
   //   return user;
   // }
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        setUser(user.displayName)
+    } else {
+        // redirect to login page
+        setUser('')
+    }
+  })
 
   React.useEffect(() => {
-    setTimeout(() => {
-      let user = Authenticate.user
-      if (user != null)
-        setUser(user.displayName)
-    }, 2500)
+    // setTimeout(() => {
+    //   let user = Authenticate.user
+    //   if (user != null)
+    //     setUser(user.displayName)
+    // }, 2500)
+    
   }, [first])
   
   return (
