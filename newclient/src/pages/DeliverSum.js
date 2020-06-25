@@ -112,17 +112,22 @@ function Price() {
         let mtsSnapshot = await dbMTS.doc(projName).collection('MTS').get()
         let mtsnumbers = []
         mtsSnapshot.docs.map(mts => {
-            mtsnumbers.push(mts.data().MTS_number)
+            mtsnumbers.push(mts.data().MTS_number + '')
         })
         const productsSnapsArray = await Promise.all(mtsnumbers.map( async mtsnumber => {
-            return await dbMTS.doc(projName).collection('MTS').doc().collection('productsList').get()
+            return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
         }))
         
+        console.log('PRODUCTS SNAPS ARRAY', productsSnapsArray)
         const deliverSumObject = []
         productsSnapsArray.map(productsSnaps => {
+            console.log( 'PRODUCTS SNAPS', productsSnaps)
+            console.log( 'PRODUCTS SNAPS DOCS', productsSnaps.docs)
             productsSnaps.docs.map(row => {
+                console.log('ROW', row.data())
                 const qty = parseInt(row.data().qty)
                 const description = row.data().description
+                console.log('QTY DESCRIPTION', qty, description)
                 if ( !deliverSumObject.some( deliverRow => deliverRow['description'] == description)) {
                     deliverSumObject.push({
                         description: description,
@@ -139,6 +144,18 @@ function Price() {
         })
 
         console.log('DELIVER SUM OBJECT', deliverSumObject)
+
+        deliverSumObject.map(deliverRow => {
+            temprows.push(
+                <tr>
+                    <td></td>
+                    <td>{deliverRow.description}</td>
+                    <td>{deliverRow.qty}</td>
+                </tr>
+            )
+        })
+
+        setMtsRows(temprows)
         //     const mtsSnap = await dbMTS.doc(projName).collection('MTS').where('date', '==', date).get()
         //     const mtsnumbers = []
         //     mtsSnap.docs.map(mts => {
