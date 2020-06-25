@@ -118,7 +118,6 @@ function AdminPrice() {
                                     <th>Description</th>
                                     <th>Brand</th>
                                     <th>Model</th>
-                                    <th>Supplier</th>
                                     <th>Price</th>
                                     <th>Remarks</th>
                                     <th></th>
@@ -129,7 +128,7 @@ function AdminPrice() {
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                <td><TextField variant="outlined" size="small" /></td>
+                                
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><Clear className={classes.delete} /></td>
@@ -139,7 +138,7 @@ function AdminPrice() {
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                <td><TextField variant="outlined" size="small" /></td>
+                                
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><Clear className={classes.delete} /></td>
@@ -149,7 +148,7 @@ function AdminPrice() {
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                <td><TextField variant="outlined" size="small" /></td>
+                                
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><Clear className={classes.delete} /></td>
@@ -159,7 +158,7 @@ function AdminPrice() {
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                <td><TextField variant="outlined" size="small" /></td>
+                                
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><Clear className={classes.delete} /></td>
@@ -169,7 +168,7 @@ function AdminPrice() {
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                <td><TextField variant="outlined" size="small" /></td>
+                                
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
                                 <td><Clear className={classes.delete} /></td>

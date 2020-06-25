@@ -102,12 +102,33 @@ function AdminMts(props) {
 
     function confirmMTS(e, mtsnumber) {
         e.preventDefault();
+        // dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').update({ status: 'Confirmed' })
+        // dbMTS.doc(projName).collection('MTS').doc('wala dapat to').update({ status: 'Confirmed' })
+        // .then(() => {            
+        //     console.log(projName)
+        //     setProject(projName)
+        //     setChangeProject(!changeProject)
+        //     alert('Success!')
+        // })
+        // .catch(err => {
+        //     alert(err.message)
+        //     dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').update({ status: 'Confirmed' })
+        //     .then(() => {
+        //         console.log(projName)
+        //         setProject(projName)
+        //         setChangeProject(!changeProject)
+        //         alert('Success!')
+        //     })
+        // })
         dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').update({ status: 'Confirmed' })
         .then(() => {            
             console.log(projName)
             setProject(projName)
             setChangeProject(!changeProject)
             alert('Success!')
+        })
+        .catch(err => {
+            alert(err.message)
         })
     }
 

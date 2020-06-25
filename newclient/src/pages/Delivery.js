@@ -372,7 +372,7 @@ function Price() {
 
         if (projName != '') {
 
-            dbMTS.doc(projName).collection('MTS').get().then(snap => {
+            dbMTS.doc(projName).collection('MTS').where('status', '==', 'Confirmed').get().then(snap => {
                 snap.docs.map(mts => {
                     // renderRows(mts)
                     console.log(mts.data().date)

@@ -11,6 +11,7 @@ import db from '../components/Firestore/firestore'
 import moment from 'moment'
 import UserAlert from '../components/UserAlert/UserAlert'
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
+import firebase from 'firebase'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -75,6 +76,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
 }));
+
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    document.querySelector('#preparedby').value = user.displayName
+  }
+})
 
 function MtsWindow(props) {  
   const classes = useStyles();
@@ -516,6 +523,7 @@ function MtsWindow(props) {
                     id='preparedby'
                     // value={mtsObject.prepared_by || ''}
                     size="normal"
+                    // InputLabelProps={{shrink:true}}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">

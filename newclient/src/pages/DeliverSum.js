@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
-import { Save, Clear, Search } from '@material-ui/icons';
+import { ArrowBack, Save, Clear, Search } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
+import { Link } from 'react-router-dom';
 import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
 import '../styles/mts.css';
@@ -210,11 +211,15 @@ function Price() {
     };
     return (
         <div className="PriceList">
-            <Container className="cont">
+            <Container className="cont">                
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     <MuiThemeProvider theme={theme}>
                         <div className={classes.root}>
+                        <Link to="/Deliver">
+                            <Button variant="outlined" className={classes.button} startIcon={<ArrowBack />}>Back</Button>
+                        </Link>
+                        <br></br><br></br>
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>
                                     <FormControl>
