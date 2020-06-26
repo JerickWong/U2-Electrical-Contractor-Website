@@ -41,20 +41,20 @@ export default class LoginBox extends Component {
   renderError = () => {
     if (this.state.wrongCredentials)
       return <UserAlert severity='error' message={this.state.errorMessage} />
-    else 
+    else
       return ''
   }
 
   render() {
     return (
-      <Switch>        
-        <div className="Login">        
+      <Switch>
+        <div className="Login">
           <div className="box">
-          {this.renderError()}
+            {this.renderError()}
             <div className="avatar">
               <img className="userPic" src={avatar} alt="avatar" />
             </div>
-            <div className="iconInput">              
+            <div className="iconInput">
               <FormGroup>
                 <FontAwesomeIcon className="icons" icon={faUser} />
                 <FormControl name='username' className="username" autofocus type="text" placeholder="Username" />

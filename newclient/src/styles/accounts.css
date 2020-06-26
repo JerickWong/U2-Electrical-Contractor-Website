@@ -1,0 +1,29 @@
+.icons{
+    width:10px;
+}
+
+#form-dialog-title{
+    color: white;
+    background-color:#6568F8;
+    padding: 10px;
+}
+
+h3{
+    font-size:20px;
+    font-display: flex;
+    display: block;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.modalAcc{
+    padding: 30px;
+}
+
+.cont{
+    justify-content: center;
+    vertical-align: middle;
+    align-content: center;
+    margin-top: auto;
+    position: relative;
+}

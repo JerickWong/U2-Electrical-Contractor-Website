@@ -91,11 +91,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   login: {
-    marginLeft: 1150,
+    marginLeft: 850,
     color: lightIndigo
   },
   logout: {
-    marginLeft: 40,
+    marginLeft: 230,
     color: white,
   },
   listIcon: {

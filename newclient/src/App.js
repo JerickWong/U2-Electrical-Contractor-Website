@@ -10,6 +10,7 @@ import AdminMtsWindow from "./pages/AdminMtsWindow";
 import DeliverSummary from "./pages/DeliveredSummary";
 import DeliveryWindow from "./pages/DeliveryWindow";
 import CostDisplay from "./pages/CostDisplay";
+import AccountsDisplay from "./pages/AccountsDisplay";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                     <Route exact path="/Deliver" component={DeliveryWindow}/>
                     <Route exact path="/AdminMtsWindow" component={AdminMtsWindow}/>
                     <Route exact path="/Cost" component={CostDisplay}/>
+                    <Route exact path="/Accounts" component={AccountsDisplay} />
                 </Switch>
             </div>
         </Router>
