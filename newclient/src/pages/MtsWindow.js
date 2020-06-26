@@ -423,7 +423,7 @@ function MtsWindow(props) {
     console.log(rows)
     rows.map(row => {
       let productID = newID + index
-      let qty = row.querySelector('input[name="quantity"]').value
+      let qty = parseInt(row.querySelector('input[name="quantity"]').value)
       let unit = row.querySelector('input[name="unit"]').value
       let description = row.querySelector('textarea[name="description"]').value
       let brand = row.querySelector('textarea[name="brand"]').value
@@ -443,6 +443,20 @@ function MtsWindow(props) {
       })
       .catch(err => alert('something went wrong'))
       index++
+
+      const increment = firebase.firestore.FieldValue.increment(qty);
+      // PRODUCTS SUMMARY
+      db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).update({
+        total: increment
+      })
+      .catch(err => {
+        console.log(err.message)
+        db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).add({
+          total: qty,
+          description: description,
+          estqty: 0
+        })
+      })
     })
 
     alert('yay done')    

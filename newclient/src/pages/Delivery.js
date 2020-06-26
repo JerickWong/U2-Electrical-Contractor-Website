@@ -137,7 +137,7 @@ function Price() {
                 console.log(productsSnap.docs.length, date)
                 productsSnap.docs.map(row => {
                     console.log('ROW DATA', row.data())
-                    const qty = parseInt(row.data().qty)
+                    const qty = row.data().qty
                     const description = row.data().description
                     if ( !deliverObject.some( deliverRow => deliverRow['description'] == description)) {
                         deliverObject.push({
