@@ -450,8 +450,8 @@ function MtsWindow(props) {
         total: increment
       })
       .catch(err => {
-        console.log(err.message)
-        db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).add({
+        console.log(err.message)        
+        db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).set({
           total: qty,
           description: description,
           estqty: 0

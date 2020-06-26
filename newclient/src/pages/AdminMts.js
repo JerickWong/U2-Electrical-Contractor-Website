@@ -88,7 +88,7 @@ function AdminMts(props) {
                 <td>{mtsData.date_created}</td>
                 <td>{mtsData.status}</td>
                 <td><Link to={{
-                    pathname:'/MtsWindow',
+                    pathname:'/AdminMtsWindow',
                     state: {
                         projName: name,
                         mts_number: mtsData.MTS_number
