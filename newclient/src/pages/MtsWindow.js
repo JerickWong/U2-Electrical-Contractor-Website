@@ -456,10 +456,12 @@ function MtsWindow(props) {
           description: description,
           estqty: 0
         })
+        .then(() => {
+          alert('yay done')
+        })
       })
     })
 
-    alert('yay done')    
     closeConfirmDialog();
   }
 
