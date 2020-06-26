@@ -143,8 +143,9 @@ function MtsWindow(props) {
         setTotalAmount(mtsData.total_cost)        
       })
       .then(() => {
+        // TODO
         setBackToMTS(
-          <Link to='/Mts'>
+          <Link to='/AdminMts'>
             <Button variant="contained" className={classes.button} startIcon={<ArrowBack />}>Back to MTS List</Button>
           </Link>
         )
@@ -422,10 +423,11 @@ function MtsWindow(props) {
     let index = 0;
     console.log(rows)
     rows.map(row => {
-      let productID = newID + index
+      let productID = index + newID
       let qty = parseInt(row.querySelector('input[name="quantity"]').value)
       let unit = row.querySelector('input[name="unit"]').value
       let description = row.querySelector('textarea[name="description"]').value
+      description = description.replace(/\//g, "|");
       let brand = row.querySelector('textarea[name="brand"]').value
       let model = row.querySelector('textarea[name="model"]').value
       let remarks = row.querySelector('textarea[name="remarks"]').value
@@ -443,23 +445,8 @@ function MtsWindow(props) {
       })
       .catch(err => alert('something went wrong'))
       index++
-
-      const increment = firebase.firestore.FieldValue.increment(qty);
-      // PRODUCTS SUMMARY
-      db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).update({
-        total: increment
-      })
-      .catch(err => {
-        console.log(err.message)        
-        db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).set({
-          total: qty,
-          description: description,
-          estqty: 0
-        })
-        .then(() => {
-          alert('yay done')
-        })
-      })
+      
+      
     })
 
     closeConfirmDialog();

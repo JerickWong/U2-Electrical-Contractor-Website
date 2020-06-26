@@ -7,6 +7,7 @@ import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@ma
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
+import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 
 const useStyles = makeStyles((theme) => ({
@@ -79,7 +80,12 @@ function AdminMts(props) {
     function renderRows(mts) {
         const mtsData = mts.data()
         const name = projName
-        // let newRow = [...mtsRows]
+        let canConfirm = ''
+        if (mtsData.status === 'For Approval') {
+            canConfirm = (
+                <Link href='#' onClick={(e) => {confirmMTS(e, mtsData.MTS_number)}}>Confirm</Link>
+            )
+        }
         temprows.push(
             <tr>
                 <td>{name}</td>
@@ -94,13 +100,13 @@ function AdminMts(props) {
                         mts_number: mtsData.MTS_number
                     }                    
                 }}><FontAwesomeIcon className="view" icon={faEye} /></Link> &nbsp; &nbsp;
-                <Link href='#' onClick={(e) => {confirmMTS(e, mtsData.MTS_number)}}>Confirm</Link>
+                {canConfirm}
                 </td>
             </tr>
         )        
     }
 
-    function confirmMTS(e, mtsnumber) {
+    async function confirmMTS(e, mtsnumber) {
         e.preventDefault();
         // dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').update({ status: 'Confirmed' })
         // dbMTS.doc(projName).collection('MTS').doc('wala dapat to').update({ status: 'Confirmed' })
@@ -130,6 +136,28 @@ function AdminMts(props) {
         .catch(err => {
             alert(err.message)
         })
+
+        // PRODUCTS SUMMARY
+        const productsSnap = await dbMTS.doc(projName).collection('MTS').doc(mtsnumber+'').collection('productsList').get()
+        productsSnap.docs.map(snap => {
+            const qty = snap.data().qty
+            const description = snap.data().description
+            
+            const increment = firebase.firestore.FieldValue.increment(qty);      
+            dbMTS.doc(projName).collection('Delivered-Summary').doc(description).update({
+                total: increment
+            })
+            .catch(err => {
+                console.log(err.message)        
+                dbMTS.doc(projName).collection('Delivered-Summary').doc(description).set({
+                total: qty,
+                description: description,
+                estqty: 0
+                })
+            })
+            .then(() => { alert('Success!!!') })
+        })
+        
     }
 
     useEffect(() => {
