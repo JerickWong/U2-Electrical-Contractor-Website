@@ -110,51 +110,63 @@ function Price() {
 
     async function renderRows() {
         
-        let mtsSnapshot = await dbMTS.doc(projName).collection('MTS').get()
-        let mtsnumbers = []
-        mtsSnapshot.docs.map(mts => {
-            mtsnumbers.push(mts.data().MTS_number + '')
-        })
-        const productsSnapsArray = await Promise.all(mtsnumbers.map( async mtsnumber => {
-            return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
-        }))
+        // let mtsSnapshot = await dbMTS.doc(projName).collection('MTS').get()
+        // let mtsnumbers = []
+        // mtsSnapshot.docs.map(mts => {
+        //     mtsnumbers.push(mts.data().MTS_number + '')
+        // })
+        // const productsSnapsArray = await Promise.all(mtsnumbers.map( async mtsnumber => {
+        //     return await dbMTS.doc(projName).collection('MTS').doc(mtsnumber).collection('productsList').get()
+        // }))
         
-        console.log('PRODUCTS SNAPS ARRAY', productsSnapsArray)
-        const deliverSumObject = []
-        productsSnapsArray.map(productsSnaps => {
-            console.log( 'PRODUCTS SNAPS', productsSnaps)
-            console.log( 'PRODUCTS SNAPS DOCS', productsSnaps.docs)
-            productsSnaps.docs.map(row => {
-                console.log('ROW', row.data())
-                const qty = row.data().qty
-                const description = row.data().description
-                console.log('QTY DESCRIPTION', qty, description)
-                if ( !deliverSumObject.some( deliverRow => deliverRow['description'] == description)) {
-                    deliverSumObject.push({
-                        description: description,
-                        qty: qty
-                    })
-                } else {
-                    deliverSumObject.map( deliverRow => {
-                        if (deliverRow['description'] == description) {
-                            deliverRow['qty'] += qty
-                        }
-                    })
-                }
-            })
-        })
+        // console.log('PRODUCTS SNAPS ARRAY', productsSnapsArray)
+        // const deliverSumObject = []
+        // productsSnapsArray.map(productsSnaps => {
+        //     console.log( 'PRODUCTS SNAPS', productsSnaps)
+        //     console.log( 'PRODUCTS SNAPS DOCS', productsSnaps.docs)
+        //     productsSnaps.docs.map(row => {
+        //         console.log('ROW', row.data())
+        //         const qty = row.data().qty
+        //         const description = row.data().description
+        //         console.log('QTY DESCRIPTION', qty, description)
+        //         if ( !deliverSumObject.some( deliverRow => deliverRow['description'] == description)) {
+        //             deliverSumObject.push({
+        //                 description: description,
+        //                 qty: qty
+        //             })
+        //         } else {
+        //             deliverSumObject.map( deliverRow => {
+        //                 if (deliverRow['description'] == description) {
+        //                     deliverRow['qty'] += qty
+        //                 }
+        //             })
+        //         }
+        //     })
+        // })
+        const rowSnapshot = await dbMTS.doc(projName).collection('Delivered-Summary').get()
 
-        console.log('DELIVER SUM OBJECT', deliverSumObject)
-
-        deliverSumObject.map(deliverRow => {
+        rowSnapshot.docs.map(row => {
+            const rowData = row.data()
             temprows.push(
                 <tr>
-                    <td></td>
-                    <td>{deliverRow.description}</td>
-                    <td>{deliverRow.qty}</td>
+                    <td>{rowData.estqty}</td>
+                    <td>{rowData.description}</td>
+                    <td>{rowData.total}</td>
                 </tr>
             )
         })
+
+        // console.log('DELIVER SUM OBJECT', deliverSumObject)
+
+        // deliverSumObject.map(deliverRow => {
+        //     temprows.push(
+        //         <tr>
+        //             <td></td>
+        //             <td>{deliverRow.description}</td>
+        //             <td>{deliverRow.qty}</td>
+        //         </tr>
+        //     )
+        // })
 
         setMtsRows(temprows)
         
