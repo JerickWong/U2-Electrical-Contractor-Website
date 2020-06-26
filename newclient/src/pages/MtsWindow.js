@@ -143,8 +143,9 @@ function MtsWindow(props) {
         setTotalAmount(mtsData.total_cost)        
       })
       .then(() => {
+        // TODO
         setBackToMTS(
-          <Link to='/Mts'>
+          <Link to='/AdminMts'>
             <Button variant="contained" className={classes.button} startIcon={<ArrowBack />}>Back to MTS List</Button>
           </Link>
         )
@@ -422,10 +423,11 @@ function MtsWindow(props) {
     let index = 0;
     console.log(rows)
     rows.map(row => {
-      let productID = newID + index
+      let productID = index + newID
       let qty = parseInt(row.querySelector('input[name="quantity"]').value)
       let unit = row.querySelector('input[name="unit"]').value
       let description = row.querySelector('textarea[name="description"]').value
+      description = description.replace(/\//g, "|");
       let brand = row.querySelector('textarea[name="brand"]').value
       let model = row.querySelector('textarea[name="model"]').value
       let remarks = row.querySelector('textarea[name="remarks"]').value
@@ -443,23 +445,10 @@ function MtsWindow(props) {
       })
       .catch(err => alert('something went wrong'))
       index++
-
-      const increment = firebase.firestore.FieldValue.increment(qty);
-      // PRODUCTS SUMMARY
-      db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).update({
-        total: increment
-      })
-      .catch(err => {
-        console.log(err.message)
-        db.collection('MTS-Collection').doc(project_name).collection('Delivered-Summary').doc(description).add({
-          total: qty,
-          description: description,
-          estqty: 0
-        })
-      })
+      
+      
     })
 
-    alert('yay done')    
     closeConfirmDialog();
   }
 
@@ -537,7 +526,7 @@ function MtsWindow(props) {
                     id='preparedby'
                     // value={mtsObject.prepared_by || ''}
                     size="normal"
-                    // InputLabelProps={{shrink:true}}
+                    InputLabelProps={{shrink:true}}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -556,6 +545,7 @@ function MtsWindow(props) {
                     id='address'
                     // value={mtsObject.address || ''}
                     size="normal"
+                    InputLabelProps={{shrink:true}}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -575,6 +565,7 @@ function MtsWindow(props) {
                     // value={mtsObject.mts_number || ''}
                     required
                     size="normal"
+                    InputLabelProps={{shrink:true}}
                     onChange={checkValidity}
                     name='mts_field'
                     pattern="[0-9*]"
@@ -598,6 +589,7 @@ function MtsWindow(props) {
                     // value={mtsObject.project_name}
                     required
                     size="normal"
+                    InputLabelProps={{shrink:true}}
                     onChange={checkValidity}
                     name='project_name'
                     InputProps={{
@@ -618,6 +610,7 @@ function MtsWindow(props) {
                     id='deliveredfrom'
                     // value={mtsObject.delivered_from || ''}
                     size="normal"
+                    InputLabelProps={{shrink:true}}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -674,19 +667,19 @@ function MtsWindow(props) {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField error={!valid['requested_by']} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField error={!valid['requested_by']} InputLabelProps={{shrink:true}} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
+                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
                   <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
