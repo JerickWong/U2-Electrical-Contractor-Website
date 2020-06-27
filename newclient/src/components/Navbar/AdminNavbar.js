@@ -11,6 +11,7 @@ import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 import firebase from 'firebase'
+import Authenticate from '../Firestore/firestore'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -139,7 +140,9 @@ function AdminNavbar() {
               <Menu />
             </IconButton>
             <Typography className={classes.login}>Logged in as: {user}</Typography>
-            <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+            <Link to='/'>
+              <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+            </Link>            
           </Toolbar>
         </AppBar>
         <Drawer

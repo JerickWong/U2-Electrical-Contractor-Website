@@ -17,6 +17,7 @@ import { faUserEdit, faUserMinus, faKey } from "@fortawesome/free-solid-svg-icon
 import '../styles/accounts.css';
 import Authenticate from '../components/Firestore/auth'
 import db from '../components/Firestore/firestore'
+import moment from 'moment'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -115,18 +116,20 @@ function Accounts() {
         const email = document.querySelector('#new-email').value
         const username = document.querySelector('#new-username').value
         const password = document.querySelector('#new-password').value
-        console.log(email,username,password, newRole)
-        Authenticate.signup(email, username, password, newRole)
+        console.log(email,username,password, newRole)        
         db.collection('Accounts').add({
-            email: email,
-            password: password,
-            username: username
+            email,
+            password,
+            username,
+            role: 'Admin',
+            date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
         })
         .then(() => {
             console.log('Account has been added')
+            Authenticate.signup(email, username, password, newRole)
         })
-        .catch(() => {
-            console.log('Something went wrong. Could not add account')
+        .catch((err) => {
+            console.log (err)
         })
     }
 

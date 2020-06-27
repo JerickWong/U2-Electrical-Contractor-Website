@@ -7,6 +7,11 @@ const auth = firebase.auth();
 auth.onAuthStateChanged(user => {
     if (user) {
         console.log(auth.currentUser)
+        user.getIdTokenResult().then(idTokenResult => {
+            console.log(idTokenResult.claims)
+            console.log(idTokenResult.claims.manager)
+        })
+        
     } else {
         // redirect to login page
         console.log(user)
