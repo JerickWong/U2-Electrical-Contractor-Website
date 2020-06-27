@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { Container, Table } from 'react-bootstrap';
-import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
-import { Save, Clear, Search } from '@material-ui/icons';
+import { Container, Table, } from 'react-bootstrap';
+import {
+    Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem,
+    InputLabel, FormControl, FormGroup, Input, InputGroup, ButtonGroup, InputAdornment, InputBase, IconButton
+} from '@material-ui/core';
+import { Edit, Clear, Search, GroupAdd, QueryBuilder, AddShoppingCart } from '@material-ui/icons';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrashAlt, faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
 
@@ -28,17 +35,29 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: primary,
         margin: theme.spacing(0),
         color: white,
-        width: 260,
+        width: 200,
+    },
+    pending: {
+        marginLeft: 80
+    },
+    save: {
+        width: 200,
+        backgroundColor: primary,
+        color: white,
+        marginLeft: 57
     },
     root: {
         flexGrow: 1,
     },
     txt: {
-        width: 390,
+        width: 300,
+        marginTop: 15
+    },
+    badge: {
         marginTop: 15
     },
     txt1: {
-        width: 390
+        width: 300
     },
     content: {
         flexGrow: 1,
@@ -60,18 +79,40 @@ const useStyles = makeStyles((theme) => ({
     },
     medium: {
         width: 100
+    },
+    AddBtn1: {
+        marginRight: 7
+    },
+    priceIcons: {
+        color: primary,
+        fontSize: 'small',
+    },
+    modalFields: {
+        align: 'center',
+        width: 400,
+        marginBottom: 30,
+        alignItems: 'center',
+        display: 'flex'
+    },
+    button3:{
+        marginLeft: 10,
     }
-
 }));
 
 function AdminPrice() {
     const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
     const [category, setCategory] = React.useState('');
-
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
-    
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div className="PriceList">
             <Container className="cont">
@@ -80,7 +121,7 @@ function AdminPrice() {
                     <MuiThemeProvider theme={theme}>
                         <div className={classes.root}>
                             <Grid container spacing={1}>
-                                <Grid item xs={5}>
+                                <Grid item xs={4}>
                                     <TextField
                                         className={classes.txt}
                                         size="normal"
@@ -94,12 +135,7 @@ function AdminPrice() {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Badge color="secondary" badgeContent={1}>
-                                        <Button variant="contained" color="primary" size="small" startIconclassName={classes.button}>Pending Items</Button>
-                                    </Badge>
-                                </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={4}>
                                     <FormControl>
                                         <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt1} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
@@ -108,6 +144,16 @@ function AdminPrice() {
                                             <MenuItem value={3}>Category3</MenuItem>
                                         </Select>
                                     </FormControl>
+                                </Grid>
+                                <Grid item xs={1} />
+                                <Grid item xs={3}>
+                                    <Badge color="secondary" className={classes.badge} badgeContent={1}>
+                                        <Button variant="contained" color="primary" size="medium" startIcon={<QueryBuilder />} className={classes.pending}>Pending Items</Button>
+                                    </Badge>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button variant="contained" color="primary" className={classes.AddBtn1} startIcon={<AddShoppingCart />}>Add Item</Button>
+                                    <Button variant="contained" color="primary" className={classes.AddBtn2} startIcon={<GroupAdd />}>Add Supplier</Button>
                                 </Grid>
                             </Grid>
                         </div>
@@ -118,81 +164,498 @@ function AdminPrice() {
                                     <th>Description</th>
                                     <th>Brand</th>
                                     <th>Model</th>
-                                    <th>Price</th>
+                                    <th>List Price</th>
+                                    <th>Price Adjustment</th>
+                                    <th>List Price</th>
                                     <th>Remarks</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
+                                <td><InputBase type="number" className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} onClick={handleClickOpen} icon={faEdit} /></IconButton>
+                                    <Dialog fullWidth="true" maxWidth="sm" className={classes.modalPrice} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Record</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalPrice">
+                                                <FormGroup>
+                                                    <InputLabel>Unit</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        type="number"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Description</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Brand</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Model</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>List Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Price Adjustment</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Net Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Remarks</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                Save Changes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} icon={faTrashAlt} /></IconButton>
+                                </td>
                             </tr>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
-                            </tr>
-                            <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
-                            </tr>
-                            <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
-                            </tr>
-                            <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                            
-                                
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
+                                <td><InputBase type="number" className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} onClick={handleClickOpen} icon={faEdit} /></IconButton>
+                                    <Dialog fullWidth="true" maxWidth="sm" className={classes.modalPrice} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Record</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalPrice">
+                                                <FormGroup>
+                                                    <InputLabel>Unit</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        type="number"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Description</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Brand</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Model</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>List Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Price Adjustment</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Net Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Remarks</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                Save Changes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} icon={faTrashAlt} /></IconButton>
+                                </td>
+                            </tr><tr>
+                                <td><InputBase type="number" className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} onClick={handleClickOpen} icon={faEdit} /></IconButton>
+                                    <Dialog fullWidth="true" maxWidth="sm" className={classes.modalPrice} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Record</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalPrice">
+                                                <FormGroup>
+                                                    <InputLabel>Unit</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        type="number"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Description</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Brand</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Model</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>List Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Price Adjustment</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Net Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Remarks</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                Save Changes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} icon={faTrashAlt} /></IconButton>
+                                </td>
+                            </tr><tr>
+                                <td><InputBase type="number" className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} onClick={handleClickOpen} icon={faEdit} /></IconButton>
+                                    <Dialog fullWidth="true" maxWidth="sm" className={classes.modalPrice} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Record</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalPrice">
+                                                <FormGroup>
+                                                    <InputLabel>Unit</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        type="number"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Description</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Brand</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Model</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>List Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Price Adjustment</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Net Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Remarks</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                Save Changes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} icon={faTrashAlt} /></IconButton>
+                                </td>
+                            </tr><tr>
+                                <td><InputBase type="number" className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} onClick={handleClickOpen} icon={faEdit} /></IconButton>
+                                    <Dialog fullWidth="true" maxWidth="sm" className={classes.modalPrice} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Record</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalPrice">
+                                                <FormGroup>
+                                                    <InputLabel>Unit</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        type="number"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Description</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Brand</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Model</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>List Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Price Adjustment</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Net Price</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Remarks</InputLabel>
+                                                    <Input
+                                                        id="input-with-icon-adornment"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                Save Changes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <IconButton><FontAwesomeIcon color="primary" className={classes.priceIcons} icon={faTrashAlt} /></IconButton>
+                                </td>
                             </tr>
                         </Table>
                         <div className="tbl">
                             <Grid container spacing={1}>
-                                <Grid item xs={2}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Item</Button>
+                                <Grid item xs={5}>
+                                    <Button variant="contained" color="primary" className={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
+                                    <Button variant="contained" color="primary" className={classes.button3} startIcon={<GetAppIcon />}>Download</Button>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={<AddSharpIcon />} />Add Supplier</Button>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
-                                </Grid>
-
-                                {/* <Grid item xs={3} /> */}
-                                <Grid item xs={2}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<GetAppIcon />}>Download</Button>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<Save />}> Save Changes </Button>
-                                </Grid>
+                                <Grid item xs={3} />
                             </Grid>
                         </div>
                     </MuiThemeProvider>

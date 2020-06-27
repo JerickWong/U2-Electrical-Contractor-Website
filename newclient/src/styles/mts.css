@@ -66,3 +66,8 @@ Col{
   margin-right: 10px;
 }
 
+.modalPrice{
+  justify-content: center;
+  align-content: center;
+  margin-left: 70px;
+}
