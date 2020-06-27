@@ -11,7 +11,7 @@ import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 import firebase from 'firebase'
-import Authenticate from '../Firestore/firestore'
+import Authenticate from '../Firestore/auth'
 import { Redirect } from 'react-router-dom'
 
 const drawerWidth = 220;
