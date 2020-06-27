@@ -96,19 +96,35 @@ const useStyles = makeStyles((theme) => ({
 
 function Accounts() {
     const classes = useStyles();
-    const [role, setRole] = React.useState('');
+    const [role, setRole] = React.useState('All');
+    const [newRole, setNewRole] = React.useState('Employee');
+    const [editRole, setEditRole] = React.useState('');
     const handleChange = (event) => {
-        setRole(event.target.value);
+        setRole(event.target.value)
+    }
+    const handleNewRole = (event) => {
+        setNewRole(event.target.value);
     };
+    const handleEditRole = (event) => {
+        setEditRole(event.target.value)
+    }
 
     const [open, setOpen] = React.useState(false);
+    const [edit, setEdit] = React.useState(false);
+
     const handleClickOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
     };
-
+    const handleClickEdit = (event) => {
+        setEdit(true);
+        // get username, password, and role to display to the click modal
+    }
+    const handleCloseEdit = () => {
+        setEdit(false);
+    }
     return (
         <div className="Accounts">
             <Container className="cont">
@@ -120,9 +136,10 @@ function Accounts() {
                                 <Grid item xs={3}>
                                     <FormControl>
                                         <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt} value={role} onChange={handleChange} id="demo-simple-select">
-                                            <MenuItem>Employee</MenuItem>
-                                            <MenuItem>Manager</MenuItem>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt} defaultValue={'All'} value={role} onChange={handleChange} id="demo-simple-select">
+                                            <MenuItem value={'All'}>All</MenuItem>
+                                            <MenuItem value={'Employee'}>Employee</MenuItem>
+                                            <MenuItem value={'Manager'}>Manager</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -186,11 +203,71 @@ function Accounts() {
                                                         className={classes.modalFields}
                                                         labelId="demo-simple-select-filled-label"
                                                         id="demo-simple-select-filled"
-                                                        value={role}
-                                                        onChange={handleChange}
+                                                        defaultValue={'Employee'}
+                                                        value={newRole}
+                                                        onChange={handleNewRole}
                                                     >
-                                                        <MenuItem value={1}>Employee</MenuItem>
-                                                        <MenuItem value={2}>Manager</MenuItem>
+                                                        <MenuItem value={'Employee'}>Employee</MenuItem>
+                                                        <MenuItem value={'Manager'}>Manager</MenuItem>
+                                                    </Select>
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                                Create Account
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+
+                                    <Dialog open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Account</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div class="modalAcc">
+                                                <FormGroup>
+                                                    <InputLabel>Username</InputLabel>
+                                                    <Input
+                                                        id="edit-username"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <AccountCircle color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Password</InputLabel>
+                                                    <Input
+                                                        id="edit-password"
+                                                        className={classes.modalFields}
+                                                        type="password"
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <Lock color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel>Role</InputLabel>
+                                                    <Select
+                                                        className={classes.modalFields}
+                                                        labelId="demo-simple-select-filled-label"
+                                                        id="demo-simple-select-filled"
+                                                        defaultValue={'Employee'}
+                                                        value={editRole}
+                                                        onChange={handleEditRole}
+                                                    >
+                                                        <MenuItem value={'Employee'}>Employee</MenuItem>
+                                                        <MenuItem value={'Manager'}>Manager</MenuItem>
                                                     </Select>
                                                 </FormGroup>
                                             </div>
@@ -224,7 +301,7 @@ function Accounts() {
                                     <td>Manager</td>
                                     <td>05/15/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -234,7 +311,7 @@ function Accounts() {
                                     <td>Employee</td>
                                     <td>05/16/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -244,7 +321,7 @@ function Accounts() {
                                     <td>Manager</td>
                                     <td>05/17/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -254,7 +331,7 @@ function Accounts() {
                                     <td>Employee</td>
                                     <td>05/18/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -264,7 +341,7 @@ function Accounts() {
                                     <td>Admin</td>
                                     <td>01/05/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>

@@ -116,7 +116,6 @@ function Price() {
                                     <th>Model</th>                                    
                                     <th>Price</th>
                                     <th>Remarks</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tr>
@@ -126,7 +125,6 @@ function Price() {
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
                             </tr>
                             <tr>
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
@@ -135,7 +133,6 @@ function Price() {
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
                             </tr>
                             <tr>
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
@@ -144,7 +141,6 @@ function Price() {
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
                             </tr>
                             <tr>
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
@@ -153,7 +149,6 @@ function Price() {
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
                             </tr>
                             <tr>
                                 <td><TextField className={classes.short} variant="outlined" size="small" /></td>
@@ -162,7 +157,6 @@ function Price() {
                                 <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><Clear className={classes.delete} /></td>
                             </tr>
                         </Table>
                         <div className="tbl">

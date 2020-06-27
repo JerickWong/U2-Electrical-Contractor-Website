@@ -196,10 +196,12 @@ function AdminNavbar() {
                 <ListItemText className={classes.listIcon} primary="Delivered" />
               </ListItem>
             </Link>
-            <ListItem button key="Accounts">
-              <ListItemIcon className={classes.listIcon}><SupervisorAccount /></ListItemIcon>
-              <ListItemText className={classes.listIcon} primary="Accounts" />
-            </ListItem>
+            <Link to='/Accounts'>
+              <ListItem button key="Accounts">
+                <ListItemIcon className={classes.listIcon}><SupervisorAccount /></ListItemIcon>
+                <ListItemText className={classes.listIcon} primary="Accounts" />
+              </ListItem>
+            </Link>            
           </List>
         </Drawer>
       </MuiThemeProvider>
