@@ -77,12 +77,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    document.querySelector('#preparedby').value = user.displayName
-  }
-})
-
 function MtsWindow(props) {  
   const classes = useStyles();
   // let row_index = 0;
@@ -105,8 +99,17 @@ function MtsWindow(props) {
   const rows = []
   const [backToMTS, setBackToMTS] = useState('')
 
-
   useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        document.querySelector('#preparedby').value = user.displayName
+      }
+    })
+  
+    if (firebase.auth().currentUser) {
+      document.querySelector('#preparedby').value = firebase.auth().currentUser.displayName
+    }
+
     if (props.location.state) {
       const mts_number = props.location.state.mts_number
       const projName = props.location.state.projName
@@ -428,7 +431,7 @@ function MtsWindow(props) {
       let unit = row.querySelector('input[name="unit"]').value
       let description = row.querySelector('textarea[name="description"]').value
       description = description.replace(/\//g, "|");
-      description = description.replace(/./g, ",");
+      description = description.replace(/./g, "_");
       let brand = row.querySelector('textarea[name="brand"]').value
       let model = row.querySelector('textarea[name="model"]').value
       let remarks = row.querySelector('textarea[name="remarks"]').value
