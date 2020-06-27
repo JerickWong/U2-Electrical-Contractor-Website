@@ -1,8 +1,27 @@
-import functions from 'firebase-functions'
-import admin from 'firebase-admin'
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
 admin.initializeApp();
 
 exports.makeManagerRole = functions.https.onCall((data, context) => {
+    // get user and add custom claim (admin)
+    
+    return admin.auth().getUserByEmail(data.email).then(user => {
+        return admin.auth().setCustomUserClaims(user.uid, {
+            // represents the different claims
+            manager: true
+        })
+    }).then(() => {
+        return {
+            message: `Success! ${data.email} has been made a manager`
+        }
+    }).catch(err => {
+        return {
+            message: `An error has occured! ${err.message}`
+        }
+    })
+})
+
+exports.makeAdminRole = functions.https.onCall((data, context) => {
     // get user and add custom claim (admin)
     
     return admin.auth().getUserByEmail(data.email).then(user => {
@@ -20,6 +39,8 @@ exports.makeManagerRole = functions.https.onCall((data, context) => {
         }
     })
 })
+
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //

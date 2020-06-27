@@ -1,5 +1,5 @@
 import db from './firestore'
-import firebase from 'firebase'
+import firebase, { functions } from 'firebase'
 // import auth from 'firebase-auth'
 
 const auth = firebase.auth();
@@ -22,12 +22,30 @@ export default class Authenticate {
 
     static user;
 
-    static signup(email, password) {
+    static signup(email, username, password, role) {
         auth.createUserWithEmailAndPassword(email, password).then(cred => {
             console.log(`user created successfully: ${cred.user}`)
+            cred.user.updateProfile({
+                displayName: username
+            })
+            if (role === 'Manager') {
+                const makeManagerRole = firebase.functions().httpsCallable('makeManagerRole');
+                makeManagerRole({ email: email }).then(result => {
+                    console.log(result)
+                })
+            } else if (role === 'Admin') {
+                const makeAdminRole = firebase.functions().httpsCallable('makeAdminRole');
+                makeAdminRole({ email: email }).then(result => {
+                    console.log(result)
+                })
+            }
+        })
+        .then(() => {
+            alert(`${username} has been added!`)
         })
         .catch(err => {
             console.log(err.message)
+            alert(err.message)
         })
     }
     
