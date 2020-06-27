@@ -12,6 +12,7 @@ import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 import Authenticate from '../Firestore/auth'
 import firebase from 'firebase'
+import { Redirect } from 'react-router-dom'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -107,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 function Navbars() {
   const classes = useStyles();
   const theme = useTheme();
-  const [user, setUser] = React.useState('')
+  const [user, setUser] = React.useState(' ')
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -123,11 +124,21 @@ function Navbars() {
         setUser(user.displayName)
     } else {
         setUser('')
+        
     }
   })
+
+  const isLoggedin = () => {
+    if (user == '') {
+      alert('not logged in')
+      return <Redirect to='/' />
+    }
+    console.log(user)
+  }
   
   return (
     <div className={classes.root}>
+      {isLoggedin()}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
