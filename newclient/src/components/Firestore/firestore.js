@@ -17,4 +17,3 @@ firebase.analytics();
 const db = firebase.firestore();
 
 export default db;
-export const functions = firebase.functions();

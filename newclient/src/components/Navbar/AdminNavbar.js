@@ -11,6 +11,8 @@ import indigo from '@material-ui/core/colors/indigo';
 import grey from '@material-ui/core/colors/grey';
 import '../../styles/navbar.css';
 import firebase from 'firebase'
+import Authenticate from '../Firestore/auth'
+import { Redirect } from 'react-router-dom'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -107,7 +109,7 @@ function AdminNavbar() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState('')
+  const [user, setUser] = React.useState(' ')
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -125,8 +127,17 @@ function AdminNavbar() {
     }
   })
 
+  const isLoggedin = () => {
+    if (user == '') {
+      alert('not logged in')
+      return <Redirect to='/' />
+    }
+    console.log(user)
+  }
+
   return (
     <div className={classes.root}>
+      {isLoggedin()}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
@@ -139,7 +150,9 @@ function AdminNavbar() {
               <Menu />
             </IconButton>
             <Typography className={classes.login}>Logged in as: {user}</Typography>
-            <Button className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+            <Link to='/'>
+              <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+            </Link>            
           </Toolbar>
         </AppBar>
         <Drawer

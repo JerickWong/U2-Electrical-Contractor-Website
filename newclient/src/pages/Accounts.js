@@ -9,10 +9,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Search, Lock, AccountCircle, Save } from '@material-ui/icons';
+import EmailIcon from '@material-ui/icons/Email';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faUserMinus, faKey } from "@fortawesome/free-solid-svg-icons";
 import '../styles/accounts.css';
+import Authenticate from '../components/Firestore/auth'
+import db from '../components/Firestore/firestore'
+import moment from 'moment'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -108,7 +112,24 @@ function Accounts() {
         setEditRole(event.target.value)
     }
     const createAccount = () => {
-
+        const email = document.querySelector('#new-email').value
+        const username = document.querySelector('#new-username').value
+        const password = document.querySelector('#new-password').value
+        console.log(email,username,password, newRole)        
+        db.collection('Accounts').add({
+            email,
+            password,
+            username,
+            role: 'Admin',
+            date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
+        })
+        .then(() => {
+            console.log('Account has been added')
+            Authenticate.signup(email, username, password, newRole)
+        })
+        .catch((err) => {
+            console.log (err)
+        })
     }
 
     const [open, setOpen] = React.useState(false);
@@ -173,11 +194,24 @@ function Accounts() {
                                             <h3>New Account</h3>
                                         </DialogTitle>
                                         <DialogContent dividers>
-                                            <div class="modalAcc">
+                                            <div className="modalAcc">
+                                                <FormGroup>
+                                                    <InputLabel>Email</InputLabel>
+                                                    <Input
+                                                        id="new-email"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <EmailIcon color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </FormGroup>
                                                 <FormGroup>
                                                     <InputLabel>Username</InputLabel>
                                                     <Input
-                                                        id="input-with-icon-adornment"
+                                                        id="new-username"
                                                         className={classes.modalFields}
                                                         variant="outlined"
                                                         startAdornment={
@@ -190,7 +224,7 @@ function Accounts() {
                                                 <FormGroup>
                                                     <InputLabel>Password</InputLabel>
                                                     <Input
-                                                        id="input-with-icon-adornment"
+                                                        id="new-password"
                                                         className={classes.modalFields}
                                                         type="password"
                                                         variant="outlined"
@@ -233,7 +267,20 @@ function Accounts() {
                                             <h3>Edit Account</h3>
                                         </DialogTitle>
                                         <DialogContent dividers>
-                                            <div class="modalAcc">
+                                            <div className="modalAcc">
+                                               <FormGroup>
+                                                    <InputLabel>Email</InputLabel>
+                                                    <Input
+                                                        id="edit-email"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <EmailIcon color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </FormGroup>
                                                 <FormGroup>
                                                     <InputLabel>Username</InputLabel>
                                                     <Input
@@ -306,7 +353,7 @@ function Accounts() {
                                     <td>Manager</td>
                                     <td>05/15/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
+                                        <IconButton color="primary" onClick={handleClickEdit} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -316,7 +363,7 @@ function Accounts() {
                                     <td>Employee</td>
                                     <td>05/16/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
+                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -326,7 +373,7 @@ function Accounts() {
                                     <td>Manager</td>
                                     <td>05/17/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
+                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -336,7 +383,7 @@ function Accounts() {
                                     <td>Employee</td>
                                     <td>05/18/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
+                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
@@ -346,7 +393,7 @@ function Accounts() {
                                     <td>Admin</td>
                                     <td>01/05/2020</td>
                                     <td>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} onClick={handleClickEdit} /></IconButton>
+                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
                                 </tr>
