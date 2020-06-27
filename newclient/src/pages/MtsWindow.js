@@ -428,6 +428,7 @@ function MtsWindow(props) {
       let unit = row.querySelector('input[name="unit"]').value
       let description = row.querySelector('textarea[name="description"]').value
       description = description.replace(/\//g, "|");
+      description = description.replace(/./g, ",");
       let brand = row.querySelector('textarea[name="brand"]').value
       let model = row.querySelector('textarea[name="model"]').value
       let remarks = row.querySelector('textarea[name="remarks"]').value

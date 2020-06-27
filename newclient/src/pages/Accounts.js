@@ -108,6 +108,9 @@ function Accounts() {
     const handleEditRole = (event) => {
         setEditRole(event.target.value)
     }
+    const createAccount = () => {
+
+    }
 
     const [open, setOpen] = React.useState(false);
     const [edit, setEdit] = React.useState(false);
@@ -164,6 +167,8 @@ function Accounts() {
                                     <Button color="primary" className={classes.button1} onClick={handleClickOpen} variant="contained">
                                         Create Account
                                     </Button>
+
+                                    {/* CREATE ACCOUNT */}
                                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">
                                             <h3>New Account</h3>
@@ -217,12 +222,13 @@ function Accounts() {
                                             <Button onClick={handleClose} variant="contained" color="primary">
                                                 Cancel
                                             </Button>
-                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                            <Button onClick={() => {handleClose(); createAccount();}} variant="contained" color="primary">
                                                 Create Account
                                             </Button>
                                         </DialogActions>
                                     </Dialog>
 
+                                    {/* EDIT ACCOUNT */}
                                     <Dialog open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">
                                             <h3>Edit Account</h3>
@@ -273,10 +279,10 @@ function Accounts() {
                                             </div>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
                                                 Cancel
                                             </Button>
-                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
                                                 Create Account
                                             </Button>
                                         </DialogActions>
@@ -291,7 +297,7 @@ function Accounts() {
                                     <th>Password</th>
                                     <th>Role</th>
                                     <th>Date Created</th>
-                                    <th></th>
+                                    <th>Edit / Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -347,14 +353,14 @@ function Accounts() {
                                 </tr>
                             </tbody>
                         </Table>
-                        <Button
+                        {/* <Button
                             variant="contained"
                             color="primary"
                             className={classes.button}
                             startIcon={<Save />}
                         >
                             Save Changes
-                        </Button>
+                        </Button> */}
                     </MuiThemeProvider>
                 </main>
             </Container>
