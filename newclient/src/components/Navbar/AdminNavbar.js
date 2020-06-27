@@ -109,7 +109,7 @@ function AdminNavbar() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState('')
+  const [user, setUser] = React.useState(' ')
 
   const handleDrawerOpen = () => {
     setOpen(true);
