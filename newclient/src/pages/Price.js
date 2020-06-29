@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
 function Price() {
     const classes = useStyles();
     const [category, setCategory] = React.useState('');
-
     const handleChange = (event) => {
         setCategory(event.target.value);
     };

@@ -136,6 +136,10 @@ function Navbars() {
     console.log(user)
   }
   
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
   return (
     <div className={classes.root}>
       {isLoggedin()}
@@ -177,19 +181,19 @@ function Navbars() {
           <Divider />
           <List>
             <Link to='/MtsWindow'>
-              <ListItem button key="New MTS">
+              <ListItem onClick={refreshPage} button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />
               </ListItem>
             </Link>
             <Link to="/Mts">
-              <ListItem button key="MTS List">
+              <ListItem onClick={refreshPage} button key="MTS List">
                 <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
             </Link>
             <Link to="/Price">
-              <ListItem button key="Price List">
+              <ListItem onClick={refreshPage} button key="Price List">
                 <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="Price List" />
               </ListItem>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Paper, Typography } from '@material-ui/core';
-import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, ArrowBack, CastConnectedSharp } from '@material-ui/icons';
+import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, ArrowBack, CastConnectedSharp, ArrowBackIos } from '@material-ui/icons';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import '../styles/mts.css';
@@ -74,6 +74,13 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
+  back:{
+    color: primary,
+    marginBottom:10
+  },
+  total:{
+    marginTop:10
+  }
 
 }));
 
@@ -149,7 +156,7 @@ function MtsWindow(props) {
         // TODO
         setBackToMTS(
           <Link to='/AdminMts'>
-            <Button variant="contained" className={classes.button} startIcon={<ArrowBack />}>Back to MTS List</Button>
+            <Button className={classes.back} startIcon={<ArrowBackIos />}>Back to MTS List</Button>
           </Link>
         )
       })      
@@ -518,7 +525,7 @@ function MtsWindow(props) {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {backToMTS}
-          <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be fill-up before saving.'/>
+          <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be filled-up before saving.'/>
           
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>

@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
     button1: {
         marginTop: 15,
+        marginLeft: 30,
         width: 210
     },
     content: {
@@ -90,11 +91,12 @@ const useStyles = makeStyles((theme) => ({
 
     },
     modalFields: {
-        width: 250,
-        marginBottom: 30,
+        width: 400,
+        marginBottom: 20,
         alignItems: 'center',
-        display: 'flex'
-    }
+        display: 'flex',
+        marginLeft: 30
+    },
 }));
 
 function Accounts() {
@@ -189,14 +191,14 @@ function Accounts() {
                                     </Button>
 
                                     {/* CREATE ACCOUNT */}
-                                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                    <Dialog fullWidth="true" maxWidth="sm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">
                                             <h3>New Account</h3>
                                         </DialogTitle>
                                         <DialogContent dividers>
                                             <div className="modalAcc">
                                                 <FormGroup>
-                                                    <InputLabel>Email</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Email</InputLabel>
                                                     <Input
                                                         id="new-email"
                                                         className={classes.modalFields}
@@ -209,7 +211,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Username</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Username</InputLabel>
                                                     <Input
                                                         id="new-username"
                                                         className={classes.modalFields}
@@ -222,7 +224,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Password</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Password</InputLabel>
                                                     <Input
                                                         id="new-password"
                                                         className={classes.modalFields}
@@ -236,7 +238,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Role</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Role</InputLabel>
                                                     <Select
                                                         className={classes.modalFields}
                                                         labelId="demo-simple-select-filled-label"
@@ -255,21 +257,21 @@ function Accounts() {
                                             <Button onClick={handleClose} variant="contained" color="primary">
                                                 Cancel
                                             </Button>
-                                            <Button onClick={() => {handleClose(); createAccount();}} variant="contained" color="primary">
+                                            <Button onClick={() => {handleClose(); createAccount();}} className={classes.create} variant="contained" color="primary">
                                                 Create Account
                                             </Button>
                                         </DialogActions>
                                     </Dialog>
 
                                     {/* EDIT ACCOUNT */}
-                                    <Dialog open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
+                                    <Dialog fullWidth="true" maxWidth="sm" open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">
                                             <h3>Edit Account</h3>
                                         </DialogTitle>
                                         <DialogContent dividers>
                                             <div className="modalAcc">
                                                <FormGroup>
-                                                    <InputLabel>Email</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Email</InputLabel>
                                                     <Input
                                                         id="edit-email"
                                                         className={classes.modalFields}
@@ -282,7 +284,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Username</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Username</InputLabel>
                                                     <Input
                                                         id="edit-username"
                                                         className={classes.modalFields}
@@ -295,7 +297,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Password</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Password</InputLabel>
                                                     <Input
                                                         id="edit-password"
                                                         className={classes.modalFields}
@@ -309,7 +311,7 @@ function Accounts() {
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <InputLabel>Role</InputLabel>
+                                                    <InputLabel className={classes.modalFields}>Role</InputLabel>
                                                     <Select
                                                         className={classes.modalFields}
                                                         labelId="demo-simple-select-filled-label"
@@ -343,7 +345,7 @@ function Accounts() {
                                     <th>Password</th>
                                     <th>Role</th>
                                     <th>Date Created</th>
-                                    <th>Edit / Delete</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
