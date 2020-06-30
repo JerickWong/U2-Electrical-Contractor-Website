@@ -79,9 +79,7 @@ export default function PriceTable() {
             data={state.data}
             options={{
                 showTitle:false,
-                search:false,
                 sorting:false,
-                paging: false,
                 draggable: false,
                 actionsColumnIndex: -1
             }}
