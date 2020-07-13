@@ -9,6 +9,7 @@ import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
 import '../../styles/login.css';
 import UserAlert from "../UserAlert/UserAlert";
 import Authentication from '../Firestore/auth'
+import axios from 'axios';
 const avatar = require('../../assets/img/avatar.png');
 
 
@@ -32,10 +33,28 @@ export default class LoginBox extends Component {
     }
   }
 
-  checkCredentials = () => {
+  checkCredentials = async () => {
     const username = document.querySelector('input[name="username"]').value
     const password = document.querySelector('input[name="password"]').value
-    Authentication.login(username, password, this.setRedirect)
+    // Authentication.login(username, password, this.setRedirect)
+
+    // LOGGING IN MONGODB
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+
+      const body = JSON.stringify({ username, password})
+      
+      const res = await axios.post('/api/auth', body, config)
+      console.log(res.data)
+      this.setRedirect(true)
+    } catch (err) {
+      console.error(err.response.data.errors)
+      this.setRedirect(false, err.response.data.errors[0].msg)
+    }
   }
 
   renderError = () => {
