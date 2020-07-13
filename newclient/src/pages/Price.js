@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
+import { Button, InputBase, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
 import { Save, Clear, Search } from '@material-ui/icons';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
 function Price() {
     const classes = useStyles();
     const [category, setCategory] = React.useState('');
-
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
@@ -119,44 +118,44 @@ function Price() {
                                 </tr>
                             </thead>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
+                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
                             </tr>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
+                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
                             </tr>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
+                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
                             </tr>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
+                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
                             </tr>
                             <tr>
-                                <td><TextField className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><TextField multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><TextField multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><TextField multiline variant="outlined" size="small" /></td>
+                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
+                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
+                                <td><InputBase multiline variant="outlined" size="small" /></td>
                             </tr>
                         </Table>
                         <div className="tbl">

@@ -441,7 +441,7 @@ function Price() {
                                 <Grid item xs={2}/>
                                 <Grid item xs={3}>
                                     <Link to="/DeliverSummary">
-                                    <Button variant="outlined" className={classes.button}>Summary</Button>
+                                        <Button variant="outlined" className={classes.button}>Summary</Button>
                                     </Link>
                                 </Grid>
                             </Grid>
