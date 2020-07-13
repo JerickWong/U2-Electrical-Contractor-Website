@@ -120,7 +120,7 @@ function Accounts() {
             email,
             password,
             username,
-            role: 'Admin',
+            role: newRole,
             date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
         })
         .then(() => {
