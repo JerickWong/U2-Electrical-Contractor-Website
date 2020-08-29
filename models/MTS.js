@@ -16,7 +16,7 @@ const rowSchema = new mongoose.Schema({
     unit: String, 
     brand: String,
     model: String,
-    remarks: String,    
+    remarks: String,
     
 })
 
