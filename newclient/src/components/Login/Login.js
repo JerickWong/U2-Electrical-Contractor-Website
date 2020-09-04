@@ -9,7 +9,7 @@ import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
 import '../../styles/login.css';
 import UserAlert from "../UserAlert/UserAlert";
 import Authentication from '../Firestore/auth'
-import axios from 'axios';
+import users from '../../api/users'
 const avatar = require('../../assets/img/avatar.png');
 
 
@@ -17,7 +17,9 @@ export default class LoginBox extends Component {
   state = {
     redirect: false,
     wrongCredentials: false,
-    errorMessage: ''
+    errorMessage: '',
+    username: '',
+    password: ''
   }
   setRedirect = (result, message) => {
     this.setState({
@@ -39,21 +41,32 @@ export default class LoginBox extends Component {
     // Authentication.login(username, password, this.setRedirect)
 
     // LOGGING IN MONGODB
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+    // try {
+    //   const config = {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   }
 
-      const body = JSON.stringify({ username, password})
+    //   const body = JSON.stringify({ username, password})
       
-      const res = await axios.post('/api/auth', body, config)
-      console.log(res.data)
+    //   await users.login()
+    //   console.log(res.data)
+    //   this.setRedirect(true)
+    // } catch (err) {
+    //   console.error(err.response.data.errors)
+    //   this.setRedirect(false, err.response.data.errors[0].msg)
+    // }
+    alert(username)
+    alert(password)
+    try {
+      const res = await users.login({username, password})
+      console.log(res)
       this.setRedirect(true)
-    } catch (err) {
-      console.error(err.response.data.errors)
-      this.setRedirect(false, err.response.data.errors[0].msg)
+      this.setState({ redirect: true })
+      alert("correct")
+    } catch (error) {
+      this.setState({ wrongCredentials: true, errorMessage: error.message })
     }
   }
 
@@ -62,6 +75,10 @@ export default class LoginBox extends Component {
       return <UserAlert severity='error' message={this.state.errorMessage} />
     else
       return ''
+  }
+  
+  handleChange = (e) => {
+    
   }
 
   render() {

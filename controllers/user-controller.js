@@ -2,6 +2,7 @@ const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const keys = require('../db/index')
+const cookies = require('cookie-parser')
 
 loginUser = async (req, res) => {
     if (!req.body.password) {
@@ -9,11 +10,10 @@ loginUser = async (req, res) => {
             success: false,
             error: 'You must provide a password',
         })
-    }
+    }    
+    const { password, username } = req.body
 
-    const { password, isAdmin } = req.body
-
-    await User.findOne( {isAdmin: isAdmin}, async (err, user) => {
+    await User.findOne({ username }, async (err, user) => {
         if (err)
             return res.status(400).json({ success: false, error: err })
         
@@ -41,13 +41,14 @@ loginUser = async (req, res) => {
                         token,
                         user,
                     });
-                    
+                    console.log(`inside ${token}`)
+                    res.cookie('token', token, {
+                        // domain: "localhost",
+                        httpOnly: false
+                    });
                 }
             );
-            res.cookie('token', token, {
-                // domain: "localhost",
-                httpOnly: true
-            });
+            // console.log(token)
             // res.cookie('token', token);
         } else {
             return res
@@ -65,10 +66,11 @@ logoutUser = async (req, res) => {
 }
 
 registerUser = (req, res) => {
-    const { password, isAdmin } = req.body
+    const { password, username, type } = req.body
     const newUser = new User({
+        username,
         password,
-        isAdmin
+        type
     });
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -115,7 +117,8 @@ getAllUser = async (req, res) => {
 }
 
 getUser = async (req, res) => {
-    const token = req.body.token
+    const token = req.cookies.token
+    console.log(token)
     // console.log(req.body.token)
     // console.log(token, " baket wala huhu")
     // alert(token)    

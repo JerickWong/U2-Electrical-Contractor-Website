@@ -35,7 +35,7 @@ const MTSSchema = new mongoose.Schema({
         required: true
     },
     delivered_from: String,
-    total_cost: Number,
+    total_amount: Number,
     requested_by: String,
     approved_by: String,
     takenout_by: String,

@@ -87,20 +87,28 @@ const useStyles = makeStyles((theme) => ({
 function MtsWindow(props) {  
   const classes = useStyles();
   // let row_index = 0;
+  // DOCUMENTATION: 09/03/2020
+  // utilized states for each input
+  // removed validity, invalid
   
   // --------STATES-------- //
   const [confirmDialog, setConfirmationDialog] = useState('')
-  const [invalid, setInvalid] = useState(true)
-  const [valid, setValid] = useState({
-      'mts_field': false,
-      'requested_by': false,
-      'project_name': false
-  })
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
-  const [totalAmount, setTotalAmount] = useState(0)
+  // const [totalAmount, setTotalAmount] = useState(0)
   const [first, setFirst] = ('')
   const [rowObject, setRows] = useState([])
   const [row_index, setRowIndex] = useState(0)
+  const [prepared_by, setPreparedBy] = useState('')
+  const [address, setAddress] = useState('')
+  const [MTS_number, setMtsNumber] = useState('')
+  const [project_name, setProjectName] = useState('')
+  const [delivered_from, setDeliveredFrom] = useState('')
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'))
+  const [requested_by, setRequestedBy] = useState('')
+  const [takenout_by, setTakenoutBy] = useState('')
+  const [approved_by, setApprovedBy] = useState('')
+  const [received_by, setReceivedBy] = useState('')
+  const [total_amount, setTotalAmount] = useState(0)
 
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   const rows = []
@@ -190,12 +198,6 @@ function MtsWindow(props) {
         setRows(rows)
       })
 
-      setValid({
-        mts_field: true,
-        requested_by: true,
-        project_name: true
-      })
-
     } else {
       for (let i=0; i<5; i++) {
         
@@ -236,43 +238,6 @@ function MtsWindow(props) {
       setRowIndex(tempindex)
     }
   }, [rowObject])
-
-
-  function checkValidity (e) {
-    const value = e.target.value
-
-    console.log(e.target.name)
-
-    if (!value) {
-      let newValid = { ...valid }
-      newValid[e.target.name] = false
-      console.log(newValid)
-
-      setValid(newValid)
-      console.log(valid)
-      setInvalid(true)
-    } else {
-
-      let newValid = { ...valid }
-      newValid[e.target.name] = true
-      console.log(newValid)
-
-      setValid(newValid)
-      console.log(valid)
-            
-      console.log(`mts_field: ${valid['mts_field']} and requested by: ${valid['requested_by']}`)
-    }
-  }
-  useEffect(() => {
-    const saveButton = document.querySelector('#save')
-    
-    if (valid['mts_field'] && valid['requested_by'] && valid['project_name']) {
-      
-      setInvalid(false)      
-      saveButton.disabled = invalid
-    }
-        
-  }, [valid])
 
   // ON CHANGE UPDATE TOTAL ROW PRICE 
   function updateTotal (e) {
@@ -397,7 +362,7 @@ function MtsWindow(props) {
     let MTS_number = document.querySelector('#mtsnumber').value
     const date = document.querySelector('#date').value
 
-    let total_cost = totalAmount
+    let total_cost = total_amount
     const requested_by = document.querySelector('#requestedby').value
     const approved_by = document.querySelector('#approvedby').value
     const takenout_by = document.querySelector('#takenoutby').value
@@ -481,7 +446,7 @@ function MtsWindow(props) {
     let MTS_number = document.querySelector('#mtsnumber').value
     const date = document.querySelector('#date').value
     
-    let total_cost = totalAmount
+    let total_cost = total_amount
     const requested_by = document.querySelector('#requestedby').value
     const approved_by = document.querySelector('#approvedby').value
     const takenout_by = document.querySelector('#takenoutby').value
@@ -535,7 +500,8 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="Prepared by"
                     id='preparedby'
-                    // value={mtsObject.prepared_by || ''}
+                    value={ prepared_by }
+                    onChange={(e) => setPreparedBy(e.target.value)}
                     size="normal"
                     InputLabelProps={{shrink:true}}
                     InputProps={{
@@ -554,7 +520,8 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="Address"
                     id='address'
-                    // value={mtsObject.address || ''}
+                    value={ address }
+                    onChange={(e) => setAddress(e.target.value)}
                     size="normal"
                     InputLabelProps={{shrink:true}}
                     InputProps={{
@@ -569,15 +536,15 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    error={!valid['mts_field']}
+                    error={!MTS_number}
                     className={classes.txt4}
                     label="MTS No."
                     id='mtsnumber'
-                    // value={mtsObject.mts_number || ''}
+                    value={ MTS_number }
                     required
                     size="normal"
                     InputLabelProps={{shrink:true}}
-                    onChange={checkValidity}
+                    onChange={(e) => setMtsNumber(e.target.value)}
                     name='mts_field'
                     pattern="[0-9*]"
                     type="number"
@@ -593,15 +560,15 @@ function MtsWindow(props) {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField id="input-with-icon-textfield"
-                    error={!valid['project_name']}
+                    error={!project_name}
                     className={classes.txt4}
                     label="Project Name"
                     id='projectname'
-                    // value={mtsObject.project_name}
+                    value={ project_name }
                     required
                     size="normal"
                     InputLabelProps={{shrink:true}}
-                    onChange={checkValidity}
+                    onChange={(e) => setProjectName(e.target.value)}
                     name='project_name'
                     InputProps={{
                       endAdornment: (
@@ -619,7 +586,8 @@ function MtsWindow(props) {
                     className={classes.txt4}
                     label="From"
                     id='deliveredfrom'
-                    // value={mtsObject.delivered_from || ''}
+                    value={ delivered_from }
+                    onChange={(e) => setDeliveredFrom(e.target.value)}
                     size="normal"
                     InputLabelProps={{shrink:true}}
                     InputProps={{
@@ -640,7 +608,9 @@ function MtsWindow(props) {
                     type="date"
                     size="small"
                     // value={mtsObject.date || }
-                    defaultValue={moment().format('YYYY-MM-DD')}
+                    // defaultValue={moment().format('YYYY-MM-DD')}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
                     required
@@ -678,22 +648,22 @@ function MtsWindow(props) {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField error={!valid['requested_by']} InputLabelProps={{shrink:true}} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={checkValidity} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField error={!requested_by} value={requested_by} InputLabelProps={{shrink:true}} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={(e) => setRequestedBy(e.target.value)} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
+                  <TextField className={classes.txt4} value={takenout_by} onChange={(e) => setTakenoutBy(e.target.value)} InputLabelProps={{shrink:true}} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
                 </Grid>
                 <Grid item xs={4}>
-                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {totalAmount}</Typography></Paper>
+                  <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {total_amount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} value={approved_by} onChange={(e) => setApprovedBy(e.target.value)} InputLabelProps={{shrink:true}} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} InputLabelProps={{shrink:true}} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} value={received_by} onChange={(e) => setReceivedBy(e.target.value)} InputLabelProps={{shrink:true}} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={invalid} className={classes.button} startIcon={<Save />}> SAVE </Button>
+                  <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={!MTS_number || !project_name || !requested_by} className={classes.button} startIcon={<Save />}> SAVE </Button>
                 </Grid>
               </Grid>
             </div>
