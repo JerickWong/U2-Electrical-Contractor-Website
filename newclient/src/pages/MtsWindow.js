@@ -292,7 +292,7 @@ function MtsWindow(props) {
     const tr = e.currentTarget
     console.log(tr)
 
-    let quantity = tr.querySelector('input[name="quantity"]').value
+    let quantity = tr.querySelector('input[name="qty"]').value
     let price = tr.querySelector('input[name="price"]').value
     let total = tr.querySelector('td[name="total"]').innerHTML
     console.log(`quantity: ${quantity} and price: ${price}`)
@@ -541,8 +541,9 @@ function MtsWindow(props) {
   }
 
   function handleRowChange (e, index) {
+    const { name, value } = e.target
     const newRows = [...rows]
-    newRows[index] = e.target.value
+    newRows[index][name] = value
     setRows(newRows)
   }
   
@@ -708,14 +709,14 @@ function MtsWindow(props) {
                 {rows.map((row, index) => {
                   return (
                     <tr onChange={updateTotal}>
-                        <td><InputBase className={classes.txt} size="small" value={row.qty} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
-                        <td><InputBase className={classes.txt} size="small" value={row.unit}/></td>
-                        <td><InputBase className='description' size="small" value={row.description} multiline /></td>
-                        <td><InputBase className={classes.txt1} size="small" value={row.brand} multiline /></td>
-                        <td><InputBase className={classes.txt1} size="small" value={row.model} multiline /></td>
-                        <td><InputBase className={classes.txt1} size="small" value={row.price} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt} name='unit'size="small" value={row.unit} onChange={(e) => handleRowChange(e, index)}/></td>
+                        <td><InputBase className='description' name='description'size="small" value={row.description} onChange={(e) => handleRowChange(e, index)} multiline /></td>
+                        <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline /></td>
+                        <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline /></td>
+                        <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
                             <td name='total'>{row.total}</td>
-                        <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} multiline inputProps={{maxLength:100}} /></td>
+                        <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} onChange={(e) => handleRowChange(e, index)} multiline inputProps={{maxLength:100}} /></td>
                         <td><FontAwesomeIcon onClick={(e) => deleteRow(e, index)} className="delete" icon={faTimes} /></td>
                     </tr>
                   )
