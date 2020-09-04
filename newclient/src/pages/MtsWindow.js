@@ -158,6 +158,7 @@ function MtsWindow(props) {
     remarks: ''
   }])
 
+  // FIRESTORE SHIT
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   // const rows = []
   // const [backToMTS, setBackToMTS] = useState('')
@@ -265,66 +266,31 @@ function MtsWindow(props) {
   //   }
   // }, [first])
   
-  // useEffect(() => {
-  //   let rownum = rowObject.length
-  //   let tempindex = row_index
-  //   if (rownum<5) {
-  //     let temprow = [...rowObject]
-
-  //     for (let i=rownum; i<5+1; i++) {
-  //       temprow.push(
-  //         <MtsRow updateTotal={updateTotal} 
-  //                   class1={classes.txt}
-  //                   class2={classes.txt1}
-  //                   class3={classes.txt2}
-  //                   total={0}
-  //                   click={deleteRow}
-  //                   key={tempindex} />
-  //       )
-  //       tempindex++;
-  //     }
-  //     setRowIndex(tempindex)
-  //   }
-  // }, [rowObject])
 
   // ON CHANGE UPDATE TOTAL ROW PRICE 
-  function updateTotal (e) {
-    const tr = e.currentTarget
-    console.log(tr)
-
-    let quantity = tr.querySelector('input[name="qty"]').value
-    let price = tr.querySelector('input[name="price"]').value
-    let total = tr.querySelector('td[name="total"]').innerHTML
-    console.log(`quantity: ${quantity} and price: ${price}`)
-    console.log(`total: ${total}`)
-    if (e.target.name === 'quantity' || e.target.name === 'price') {
-      if (quantity != '' && price != '') {
-        console.log('etits')
-        quantity = parseInt(quantity)
-        price = parseFloat(price)
-        total = quantity*price
-        tr.querySelector('td[name="total"]').innerHTML = total
-        // grand total
-      } else {
-        tr.querySelector('td[name="total"]').innerHTML = 0
-      }
-    }
-    let description = tr.querySelector('textarea[name="description"]').value
-    console.log(description)
-    updateTotalAmount()
+  function updateTotal (e, index) {     
+    const { name, value } = e.target
+    const currentRows = [...rows]
+    
+    if (currentRows[index].qty && currentRows[index].price) {
+      currentRows[index].total = parseInt(currentRows[index].qty) * parseFloat(currentRows[index].price)
+      setRows(currentRows)
+    }    
+    
   }
+
+  useEffect(() => {
+    updateTotalAmount()
+  }, [rows])
 
   // ON CHANGE OF TOTAL ROW PRICE, UPDATE TOTAL AMOUNT
   function updateTotalAmount() {
-    const rows = getRows()
-    let tempTotal = 0.0
-    rows.map(row => {
-      let total = row.querySelector('td[name="total"]').innerHTML
-      total = parseFloat(total)
-      tempTotal += total
-    })
-
-    setTotalAmount(tempTotal)
+    let total = 0
+    for (let x in rows) 
+      if (rows[x].total)
+        total += rows[x].total
+    
+    setTotalAmount(total)
   }
   
   function deleteRow(e, index) {
@@ -335,11 +301,6 @@ function MtsWindow(props) {
   }
 
   function addRow() {    
-    // let newTotal = [...total]
-    // newTotal.push(0)
-    // setTotal(newTotal)    
-        
-    // console.log(`row index: ${row_index}`)        
     const currentRows = [...rows]
     currentRows.push({
         qty: '',
@@ -352,26 +313,6 @@ function MtsWindow(props) {
       })
     setRows(currentRows)
   }
-
-
-  // use effect of adding rows
-  // useEffect(() => {
-  //   if (total.length != 5) {
-  //     let newRows = [...rowObject]
-  //     newRows.push(
-  //       <MtsRow updateTotal={updateTotal} 
-  //                   class1={classes.txt}
-  //                   class2={classes.txt1}
-  //                   class3={classes.txt2}
-  //                   total={0}
-  //                   click={deleteRow}
-  //                   key={row_index} />
-  //     )
-  //     setRows(newRows)
-  //     setRowIndex(row_index+1)
-  //   }
-
-  // }, [total])
 
     function showConfirmationDialog(rows, ...restArgs) {
       const empty = []
@@ -708,13 +649,13 @@ function MtsWindow(props) {
               <tbody>
                 {rows.map((row, index) => {
                   return (
-                    <tr onChange={updateTotal}>
-                        <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
+                    <tr>
+                        <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
                         <td><InputBase className={classes.txt} name='unit'size="small" value={row.unit} onChange={(e) => handleRowChange(e, index)}/></td>
                         <td><InputBase className='description' name='description'size="small" value={row.description} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline /></td>
-                        <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
                             <td name='total'>{row.total}</td>
                         <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} onChange={(e) => handleRowChange(e, index)} multiline inputProps={{maxLength:100}} /></td>
                         <td><FontAwesomeIcon onClick={(e) => deleteRow(e, index)} className="delete" icon={faTimes} /></td>
