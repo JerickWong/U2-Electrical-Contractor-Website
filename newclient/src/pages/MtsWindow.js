@@ -4,6 +4,9 @@ import { Container, Table } from 'react-bootstrap';
 import { Button, TextField, Grid, InputAdornment, makeStyles, createMuiTheme, Paper, Typography } from '@material-ui/core';
 import { Add, Folder, Save, Person, LocationOn, Edit, LocalShipping, ArrowBack, CastConnectedSharp, ArrowBackIos } from '@material-ui/icons';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { InputBase } from '@material-ui/core';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
@@ -96,7 +99,7 @@ function MtsWindow(props) {
   const [total, setTotal] = useState([0, 0, 0, 0, 0])
   // const [totalAmount, setTotalAmount] = useState(0)
   const [first, setFirst] = ('')
-  const [rowObject, setRows] = useState([])
+  // const [rowObject, setRows] = useState([])
   const [row_index, setRowIndex] = useState(0)
   const [prepared_by, setPreparedBy] = useState('')
   const [address, setAddress] = useState('')
@@ -109,135 +112,180 @@ function MtsWindow(props) {
   const [approved_by, setApprovedBy] = useState('')
   const [received_by, setReceivedBy] = useState('')
   const [total_amount, setTotalAmount] = useState(0)
+  const [rows, setRows] = useState([{
+    qty: '',
+    description: '',
+    price: '',
+    unit: '',
+    brand: '',
+    model: '',
+    remarks: ''
+  },
+  {
+    qty: '',
+    description: '',
+    price: '',
+    unit: '',
+    brand: '',
+    model: '',
+    remarks: ''
+  },
+  {
+    qty: '',
+    description: '',
+    price: '',
+    unit: '',
+    brand: '',
+    model: '',
+    remarks: ''
+  },
+  {
+    qty: '',
+    description: '',
+    price: '',
+    unit: '',
+    brand: '',
+    model: '',
+    remarks: ''
+  },
+  {
+    qty: '',
+    description: '',
+    price: '',
+    unit: '',
+    brand: '',
+    model: '',
+    remarks: ''
+  }])
 
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
-  const rows = []
-  const [backToMTS, setBackToMTS] = useState('')
+  // const rows = []
+  // const [backToMTS, setBackToMTS] = useState('')
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        document.querySelector('#preparedby').value = user.displayName
-      }
-    })
+  // useEffect(() => {
+  //   firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       document.querySelector('#preparedby').value = user.displayName
+  //     }
+  //   })
   
-    if (firebase.auth().currentUser) {
-      document.querySelector('#preparedby').value = firebase.auth().currentUser.displayName
-    }
+  //   if (firebase.auth().currentUser) {
+  //     document.querySelector('#preparedby').value = firebase.auth().currentUser.displayName
+  //   }
 
-    if (props.location.state) {
-      const mts_number = props.location.state.mts_number
-      const projName = props.location.state.projName
-      console.log(mts_number, projName)
-      // const tempmtsObject = {}
-      const dbMts = db.collection('MTS-Collection').doc(projName).collection('MTS').doc(mts_number + '')
-      dbMts.get().then((snapshot) => {
-        const mtsData = snapshot.data()
-        console.log(mtsData)
-        document.querySelector('#preparedby').value = mtsData.prepared_by || ''
-        document.querySelector('#projectname').value = mtsData.project_name || ''
-        document.querySelector('#address').value = mtsData.address || ''
-        document.querySelector('#deliveredfrom').value = mtsData.delivered_from || ''
-        document.querySelector('#mtsnumber').value = mtsData.MTS_number || ''
-        document.querySelector('#date').value = mtsData.date 
-        document.querySelector('#requestedby').value = mtsData.requested_by || ''
-        document.querySelector('#approvedby').value = mtsData.approved_by || ''
-        document.querySelector('#takenoutby').value = mtsData.takenout_by || ''
-        document.querySelector('#receivedby').value = mtsData.received_by || ''
+  //   if (props.location.state) {
+  //     const mts_number = props.location.state.mts_number
+  //     const projName = props.location.state.projName
+  //     console.log(mts_number, projName)
+  //     // const tempmtsObject = {}
+  //     const dbMts = db.collection('MTS-Collection').doc(projName).collection('MTS').doc(mts_number + '')
+  //     dbMts.get().then((snapshot) => {
+  //       const mtsData = snapshot.data()
+  //       console.log(mtsData)
+  //       document.querySelector('#preparedby').value = mtsData.prepared_by || ''
+  //       document.querySelector('#projectname').value = mtsData.project_name || ''
+  //       document.querySelector('#address').value = mtsData.address || ''
+  //       document.querySelector('#deliveredfrom').value = mtsData.delivered_from || ''
+  //       document.querySelector('#mtsnumber').value = mtsData.MTS_number || ''
+  //       document.querySelector('#date').value = mtsData.date 
+  //       document.querySelector('#requestedby').value = mtsData.requested_by || ''
+  //       document.querySelector('#approvedby').value = mtsData.approved_by || ''
+  //       document.querySelector('#takenoutby').value = mtsData.takenout_by || ''
+  //       document.querySelector('#receivedby').value = mtsData.received_by || ''
 
-        // tempmtsObject.prepared_by = mtsData.prepared_by
-        // tempmtsObject.project_name = mtsData.project_name
-        // tempmtsObject.address = mtsData.address
-        // tempmtsObject.delivered_from = mtsData.delivered_from
-        // tempmtsObject.mts_number = mtsData.MTS_number + ''
-        // tempmtsObject.date = mtsData.date
-        // tempmtsObject.requested_by = mtsData.requested_by
-        // tempmtsObject.approved_by = mtsData.approved_by
-        // tempmtsObject.takenout_by = mtsData.takenout_by
-        // tempmtsObject.received_by = mtsData.received_by
+  //       // tempmtsObject.prepared_by = mtsData.prepared_by
+  //       // tempmtsObject.project_name = mtsData.project_name
+  //       // tempmtsObject.address = mtsData.address
+  //       // tempmtsObject.delivered_from = mtsData.delivered_from
+  //       // tempmtsObject.mts_number = mtsData.MTS_number + ''
+  //       // tempmtsObject.date = mtsData.date
+  //       // tempmtsObject.requested_by = mtsData.requested_by
+  //       // tempmtsObject.approved_by = mtsData.approved_by
+  //       // tempmtsObject.takenout_by = mtsData.takenout_by
+  //       // tempmtsObject.received_by = mtsData.received_by
 
-        // console.log(tempmtsObject)
+  //       // console.log(tempmtsObject)
   
-        setTotalAmount(mtsData.total_cost)        
-      })
-      .then(() => {
-        // TODO
-        setBackToMTS(
-          <Link to='/AdminMts'>
-            <Button className={classes.back} startIcon={<ArrowBackIos />}>Back to MTS List</Button>
-          </Link>
-        )
-      })      
-      dbMts.collection('productsList').get().then(snap => {
-        snap.docs.map((each, index) => {
-          console.log(each.data())
-          const row = each.data()
+  //       setTotalAmount(mtsData.total_cost)        
+  //     })
+  //     .then(() => {
+  //       // TODO
+  //       setBackToMTS(
+  //         <Link to='/AdminMts'>
+  //           <Button className={classes.back} startIcon={<ArrowBackIos />}>Back to MTS List</Button>
+  //         </Link>
+  //       )
+  //     })      
+  //     dbMts.collection('productsList').get().then(snap => {
+  //       snap.docs.map((each, index) => {
+  //         console.log(each.data())
+  //         const row = each.data()
 
-          console.log(row)
-          rows.push(
-            <MtsRow updateTotal={updateTotal} 
-            class1={classes.txt}
-            class2={classes.txt1}
-            class3={classes.txt2}
-            total={row.qty*row.price}
-            qty={row.qty}
-            unit={row.unit}
-            description={row.description}
-            brand={row.brand}
-            model={row.model}
-            price={row.price}
-            remarks={row.remarks}
-            click={deleteRow}
-            key={index}
-            />
-          )
-          setRowIndex(index)
-        })
-      })
-      .then(() => {
-        setRows(rows)
-      })
+  //         console.log(row)
+  //         rows.push(
+  //           <MtsRow updateTotal={updateTotal} 
+  //           class1={classes.txt}
+  //           class2={classes.txt1}
+  //           class3={classes.txt2}
+  //           total={row.qty*row.price}
+  //           qty={row.qty}
+  //           unit={row.unit}
+  //           description={row.description}
+  //           brand={row.brand}
+  //           model={row.model}
+  //           price={row.price}
+  //           remarks={row.remarks}
+  //           click={deleteRow}
+  //           key={index}
+  //           />
+  //         )
+  //         setRowIndex(index)
+  //       })
+  //     })
+  //     .then(() => {
+  //       setRows(rows)
+  //     })
 
-    } else {
-      for (let i=0; i<5; i++) {
+  //   } else {
+  //     for (let i=0; i<5; i++) {
         
-        rows.push(
-          <MtsRow updateTotal={updateTotal} 
-                    class1={classes.txt}
-                    class2={classes.txt1}
-                    class3={classes.txt2}
-                    total={0}
-                    click={deleteRow}
-                    key={i} />
-        )    
-        setRowIndex(i)
-      }
-      console.log(`row index: ${row_index}`)
-      setRows(rows)
-    }
-  }, [first])
+  //       rows.push(
+  //         <MtsRow updateTotal={updateTotal} 
+  //                   class1={classes.txt}
+  //                   class2={classes.txt1}
+  //                   class3={classes.txt2}
+  //                   total={0}
+  //                   click={deleteRow}
+  //                   key={i} />
+  //       )    
+  //       setRowIndex(i)
+  //     }
+  //     console.log(`row index: ${row_index}`)
+  //     setRows(rows)
+  //   }
+  // }, [first])
   
-  useEffect(() => {
-    let rownum = rowObject.length
-    let tempindex = row_index
-    if (rownum<5) {
-      let temprow = [...rowObject]
+  // useEffect(() => {
+  //   let rownum = rowObject.length
+  //   let tempindex = row_index
+  //   if (rownum<5) {
+  //     let temprow = [...rowObject]
 
-      for (let i=rownum; i<5+1; i++) {
-        temprow.push(
-          <MtsRow updateTotal={updateTotal} 
-                    class1={classes.txt}
-                    class2={classes.txt1}
-                    class3={classes.txt2}
-                    total={0}
-                    click={deleteRow}
-                    key={tempindex} />
-        )
-        tempindex++;
-      }
-      setRowIndex(tempindex)
-    }
-  }, [rowObject])
+  //     for (let i=rownum; i<5+1; i++) {
+  //       temprow.push(
+  //         <MtsRow updateTotal={updateTotal} 
+  //                   class1={classes.txt}
+  //                   class2={classes.txt1}
+  //                   class3={classes.txt2}
+  //                   total={0}
+  //                   click={deleteRow}
+  //                   key={tempindex} />
+  //       )
+  //       tempindex++;
+  //     }
+  //     setRowIndex(tempindex)
+  //   }
+  // }, [rowObject])
 
   // ON CHANGE UPDATE TOTAL ROW PRICE 
   function updateTotal (e) {
@@ -279,38 +327,51 @@ function MtsWindow(props) {
     setTotalAmount(tempTotal)
   }
   
-  function deleteRow(e) {
-    e.currentTarget.parentNode.parentNode.remove()
+  function deleteRow(e, index) {
+    const currentRows = [...rows]
+    currentRows.splice(index, 1)
+    setRows(currentRows)
     updateTotalAmount()
   }
 
   function addRow() {    
-    let newTotal = [...total]
-    newTotal.push(0)
-    setTotal(newTotal)    
+    // let newTotal = [...total]
+    // newTotal.push(0)
+    // setTotal(newTotal)    
         
-    console.log(`row index: ${row_index}`)        
+    // console.log(`row index: ${row_index}`)        
+    const currentRows = [...rows]
+    currentRows.push({
+        qty: '',
+        description: '',
+        price: '',
+        unit: '',
+        brand: '',
+        model: '',
+        remarks: ''
+      })
+    setRows(currentRows)
   }
 
 
   // use effect of adding rows
-  useEffect(() => {
-    if (total.length != 5) {
-      let newRows = [...rowObject]
-      newRows.push(
-        <MtsRow updateTotal={updateTotal} 
-                    class1={classes.txt}
-                    class2={classes.txt1}
-                    class3={classes.txt2}
-                    total={0}
-                    click={deleteRow}
-                    key={row_index} />
-      )
-      setRows(newRows)
-      setRowIndex(row_index+1)
-    }
+  // useEffect(() => {
+  //   if (total.length != 5) {
+  //     let newRows = [...rowObject]
+  //     newRows.push(
+  //       <MtsRow updateTotal={updateTotal} 
+  //                   class1={classes.txt}
+  //                   class2={classes.txt1}
+  //                   class3={classes.txt2}
+  //                   total={0}
+  //                   click={deleteRow}
+  //                   key={row_index} />
+  //     )
+  //     setRows(newRows)
+  //     setRowIndex(row_index+1)
+  //   }
 
-  }, [total])
+  // }, [total])
 
     function showConfirmationDialog(rows, ...restArgs) {
       const empty = []
@@ -479,7 +540,11 @@ function MtsWindow(props) {
     return filteredrows
   }
 
-  
+  function handleRowChange (e, index) {
+    const newRows = [...rows]
+    newRows[index] = e.target.value
+    setRows(newRows)
+  }
   
 
   return (
@@ -489,7 +554,7 @@ function MtsWindow(props) {
       <Container className="cont">        
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {backToMTS}
+          {/* {backToMTS} */}
           <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be filled-up before saving.'/>
           
           <MuiThemeProvider theme={theme}>
@@ -640,7 +705,22 @@ function MtsWindow(props) {
                 </tr>
               </thead>              
               <tbody>
-                {rowObject}
+                {rows.map((row, index) => {
+                  return (
+                    <tr onChange={updateTotal}>
+                        <td><InputBase className={classes.txt} size="small" value={row.qty} onChange={(e) => handleRowChange(e, index)} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt} size="small" value={row.unit}/></td>
+                        <td><InputBase className='description' size="small" value={row.description} multiline /></td>
+                        <td><InputBase className={classes.txt1} size="small" value={row.brand} multiline /></td>
+                        <td><InputBase className={classes.txt1} size="small" value={row.model} multiline /></td>
+                        <td><InputBase className={classes.txt1} size="small" value={row.price} pattern="[0-9*]" type="number" /></td>
+                            <td name='total'>{row.total}</td>
+                        <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} multiline inputProps={{maxLength:100}} /></td>
+                        <td><FontAwesomeIcon onClick={(e) => deleteRow(e, index)} className="delete" icon={faTimes} /></td>
+                    </tr>
+                  )
+                })}
+                {/* {rowObject} */}
               </tbody>
               
 
