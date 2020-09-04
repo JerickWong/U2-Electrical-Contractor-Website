@@ -50,22 +50,20 @@ updateMTS = async (req, res) => {
                 message: 'MTS not found!',
             })
         }
-        mts.pax = body.pax
-        mts.po = body.po
-        mts.date_created = body.date_created
-        mts.last_modified = body.last_modified
-        mts.paid_date = body.paid_date
-        mts.particulars = body.particulars
-        mts.php = body.php
-        mts.usd = body.usd
-        mts.total = body.total
-        mts.prepared_by = body.prepared_by
-        mts.approved_by = body.approved_by
-        mts.received_by = body.received_by
-        mts.recipient = body.recipient
-        mts.conversion_rate = body.conversion_rate
-        mts.is_cancelled = body.is_cancelled
         
+        mts.prepared_by = body.prepared_by
+        mts.project_name = body.project_name
+        mts.MTS_number = body.MTS_number
+        mts.delivered_from = body.delivered_from
+        mts.total_cost = body.total_cost
+        mts.requested_by = body.requested_by
+        mts.approved_by = body.approved_by
+        mts.takenout_by = body.takenout_by
+        mts.received_by = body.received_by
+        mts.status = body.status
+        mts.date = body.date
+        mts.rows = body.rows
+                
         mts
             .save()
             .then(() => {
