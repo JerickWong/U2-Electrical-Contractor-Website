@@ -55,7 +55,7 @@ updateMTS = async (req, res) => {
         mts.project_name = body.project_name
         mts.MTS_number = body.MTS_number
         mts.delivered_from = body.delivered_from
-        mts.total_cost = body.total_cost
+        mts.total_amount = body.total_amount
         mts.requested_by = body.requested_by
         mts.approved_by = body.approved_by
         mts.takenout_by = body.takenout_by

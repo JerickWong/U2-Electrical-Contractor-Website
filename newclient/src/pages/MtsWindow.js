@@ -15,6 +15,7 @@ import moment from 'moment'
 import UserAlert from '../components/UserAlert/UserAlert'
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
 import firebase from 'firebase'
+import api from '../api';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -314,118 +315,126 @@ function MtsWindow(props) {
     setRows(currentRows)
   }
 
-    function showConfirmationDialog(rows, ...restArgs) {
-      const empty = []
+  function showConfirmationDialog() {
+    const empty = []
 
-      restArgs.map(field => {
-        if (field[0] === '')
-          empty.push(field[1])
-      })
+    if (prepared_by === '')
+      empty.push('Prepared By')
+    if (project_name === '')
+      empty.push('Project Name')
+    if (MTS_number === '')
+      empty.push('MTS Number')
+    if (delivered_from === '')
+      empty.push('Delivered from')
+    if (requested_by === '')
+      empty.push('Requested By')
+    if (approved_by === '')
+      empty.push('Approved By')
+    if (takenout_by === '')
+      empty.push('Taken out By')
+    if (received_by === '')
+      empty.push('Received By')
+    if (date === '')
+      empty.push('Date')    
 
-      rows.map((row, index) => {
-        let qty = row.querySelector('input[name="quantity"]').value
-        let unit = row.querySelector('input[name="unit"]').value
-        let description = row.querySelector('textarea[name="description"]').value
-        let brand = row.querySelector('textarea[name="brand"]').value
-        let model = row.querySelector('textarea[name="model"]').value
-        let remarks = row.querySelector('textarea[name="remarks"]').value
+    rows.map((row, index) => {
+      const { qty, description, unit, brand, model, remarks } = row
 
-        if (qty === '')
-          empty.push(`Quantity at row ${index+1}`)
-        if (unit === '')
-          empty.push(`Unit at row ${index+1}`)
-        if (description === '')
-          empty.push(`Description at row ${index+1}`)
-        if (brand === '')
-          empty.push(`Brand at row ${index+1}`)
-        if (model === '')
-          empty.push(`Model at row ${index+1}`)
-        if (remarks === '')
-          empty.push(`Remarks at row ${index+1}`)
-      })
-
-      if (empty.length != 0) {
-        setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
-      } else {
-        handleConfirm()
-      }      
-        
-    }
-
-  function handleConfirm() {
-    // GETTING NECESSARY VALUES
-    const rows = getRows()
-          
-    const prepared_by = document.querySelector('#preparedby').value
-    const project_name = document.querySelector('#projectname').value
-    const address = document.querySelector('#address').value
-    const delivered_from = document.querySelector('#deliveredfrom').value
-
-    let MTS_number = document.querySelector('#mtsnumber').value
-    const date = document.querySelector('#date').value
-
-    let total_cost = total_amount
-    const requested_by = document.querySelector('#requestedby').value
-    const approved_by = document.querySelector('#approvedby').value
-    const takenout_by = document.querySelector('#takenoutby').value
-    const received_by = document.querySelector('#receivedby').value
-
-    MTS_number = parseInt(MTS_number)
-    total_cost = parseFloat(total_cost)
-
-    console.log(MTS_number)
-
-    // ACTUAL SAVING TO DB
-    const newID = MTS_number + ""
-    db.collection('MTS-Collection').doc(project_name).set({ name: project_name })
-    const database = db.collection('MTS-Collection').doc(project_name).collection('MTS').doc(newID)      
-    database.set({
-      prepared_by: prepared_by,
-      project_name: project_name,
-      address: address,
-      delivered_from: delivered_from,
-      MTS_number: MTS_number,
-      date: date,
-      total_cost: total_cost,
-      requested_by: requested_by,
-      approved_by: approved_by,
-      takenout_by: takenout_by,
-      received_by: received_by,
-      status: 'For Approval',
-      date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
+      if (qty === '')
+        empty.push(`Quantity at row ${index+1}`)
+      if (unit === '')
+        empty.push(`Unit at row ${index+1}`)
+      if (description === '')
+        empty.push(`Description at row ${index+1}`)
+      if (brand === '')
+        empty.push(`Brand at row ${index+1}`)
+      if (model === '')
+        empty.push(`Model at row ${index+1}`)
+      if (remarks === '')
+        empty.push(`Remarks at row ${index+1}`)
     })
-    .catch(err => alert('something went wrong'))
+
+    if (empty.length !== 0) {
+      setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
+    } else {
+      handleConfirm()
+    }      
+      
+  }
+
+  async function handleConfirm() {
+
+    const payload = {
+      prepared_by,
+      project_name,
+      address,
+      delivered_from,
+      MTS_number,
+      date,
+      total_amount,
+      requested_by,
+      approved_by,
+      takenout_by,
+      received_by
+    }
+    
+    try {
+      const response = await (await api.insertMTS(payload)).data
+      alert(response.message)
+    } catch (error) {
+      alert(error.message)
+    }
+    // FIRESTORE Saving
+    // ACTUAL SAVING TO DB
+    // const newID = MTS_number + ""
+    // db.collection('MTS-Collection').doc(project_name).set({ name: project_name })
+    // const database = db.collection('MTS-Collection').doc(project_name).collection('MTS').doc(newID)      
+    // database.set({
+    //   prepared_by: prepared_by,
+    //   project_name: project_name,
+    //   address: address,
+    //   delivered_from: delivered_from,
+    //   MTS_number: MTS_number,
+    //   date: date,
+    //   total_cost: total_cost,
+    //   requested_by: requested_by,
+    //   approved_by: approved_by,
+    //   takenout_by: takenout_by,
+    //   received_by: received_by,
+    //   status: 'For Approval',
+    //   date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
+    // })
+    // .catch(err => alert('something went wrong'))
 
     // SUBCOLLECTION, PRODUCTS LIST AKA ROWS
-    let index = 0;
-    console.log(rows)
-    rows.map(row => {
-      let productID = index + newID
-      let qty = parseInt(row.querySelector('input[name="quantity"]').value)
-      let unit = row.querySelector('input[name="unit"]').value
-      let description = row.querySelector('textarea[name="description"]').value
-      description = description.replace(/\//g, "|");
-      description = description.replace(/./g, "_");
-      let brand = row.querySelector('textarea[name="brand"]').value
-      let model = row.querySelector('textarea[name="model"]').value
-      let remarks = row.querySelector('textarea[name="remarks"]').value
-      let price = row.querySelector('input[name="price"]').value
-      console.log(remarks)
+    // let index = 0;
+    // console.log(rows)
+    // rows.map(row => {
+    //   let productID = index + newID
+    //   let qty = parseInt(row.querySelector('input[name="quantity"]').value)
+    //   let unit = row.querySelector('input[name="unit"]').value
+    //   let description = row.querySelector('textarea[name="description"]').value
+    //   description = description.replace(/\//g, "|");
+    //   description = description.replace(/./g, "_");
+    //   let brand = row.querySelector('textarea[name="brand"]').value
+    //   let model = row.querySelector('textarea[name="model"]').value
+    //   let remarks = row.querySelector('textarea[name="remarks"]').value
+    //   let price = row.querySelector('input[name="price"]').value
+    //   console.log(remarks)
 
-      database.collection('productsList').doc(productID).set({
-        qty: qty,
-        unit: unit,
-        description: description,
-        brand: brand,
-        model: model,
-        remarks: remarks,
-        price: price
-      })
-      .catch(err => alert('something went wrong'))
-      index++
-      
-      
-    })
+    //   database.collection('productsList').doc(productID).set({
+    //     qty: qty,
+    //     unit: unit,
+    //     description: description,
+    //     brand: brand,
+    //     model: model,
+    //     remarks: remarks,
+    //     price: price
+    //   })
+    //   .catch(err => alert('something went wrong'))
+    //   index++
+            
+    // })
 
     closeConfirmDialog();
   }

@@ -6,16 +6,14 @@ const user = axios.create({
 
 export const login = payload => user.post(`/login-user`, payload)
 export const logout = () => user.get(`/logout-user`)
-export const getUser = () => user.get(`/current-user`)
+export const getUser = payload => user.post(`/current-user`, payload)
 export const register = payload => user.post(`/register-user`, payload)
-export const getJWT = () => user.get(`/get-jwt`)
 
 const users = {
     login,
     logout,
     getUser,
-    register,
-    getJWT
+    register
 }
 
 export default users
