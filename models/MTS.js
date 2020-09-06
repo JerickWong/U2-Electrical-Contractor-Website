@@ -24,6 +24,7 @@ const MTSSchema = new mongoose.Schema({
     prepared_by: {
         type: String,
         required: true,
+        unique: false
     },
     project_name: {
         type: String,

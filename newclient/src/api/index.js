@@ -10,6 +10,7 @@ export const updateMTSById = (id, payload) => api.put(`/MTS/${id}`, payload)
 export const deleteMTSById = id => api.delete(`/MTS/${id}`)
 export const getMTSById = id => api.get(`/MTS/${id}`)
 export const getMTSByProject = payload => api.post(`/MTS/project`, payload)
+export const getMTSProjects = () => api.get(`/MTS/project-names`)
 
 const apis = {
     insertMTS,
@@ -17,6 +18,7 @@ const apis = {
     updateMTSById,
     deleteMTSById,
     getMTSById,
+    getMTSProjects
 }
 
 export default apis
