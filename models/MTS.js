@@ -24,7 +24,6 @@ const MTSSchema = new mongoose.Schema({
     prepared_by: {
         type: String,
         required: true,
-        unique: true,
     },
     project_name: {
         type: String,
@@ -32,7 +31,8 @@ const MTSSchema = new mongoose.Schema({
     },
     MTS_number: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     delivered_from: String,
     total_amount: Number,

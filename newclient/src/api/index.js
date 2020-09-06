@@ -9,6 +9,7 @@ export const getAllMTS = () => api.get(`/All-MTS`)
 export const updateMTSById = (id, payload) => api.put(`/MTS/${id}`, payload)
 export const deleteMTSById = id => api.delete(`/MTS/${id}`)
 export const getMTSById = id => api.get(`/MTS/${id}`)
+export const getMTSByProject = payload => api.post(`/MTS/project`, payload)
 
 const apis = {
     insertMTS,

@@ -8,5 +8,6 @@ router.put('/MTS/:id', MTSCntrl.updateMTS)
 router.delete('/MTS/:id', MTSCntrl.deleteMTS)
 router.get('/MTS/:id', MTSCntrl.getMTSById)
 router.get('/All-MTS', MTSCntrl.getAllMTS)
+router.post('/MTS/project', MTSCntrl.getMTSByProject)
 
 module.exports = router

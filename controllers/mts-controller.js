@@ -127,10 +127,26 @@ getAllMTS = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+getMTSByProject = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+        return res.status(200).json({ success: true, data: mts })
+    })
+}
+
 module.exports = {
     createMTS,
     updateMTS,
     deleteMTS,
     getAllMTS,
     getMTSById,
+    getMTSByProject
 }
