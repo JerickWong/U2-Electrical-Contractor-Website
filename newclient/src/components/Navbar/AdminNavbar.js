@@ -141,7 +141,7 @@ function AdminNavbar() {
 
   return (
     <div className={classes.root}>
-      {isLoggedin()}
+      {/* {isLoggedin()} */}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
@@ -180,41 +180,41 @@ function AdminNavbar() {
           <Divider />
           <List>
             <Link to='/AdminMtsWindow'>
-              <ListItem onClick={refreshPage} button key="New MTS">
+              <ListItem button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />
               </ListItem>
             </Link>
             <Link to="/AdminMts">
-              <ListItem onClick={refreshPage} button key="MTS List">
+              <ListItem button key="MTS List">
                 <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
             </Link>
             <Link to="/AdminPrice">
-              <ListItem onClick={refreshPage} button key="Price List">
+              <ListItem button key="Price List">
                 <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="Price List" />
               </ListItem>
             </Link>
-            <ListItem onClick={refreshPage} button key="Activity Log">
+            <ListItem button key="Activity Log">
               <ListItemIcon className={classes.listIcon}><ListAlt /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Activity Log" />
             </ListItem>
             <Link to="/Cost">
-            <ListItem onClick={refreshPage} button key="Cost">
+            <ListItem button key="Cost">
               <ListItemIcon className={classes.listIcon}><TrendingUp /></ListItemIcon>
               <ListItemText className={classes.listIcon} primary="Cost" />
             </ListItem>
             </Link>
             <Link to="/Deliver">
-              <ListItem onClick={refreshPage} button key="Delivered">
+              <ListItem button key="Delivered">
                 <ListItemIcon className={classes.listIcon}><VerifiedUser /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="Delivered" />
               </ListItem>
             </Link>
             <Link to='/Accounts'>
-              <ListItem onClick={refreshPage} button key="Accounts">
+              <ListItem button key="Accounts">
                 <ListItemIcon className={classes.listIcon}><SupervisorAccount /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="Accounts" />
               </ListItem>

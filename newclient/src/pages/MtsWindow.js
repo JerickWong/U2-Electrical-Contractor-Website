@@ -446,30 +446,8 @@ function MtsWindow(props) {
   // SAVING OF MTS TO DB
   function saveMTS () {
 
-    // GETTING NECESSARY VALUES
-    const rows = getRows()
+    showConfirmationDialog()
     
-    const prepared_by = document.querySelector('#preparedby').value
-    const project_name = document.querySelector('#projectname').value
-    const address = document.querySelector('#address').value
-    const delivered_from = document.querySelector('#deliveredfrom').value
-
-    let MTS_number = document.querySelector('#mtsnumber').value
-    const date = document.querySelector('#date').value
-    
-    let total_cost = total_amount
-    const requested_by = document.querySelector('#requestedby').value
-    const approved_by = document.querySelector('#approvedby').value
-    const takenout_by = document.querySelector('#takenoutby').value
-    const received_by = document.querySelector('#receivedby').value
-    
-    MTS_number = parseInt(MTS_number)
-    total_cost = parseFloat(total_cost)
-
-    console.log(MTS_number)
-    
-    showConfirmationDialog(rows, [prepared_by, 'Prepared By'], [address, 'Address'], [delivered_from, 'Delivered From'], 
-                          [date, 'Date'], [approved_by, 'Approved By'], [takenout_by, 'Taken Out By'], [received_by, 'Received By'])    
 
   }
 

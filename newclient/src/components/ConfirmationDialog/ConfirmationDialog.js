@@ -13,8 +13,8 @@ function ConfirmationDialogRaw(props) {
   const [value, setValue] = React.useState(valueProp);
   const radioGroupRef = React.useRef(null);
 
-  let empty = props.empty.join(', ')
-  empty.substring(0, empty.length -2)
+  // let empty = props.empty.join(', ')
+  // empty.substring(0, empty.length -2)
 
   // React.useEffect(() => {
   //   if (!open) {
@@ -58,7 +58,12 @@ function ConfirmationDialogRaw(props) {
         <DialogContentText >
             By proceeding, you are leaving out the following empty:
             <br></br>
-            {empty}
+            {props.empty.map(item => {
+              return(
+                <div>{item}<br /></div>
+              )
+            })}
+            {/* {console.log(empty)} */}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
