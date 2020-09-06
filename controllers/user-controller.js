@@ -117,7 +117,7 @@ getAllUser = async (req, res) => {
 }
 
 getUser = async (req, res) => {
-    const token = req.cookies.token
+    const token = req.body.token
     console.log(token)
     // console.log(req.body.token)
     // console.log(token, " baket wala huhu")

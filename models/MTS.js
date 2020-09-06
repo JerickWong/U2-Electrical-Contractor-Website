@@ -40,7 +40,10 @@ const MTSSchema = new mongoose.Schema({
     approved_by: String,
     takenout_by: String,
     received_by: String,
-    status: String,
+    status: {
+        type: String,
+        default: "For Approval"
+    },
     date: Date,
     date_created: {
         type: Date,

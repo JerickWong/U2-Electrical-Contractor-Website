@@ -9,6 +9,7 @@ import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
 import firebase from 'firebase'
+import users from '../api/users'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -39,15 +40,28 @@ function MtsList(props) {
     let temprows = []
     const [user, setUser] = useState('')
 
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            setUser(user.displayName)
-        } else {
-            console.log(user)
-        }
-        setFirst('First')
-    })
+    // firebase.auth().onAuthStateChanged(user => {
+    //     if (user) {
+    //         setUser(user.displayName)
+    //     } else {
+    //         console.log(user)
+    //     }
+    //     setFirst('First')
+    // })
 
+    useEffect( async () => {
+        if (!user) {
+            // try {
+
+            //     const current_user = await (await users.getUser({token: localStorage.getItem('token')})).data.data
+            //     setUser(current_user)
+            // } catch (error) {
+            //     alert('Something went wrong')
+            // }
+            alert('temp')
+
+        }
+    }, [user])
     
     useEffect(() => {
 
