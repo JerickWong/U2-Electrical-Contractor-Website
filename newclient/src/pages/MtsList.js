@@ -6,10 +6,11 @@ import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
-import db from '../components/Firestore/firestore';
+// import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
-import firebase from 'firebase'
+// import firebase from 'firebase'
 import users from '../api/users'
+import api from '../api'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -25,20 +26,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const dbMTS = db.collection('MTS-Collection');
+// const dbMTS = db.collection('MTS-Collection');
 
 function MtsList(props) {
     ////// STATES //////
-    const [projName, setProject] = useState('');    
-    const [errMessage, setError] = useState('')
-    const [projDropDown, setProjDrop] = useState([])
+    const [current_project, setProject] = useState('');
+    const [error, setError] = useState('')
+    const [projects, setProjects] = useState([])
     const [status, setStatus] = useState('All')
-    const [mtsRows, setMtsRows] = useState([])
-    const [first, setFirst] = useState('')
-    const [changeProject, setChangeProject] = useState(true)
+    const [mts, setMts] = useState([])
+    const [user, setUser] = useState(fetchUser())
+    // const [first, setFirst] = useState('')
+    // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
-    let temprows = []
-    const [user, setUser] = useState('')
+    // let temprows = []
 
     // firebase.auth().onAuthStateChanged(user => {
     //     if (user) {
@@ -48,138 +49,168 @@ function MtsList(props) {
     //     }
     //     setFirst('First')
     // })
+    
+    // FIRESTORE
+    // useEffect( async () => {
 
-    useEffect( async () => {
-        if (!user) {
-            // try {
+    //     if (first !== '') {
+            
+    //         try {
+    //             // for dropdown
+    //             const projectnames = await (await api.getMTSProjects()).data.data
+                
+    //             setProjects(projectnames)
+    //             setProject(projectnames[0])
+    //             setError('')
+    //         } catch (error) {
+    //             setError(error)
+    //         }
+    
+    //         ////// GETTING THE PROJECTS ///////
+    //         // function renderProjects(project, value) {
+                
+    //         //     if (value == 1) {
+    //         //         firstproject = project.data().name
+    //         //     }
+    //         //     console.log(project.data().name)
+    //         //     const name = project.data().name
+    //         //     projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
+    //         // }
+    
+    //         // dbMTS.get().then(projSnapshot => {
+    //         //     projSnapshot.docs.forEach((project, index) => {
+    //         //     renderProjects(project, index+1)
+    //         //     })
+    //         // })
+    //         // .then(() => {
+    //         //     setProjects(projectnames)
+    //         //     setProject(firstproject)
+    //         //     setError('')
+    //         // })
+    //         // .catch(err => {
+    //         //     setError(err.message)
+    //         // })
+    //     }        
 
-            //     const current_user = await (await users.getUser({token: localStorage.getItem('token')})).data.data
-            //     setUser(current_user)
-            // } catch (error) {
-            //     alert('Something went wrong')
-            // }
-            alert('temp')
+    // }, [first])
+    
+    // FIRESTORE
+    // useEffect(() => {
+        // console.log('not inf loop')
+        // console.log(current_project)
+        // if (current_project !== '') {
+        //     setMts([])
+        //     // temprows = []
+        //     console.log(mts)
+        //     // setChangeProject(!changeProject)
+        // }        
+    // }, [current_project, status])
 
+
+    // FIRESTORE
+    // useEffect( async () => {
+    //     console.log(mts)
+    //     console.log(status)
+
+    //     if (current_project !== '') {            
+
+    //         if (status === 'All') {
+
+    //             const mts = await (await api.getAllMTS()).data.data
+    //             renderRows(mts)
+    //             // dbMTS.doc(current_project).collection('MTS').where('prepared_by', '==', user).get().then(snap => {
+    //             //     snap.docs.map(mts => {
+    //             //         renderRows(mts)
+    //             //     })
+    //             // })
+    //             // .then(() => {
+    //             //     console.log(temprows)
+    //             //     setMts(temprows)
+    //             // })
+
+    //         } else {
+                
+    //             // dbMTS.doc(current_project).collection('MTS').where('prepared_by', '==', user).where('status', '==', status).get()
+    //             // .then(snap => {
+    //             //     snap.docs.map(mts => {
+    //             //         renderRows(mts)
+    //             //     })
+    //             // })
+    //             // .then(() => {
+    //             //     console.log(temprows)
+    //             //     setMts(temprows)
+    //             // })
+    //         }
+    //     }
+        
+    // }, [changeProject])
+
+    async function fetchUser() {
+
+        try {
+            return await (await users.getUser({token: localStorage.getItem('token')})).data.data
+        } catch (error) {
+            console.log(error)
+            alert('user not logged in')
+            return null
         }
+    }
+
+    async function fetchData() {
+
+        try {
+    
+            const projectnames = await (await api.getMTSProjects()).data.data
+            
+            setProjects(projectnames)
+            setProject(projectnames[0])
+            
+            setError('')
+        } catch (error) {
+            alert('Something went wrong')
+            setError(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
     }, [user])
     
-    useEffect(() => {
-
-        if (first != '') {
-            const projectnames = [] // for dropdown
-            let firstproject = ''
     
-            ////// GETTING THE PROJECTS ///////
-            function renderProjects(project, value) {
-                
-                if (value == 1) {
-                    firstproject = project.data().name
-                }
-                console.log(project.data().name)
-                const name = project.data().name
-                projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )    
-            }
-    
-            dbMTS.get().then(projSnapshot => {
-                projSnapshot.docs.forEach((project, index) => {
-                renderProjects(project, index+1)
-                })
-            })
-            .then(() => {
-                setProjDrop(projectnames)
-                setProject(firstproject)
-                setError('')
-            })
-            .catch(err => {
-                setError(err.message)
-            })
-        }        
-
-    }, [first])
-
     function renderError() {
-        if (errMessage) 
-            return <UserAlert severity='error' message={errMessage} />
+        if (error) 
+        return <UserAlert severity='error' message={error} />
         else 
-            return ''
+        return ''
     }
 
-    function renderRows(mts) {
-        const mtsData = mts.data()
-        const name = projName
-        // let newRow = [...mtsRows]
-        temprows.push(
-            <tr>
-                <td>{name}</td>
-                <td>{mtsData.MTS_number}</td>
-                <td>{mtsData.date_created}</td>
-                <td>{mtsData.status}</td>
-                <td><Link to={{
-                    pathname:'/MtsWindow',
-                    state: {
-                        projName: name,
-                        mts_number: mtsData.MTS_number
-                    }                    
-                }}><FontAwesomeIcon className="view" icon={faEye} /></Link>
-                </td>
-            </tr>
-        )        
-    }
-
-    useEffect(() => {
-        console.log('not inf loop')
-        console.log(projName)
-        if (projName != '') {
-            setMtsRows([])
-            temprows = []
-            console.log(mtsRows)
-            setChangeProject(!changeProject)
-        }        
-    }, [projName, status])    
-
-    useEffect(() => {
-        console.log(mtsRows)
-        console.log(status)
-
-        if (projName != '') {            
-
-            if (status == 'All') {
-
-                dbMTS.doc(projName).collection('MTS').where('prepared_by', '==', user).get().then(snap => {
-                    snap.docs.map(mts => {
-                        renderRows(mts)
-                    })
-                })
-                .then(() => {
-                    console.log(temprows)
-                    setMtsRows(temprows)
-                })
-
-            } else {
-                dbMTS.doc(projName).collection('MTS').where('prepared_by', '==', user).where('status', '==', status).get()
-                .then(snap => {
-                    snap.docs.map(mts => {
-                        renderRows(mts)
-                    })
-                })
-                .then(() => {
-                    console.log(temprows)
-                    setMtsRows(temprows)
-                })
+    async function getMTS() {
+        try {            
+            const payload = {
+                project_name: current_project,
+                status: status
             }
+            const new_mts = await (await api.getMTSByProject(payload)).data.data
+            setMts(new_mts)
+        } catch (error) {
+            setMts([])
+            alert(error)
         }
-        
-    }, [changeProject])
+    }
+
+    useEffect( () => {
+        if (current_project)
+            getMTS()
+    }, [current_project, status])
 
     const handleChange = (event) => {
-        console.log(event.target.value)
-
-        console.log(event.target.name)
-        if (event.target.name === 'selectProject') 
-            setProject(event.target.value);
+        const { name, value } = event.target
+        
+        if (name === 'selectProject') 
+            setProject(value);
             
         else
-            setStatus(event.target.value)
+            setStatus(value)
     };
 
     return (
@@ -191,8 +222,14 @@ function MtsList(props) {
                         <Grid item xs={6}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
-                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} name="selectProject">
-                                    {projDropDown}
+                                <Select labelId="demo-simple-select-label" defaultValue={projects[0]} value={current_project} size="large" onChange={handleChange} name="selectProject">
+                                    {
+                                        projects.map(project => {
+                                            return (
+                                                <MenuItem value={project}>{project}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -221,7 +258,27 @@ function MtsList(props) {
                     </thead>
                     
                     <tbody>
-                        {mtsRows}
+                        {/* {mts} */}
+                        {
+                            mts.map( (m, index) => {
+                                return (
+                                    <tr>
+                                        <td>{current_project}</td>
+                                        <td>{m.MTS_number}</td>
+                                        <td>{m.date_created}</td>
+                                        <td>{m.status}</td>
+                                        <td><Link to={{
+                                            pathname:'/MtsWindow',
+                                            state: {
+                                                current_project: current_project,
+                                                mts_number: m.MTS_number
+                                            }                    
+                                        }}><FontAwesomeIcon className="view" icon={faEye} /></Link>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
                 </Table>
                 

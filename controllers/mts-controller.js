@@ -143,7 +143,7 @@ getMTSProjects = async (req, res) => {
 }
 
 getMTSByProject = async (req, res) => {
-    if (!req.body.status) {
+    if (req.body.status === "All") {
 
         await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
             if (err) {

@@ -57,8 +57,8 @@ export default class LoginBox extends Component {
     //   console.error(err.response.data.errors)
     //   this.setRedirect(false, err.response.data.errors[0].msg)
     // }
-    alert(username)
-    alert(password)
+    // alert(username)
+    // alert(password)
     try {
       const token = await (await users.login({username, password})).data.token
       console.log(token)

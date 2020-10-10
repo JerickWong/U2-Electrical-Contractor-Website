@@ -41,7 +41,7 @@ loginUser = async (req, res) => {
                         token,
                         user,
                     });
-                    console.log(`inside ${token}`)
+                    // console.log(`inside ${token}`)
                     res.cookie('token', token, {
                         // domain: "localhost",
                         httpOnly: false
@@ -118,7 +118,7 @@ getAllUser = async (req, res) => {
 
 getUser = async (req, res) => {
     const token = req.body.token
-    console.log(token)
+    // console.log(token)
     // console.log(req.body.token)
     // console.log(token, " baket wala huhu")
     // alert(token)    
@@ -135,7 +135,7 @@ getUser = async (req, res) => {
         req.user = decodedUser;
         
         const user = await User.findById({ _id: decodedUser.id }).select('-password')
-        console.log(user)
+        // console.log(user)
         return res.status(200).json({ success: true, data: user })
         // next();
     } catch (error) {
