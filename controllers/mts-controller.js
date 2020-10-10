@@ -4,6 +4,7 @@ createMTS = (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log(`body ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a MTS',
@@ -13,6 +14,7 @@ createMTS = (req, res) => {
     const mts = new MTS(body)
 
     if (!mts) {
+        console.log(`mts ${mts}`)
         return res.status(400).json({ success: false, error: err })
     }
 
@@ -26,6 +28,8 @@ createMTS = (req, res) => {
             })
         })
         .catch(error => {
+            console.log(error)
+            console.log("dito")
             return res.status(400).json({
                 error,
                 message: 'MTS not created!',

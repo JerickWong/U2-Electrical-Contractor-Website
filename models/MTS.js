@@ -21,10 +21,9 @@ const rowSchema = new mongoose.Schema({
 })
 
 const MTSSchema = new mongoose.Schema({
-    prepared_by: {
+    requested_by: {
         type: String,
-        required: true,
-        unique: false
+        required: true
     },
     project_name: {
         type: String,
@@ -37,7 +36,7 @@ const MTSSchema = new mongoose.Schema({
     },
     delivered_from: String,
     total_amount: Number,
-    requested_by: String,
+    prepared_by: String,
     approved_by: String,
     takenout_by: String,
     received_by: String,

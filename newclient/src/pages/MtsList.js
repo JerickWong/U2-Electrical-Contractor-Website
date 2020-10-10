@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import {Container, Table} from 'react-bootstrap';
+import {Button, Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
@@ -11,6 +11,7 @@ import UserAlert from '../components/UserAlert/UserAlert'
 // import firebase from 'firebase'
 import users from '../api/users'
 import api from '../api'
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -179,9 +180,9 @@ function MtsList(props) {
     
     function renderError() {
         if (error) 
-        return <UserAlert severity='error' message={error} />
+            return <UserAlert severity='error' message={error} />
         else 
-        return ''
+            return ''
     }
 
     async function getMTS() {
@@ -265,15 +266,18 @@ function MtsList(props) {
                                     <tr>
                                         <td>{current_project}</td>
                                         <td>{m.MTS_number}</td>
-                                        <td>{m.date_created}</td>
+                                        <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
                                         <td>{m.status}</td>
                                         <td><Link to={{
                                             pathname:'/MtsWindow',
                                             state: {
                                                 current_project: current_project,
                                                 mts_number: m.MTS_number
-                                            }                    
-                                        }}><FontAwesomeIcon className="view" icon={faEye} /></Link>
+                                            }
+                                        }}>                                    
+                                        <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
+                                        View</Button>
+                                        </Link>
                                         </td>
                                     </tr>
                                 )
