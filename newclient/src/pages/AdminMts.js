@@ -37,6 +37,7 @@ function AdminMts(props) {
     const [status, setStatus] = useState('All')
     const [mts, setMts] = useState([])
     const [user, setUser] = useState(fetchUser())
+    const [current_mts, setCurrent] = useState(null)
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -249,8 +250,7 @@ function AdminMts(props) {
             const new_mts = await (await api.getMTSByProject(payload)).data.data
             setMts(new_mts)
         } catch (error) {
-            setMts([])
-            alert(error)
+            setMts([])            
         }
     }
 
@@ -267,7 +267,24 @@ function AdminMts(props) {
             
         else
             setStatus(value)
-    };    
+    };
+
+    const handleConfirm = async () => {
+        try {
+            current_mts.status = "Confirmed"
+            await api.updateMTSById(current_mts._id, current_mts)
+            alert('all goods')
+        } catch (error) {
+            console.log(error)
+            console.log(current_mts)
+            alert(error)
+        }
+    }
+
+    useEffect(() => {
+        if (current_mts)
+            handleConfirm()
+    }, [current_mts])
 
     return (
         <div className="App">
@@ -336,7 +353,7 @@ function AdminMts(props) {
                                     </Link>
                                     {
                                         status !== "Confirm" ?  
-                                            <Button variant="outlined">Confirm</Button>
+                                            <Button variant="outlined" onClick={() => { setCurrent(m) }}>Confirm</Button>
                                             : ""
                                     }
                                     </td>

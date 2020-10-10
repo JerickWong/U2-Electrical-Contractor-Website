@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import {Button, Container, Table} from 'react-bootstrap';
-import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl } from '@material-ui/core';
+import { Container, Table} from 'react-bootstrap';
+import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 // import db from '../components/Firestore/firestore';
@@ -195,7 +195,6 @@ function MtsList(props) {
             setMts(new_mts)
         } catch (error) {
             setMts([])
-            alert(error)
         }
     }
 
@@ -274,7 +273,7 @@ function MtsList(props) {
                                                 current_project: current_project,
                                                 mts_number: m.MTS_number
                                             }
-                                        }}>                                    
+                                        }}>
                                         <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
                                         View</Button>
                                         </Link>
