@@ -96,12 +96,8 @@ function MtsWindow(props) {
   // removed validity, invalid
   
   // --------STATES-------- //
+  const [isEdit, setIsEdit] = useState(true)
   const [confirmDialog, setConfirmationDialog] = useState('')
-  const [total, setTotal] = useState([0, 0, 0, 0, 0])
-  // const [totalAmount, setTotalAmount] = useState(0)
-  const [first, setFirst] = ('')
-  // const [rowObject, setRows] = useState([])
-  const [row_index, setRowIndex] = useState(0)
   const [prepared_by, setPreparedBy] = useState('')
   const [address, setAddress] = useState('')
   const [MTS_number, setMtsNumber] = useState('')
@@ -120,7 +116,8 @@ function MtsWindow(props) {
     unit: '',
     brand: '',
     model: '',
-    remarks: ''
+    remarks: '',
+    total: 0
   },
   {
     qty: '',
@@ -129,7 +126,8 @@ function MtsWindow(props) {
     unit: '',
     brand: '',
     model: '',
-    remarks: ''
+    remarks: '',
+    total: 0
   },
   {
     qty: '',
@@ -138,7 +136,8 @@ function MtsWindow(props) {
     unit: '',
     brand: '',
     model: '',
-    remarks: ''
+    remarks: '',
+    total: 0
   },
   {
     qty: '',
@@ -147,7 +146,8 @@ function MtsWindow(props) {
     unit: '',
     brand: '',
     model: '',
-    remarks: ''
+    remarks: '',
+    total: 0
   },
   {
     qty: '',
@@ -156,8 +156,54 @@ function MtsWindow(props) {
     unit: '',
     brand: '',
     model: '',
-    remarks: ''
+    remarks: '',
+    total: 0
   }])
+
+  useEffect(() => {
+    if (isEdit) {
+
+      if (props.location.state) {
+        const mts = props.location.state.mts
+    
+        setPreparedBy(mts.prepared_by)
+        setAddress(mts.address)
+        setMtsNumber(mts.MTS_number)
+        setProjectName(mts.project_name)
+        setDeliveredFrom(mts.delivered_from)
+        setDate(mts.date)
+        setRequestedBy(mts.requested_by)
+        setTakenoutBy(mts.takenout_by)
+        setApprovedBy(mts.approved_by)
+        setReceivedBy(mts.received_by)
+        setTotalAmount(mts.total_amount)
+        alert(mts.total_amount)
+        
+        let length = mts.rows.length
+        let temp = []
+
+        if (length < 5) {
+          while (5-length) {
+            temp.push({            
+              qty: '',
+              description: '',
+              price: '',
+              unit: '',
+              brand: '',
+              model: '',
+              remarks: '',
+              total: 0
+            })
+            length++;
+          }
+        }
+        setRows([...mts.rows, ...temp])
+      }
+    }
+
+    setIsEdit(false)
+  }, [isEdit])
+
 
   // FIRESTORE SHIT
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
@@ -310,7 +356,8 @@ function MtsWindow(props) {
         unit: '',
         brand: '',
         model: '',
-        remarks: ''
+        remarks: '',
+        total: 0
       })
     setRows(currentRows)
   }
@@ -371,18 +418,33 @@ function MtsWindow(props) {
       delivered_from,
       MTS_number,
       date,
-      total_amount,
+      total_amount: parseFloat(total_amount),
       requested_by,
       approved_by,
       takenout_by,
-      received_by
+      received_by,
+      rows
     }
-    
-    try {
-      const response = await (await api.insertMTS(payload)).data
-      alert(response.message)
-    } catch (error) {
-      alert(error.message)
+
+    // editing
+    if (props.location.state) {
+      try {
+        const _id = props.location.state.mts._id
+        const response = await (await api.updateMTSById(_id, payload)).data
+        console.log(response.data)
+        alert(response.message)      
+      } catch (error) {
+        alert(error)
+      }
+    }
+
+    else {
+      try {
+        const response = await (await api.insertMTS(payload)).data
+        alert(response.message)
+      } catch (error) {
+        alert(error.message)
+      }
     }
     // FIRESTORE Saving
     // ACTUAL SAVING TO DB

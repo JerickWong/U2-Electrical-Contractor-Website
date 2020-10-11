@@ -27,9 +27,7 @@ createMTS = (req, res) => {
                 message: 'MTS created!',
             })
         })
-        .catch(error => {
-            console.log(error)
-            console.log("dito")
+        .catch(error => {            
             return res.status(400).json({
                 error,
                 message: 'MTS not created!',
@@ -48,7 +46,7 @@ updateMTS = async (req, res) => {
     }
 
     MTS.findOne({ _id: req.params.id }, (err, mts) => {
-        if (err) {
+        if (err) {            
             return res.status(404).json({
                 err,
                 message: 'MTS not found!',
@@ -74,10 +72,13 @@ updateMTS = async (req, res) => {
                 return res.status(200).json({
                     success: true,
                     id: mts._id,
+                    data: mts,
                     message: 'MTS updated!',
                 })
             })
             .catch(error => {
+                console.log(error)
+                console.log("dito")
                 return res.status(404).json({
                     error,
                     message: 'MTS not updated!',

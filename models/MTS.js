@@ -1,23 +1,14 @@
 const mongoose = require('mongoose')
 
 const rowSchema = new mongoose.Schema({
-    qty: {
-        type: Number,
-        required: true
-    },    
-    description: {
-        type: String,
-        required: true
-    },
-    price: {
-        type: Number,
-        required: true
-    },
+    qty: Number,
+    description: String,
+    price: Number,
     unit: String, 
     brand: String,
     model: String,
     remarks: String,
-    
+    total: Number
 })
 
 const MTSSchema = new mongoose.Schema({

@@ -147,7 +147,6 @@ function MtsList(props) {
     // }, [changeProject])
 
     async function fetchUser() {
-
         try {
             return await (await users.getUser({token: localStorage.getItem('token')})).data.data
         } catch (error) {
@@ -158,9 +157,7 @@ function MtsList(props) {
     }
 
     async function fetchData() {
-
-        try {
-    
+        try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
             setProjects(projectnames)
@@ -171,12 +168,7 @@ function MtsList(props) {
             alert('Something went wrong')
             setError(error)
         }
-    }
-
-    useEffect(() => {
-        fetchData()
-    }, [user])
-    
+    }    
     
     function renderError() {
         if (error) 
@@ -197,12 +189,7 @@ function MtsList(props) {
             setMts([])
         }
     }
-
-    useEffect( () => {
-        if (current_project)
-            getMTS()
-    }, [current_project, status])
-
+    
     const handleChange = (event) => {
         const { name, value } = event.target
         
@@ -212,6 +199,16 @@ function MtsList(props) {
         else
             setStatus(value)
     };
+
+    useEffect(() => {
+        fetchData()
+    }, [user])
+
+    useEffect( () => {
+        if (current_project)
+            getMTS()
+    }, [current_project, status])
+
 
     return (
         <div className="App">
@@ -270,8 +267,7 @@ function MtsList(props) {
                                         <td><Link to={{
                                             pathname:'/MtsWindow',
                                             state: {
-                                                current_project: current_project,
-                                                mts_number: m.MTS_number
+                                                mts: m
                                             }
                                         }}>
                                         <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />

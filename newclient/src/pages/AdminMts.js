@@ -215,9 +215,7 @@ function AdminMts(props) {
     }
 
     async function fetchData() {
-
-        try {
-    
+        try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
             setProjects(projectnames)
@@ -228,11 +226,7 @@ function AdminMts(props) {
             alert(error)
             setError(error)
         }
-    }
-
-    useEffect(() => {
-        fetchData()
-    }, [user])
+    }    
 
     function renderError() {
         if (error) 
@@ -254,21 +248,17 @@ function AdminMts(props) {
         }
     }
 
-    useEffect( () => {
-        if (current_project)
-            getMTS()
-    }, [current_project, status])
-
+    
     const handleChange = (event) => {
         const { name, value } = event.target
-
+        
         if (name === 'selectProject') 
-            setProject(value);
+        setProject(value);
             
         else
             setStatus(value)
     };
-
+    
     const handleConfirm = async () => {
         try {
             current_mts.status = "Confirmed"
@@ -280,6 +270,15 @@ function AdminMts(props) {
             alert(error)
         }
     }
+
+    useEffect(() => {
+        fetchData()
+    }, [user])
+
+    useEffect( () => {
+        if (current_project)
+            getMTS()
+    }, [current_project, status])
 
     useEffect(() => {
         if (current_mts)
