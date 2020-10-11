@@ -16,6 +16,7 @@ import UserAlert from '../components/UserAlert/UserAlert'
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
 import firebase from 'firebase'
 import api from '../api';
+import users from '../api/users';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -197,6 +198,15 @@ function MtsWindow(props) {
           }
         }
         setRows([...mts.rows, ...temp])
+      }
+      else {
+        users.getUser({ token: localStorage.getItem('token') })
+        .then(res => {
+          setPreparedBy(res.data.data.username)
+        })
+        .catch(err => {
+          alert("waz prob")
+        })
       }
     }
 
