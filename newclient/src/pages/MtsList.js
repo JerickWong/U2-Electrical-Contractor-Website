@@ -270,45 +270,64 @@ function MtsList(props) {
                     </div>
                     
                     :
-                    <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
-                        <thead>
-                            <tr>
-                                <th>Project Name</th>
-                                <th>MTS No.</th>
-                                <th>Date Created</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>                        
-                            {
-                                !mts.length ?
-                                <p>This list is empty.</p>
-                                :
-                                mts.map( (m, index) => {
-                                    return (
-                                        <tr>
-                                            <td>{current_project}</td>
-                                            <td>{m.MTS_number}</td>
-                                            <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
-                                            <td>{m.status}</td>
-                                            <td><Link to={{
-                                                pathname:'/MtsWindow',
-                                                state: {
-                                                    mts: m
-                                                }
-                                            }}>
-                                            <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
-                                            View</Button>
-                                            </Link>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </Table>
+                    (
+                        !mts.length ?
+                        (
+                            <Container>
+                                <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>MTS No.</th>
+                                        <th>Date Created</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                </Table>
+                                <div className={classes.parentCenter}>This list is empty.</div>
+                            </Container>
+                        )
+                        :
+                        (
+                            <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>MTS No.</th>
+                                        <th>Date Created</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>                        
+                                    {
+                                        mts.map( (m, index) => {
+                                            return (
+                                                <tr>
+                                                    <td>{current_project}</td>
+                                                    <td>{m.MTS_number}</td>
+                                                    <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
+                                                    <td>{m.status}</td>
+                                                    <td><Link to={{
+                                                        pathname:'/MtsWindow',
+                                                        state: {
+                                                            mts: m
+                                                        }
+                                                    }}>
+                                                    <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
+                                                    View</Button>
+                                                    </Link>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </Table>
+                        )
+                    )
                 }
                 
             </Container>
