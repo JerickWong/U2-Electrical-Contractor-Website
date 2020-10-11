@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { Container, Table} from 'react-bootstrap';
-import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button } from '@material-ui/core';
+import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button, CircularProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 // import db from '../components/Firestore/firestore';
@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     width: 300,
     marginLeft: theme.spacing(7)
+  },
+  parentCenter: {
+    height: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 }));
 
@@ -37,6 +43,7 @@ function MtsList(props) {
     const [status, setStatus] = useState('All')
     const [mts, setMts] = useState([])
     const [user, setUser] = useState(fetchUser())
+    const [isLoading, setLoading] = useState(false)
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -158,6 +165,7 @@ function MtsList(props) {
     }
 
     async function fetchData() {
+        setLoading(true)
         try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
@@ -169,6 +177,7 @@ function MtsList(props) {
             alert('Something went wrong')
             setError(error)
         }
+        setLoading(false)
     }    
     
     function renderError() {
@@ -179,6 +188,7 @@ function MtsList(props) {
     }
 
     async function getMTS() {
+        setLoading(true)
         try {            
             const payload = {
                 project_name: current_project,
@@ -186,7 +196,7 @@ function MtsList(props) {
             }
             let new_mts = await (await api.getMTSByProject(payload)).data.data
             let current = await user
-            
+
             new_mts = new_mts.filter(mts => {
                 if (mts.prepared_by === current.username) 
                     return mts
@@ -196,6 +206,7 @@ function MtsList(props) {
         } catch (error) {
             setMts([])
         }
+        setLoading(false)
     }
     
     const handleChange = (event) => {
@@ -251,43 +262,54 @@ function MtsList(props) {
                         </Grid>
                     </Grid>
                 </div>
-                <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
-                    <thead>
-                        <tr>
-                            <th>Project Name</th>
-                            <th>MTS No.</th>
-                            <th>Date Created</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+                
+                {
+                    isLoading ?
+                    <div className={classes.parentCenter}>
+                        <CircularProgress size={70} />
+                    </div>
                     
-                    <tbody>
-                        {/* {mts} */}
-                        {
-                            mts.map( (m, index) => {
-                                return (
-                                    <tr>
-                                        <td>{current_project}</td>
-                                        <td>{m.MTS_number}</td>
-                                        <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
-                                        <td>{m.status}</td>
-                                        <td><Link to={{
-                                            pathname:'/MtsWindow',
-                                            state: {
-                                                mts: m
-                                            }
-                                        }}>
-                                        <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
-                                        View</Button>
-                                        </Link>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </Table>
+                    :
+                    <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>MTS No.</th>
+                                <th>Date Created</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>                        
+                            {
+                                !mts.length ?
+                                <p>This list is empty.</p>
+                                :
+                                mts.map( (m, index) => {
+                                    return (
+                                        <tr>
+                                            <td>{current_project}</td>
+                                            <td>{m.MTS_number}</td>
+                                            <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
+                                            <td>{m.status}</td>
+                                            <td><Link to={{
+                                                pathname:'/MtsWindow',
+                                                state: {
+                                                    mts: m
+                                                }
+                                            }}>
+                                            <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
+                                            View</Button>
+                                            </Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </Table>
+                }
                 
             </Container>
         </div>
