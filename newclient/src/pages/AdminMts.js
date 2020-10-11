@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {Container, Table} from 'react-bootstrap';
-import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button } from '@material-ui/core';
+import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button, CircularProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
 import db from '../components/Firestore/firestore';
@@ -24,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     width: 300,
     marginLeft: theme.spacing(7)
+  },
+  parentCenter: {
+    height: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: ''
   }
 }));
 
@@ -38,6 +45,7 @@ function AdminMts(props) {
     const [mts, setMts] = useState([])
     const [user, setUser] = useState(fetchUser())
     const [current_mts, setCurrent] = useState(null)
+    const [isLoading, setLoading] = useState(false)
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -215,6 +223,7 @@ function AdminMts(props) {
     }
 
     async function fetchData() {
+        setLoading(true)
         try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
@@ -226,6 +235,7 @@ function AdminMts(props) {
             alert(error)
             setError(error)
         }
+        setLoading(false)
     }    
 
     function renderError() {
@@ -236,6 +246,7 @@ function AdminMts(props) {
     }
 
     async function getMTS() {
+        setLoading(true)
         try {            
             const payload = {
                 project_name: current_project,
@@ -246,6 +257,7 @@ function AdminMts(props) {
         } catch (error) {
             setMts([])            
         }
+        setLoading(false)
     }
 
     
@@ -318,50 +330,82 @@ function AdminMts(props) {
                         </Grid>
                     </Grid>
                 </div>
-                <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
-                    <thead>
-                        <tr>
-                            <th>Project Name</th>
-                            <th>MTS No.</th>
-                            <th>Prepared By</th>
-                            <th>Date Created</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+                {
+                    isLoading ?
+                    <div className={classes.parentCenter}>
+                        <CircularProgress size={70} />
+                    </div>
                     
-                    <tbody>
-                    {
-                        mts.map( (m, index) => {
-                            return (
-                                <tr>
-                                    <td>{current_project}</td>
-                                    <td>{m.MTS_number}</td>
-                                    <td>{m.prepared_by}</td>
-                                    <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
-                                    <td>{m.status}</td>
-                                    <td><Link to={{
-                                        pathname:'/AdminMtsWindow',
-                                        state: {
-                                            current_project: current_project,
-                                            mts_number: m.MTS_number
-                                        }
-                                    }}>                                    
-                                    <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
-                                    View</Button>
-                                    </Link>
+                    :
+                    (
+
+                        !mts.length ?
+                        (
+                            <Container>
+                                <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                                    <thead>
+                                        <tr>
+                                            <th>Project Name</th>
+                                            <th>MTS No.</th>
+                                            <th>Prepared By</th>
+                                            <th>Date Created</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </Table>
+                                <div className={classes.parentCenter}>This list is empty.</div>
+                            </Container>
+                        )
+                        :
+                        (
+                            <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>MTS No.</th>
+                                        <th>Prepared By</th>
+                                        <th>Date Created</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
                                     {
-                                        status !== "Confirm" ?  
-                                            <Button variant="outlined" onClick={() => { setCurrent(m) }}>Confirm</Button>
-                                            : ""
+                                        mts.map( (m, index) => {
+                                            return (
+                                                <tr>
+                                                    <td>{current_project}</td>
+                                                    <td>{m.MTS_number}</td>
+                                                    <td>{m.prepared_by}</td>
+                                                    <td>{moment(m.date_created).format("MM-DD-YYYY, hh:mm:ss a")}</td>
+                                                    <td>{m.status}</td>
+                                                    <td><Link to={{
+                                                        pathname:'/AdminMtsWindow',
+                                                        state: {
+                                                            current_project: current_project,
+                                                            mts_number: m.MTS_number
+                                                        }
+                                                    }}>                                    
+                                                    <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
+                                                    View</Button>
+                                                    </Link>
+                                                    {
+                                                        status !== "Confirm" ?  
+                                                            <Button variant="outlined" onClick={() => { setCurrent(m) }}>Confirm</Button>
+                                                            : ""
+                                                    }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
                                     }
-                                    </td>
-                                </tr>
-                            )
-                        })
-                    }
-                    </tbody>
-                </Table>
+                                </tbody>
+                            </Table>
+                        )
+                    )
+                }
                 
             </Container>
         </div>
