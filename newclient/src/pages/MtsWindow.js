@@ -171,13 +171,12 @@ function MtsWindow(props) {
         setMtsNumber(mts.MTS_number)
         setProjectName(mts.project_name)
         setDeliveredFrom(mts.delivered_from)
-        setDate(mts.date)
+        setDate(moment(mts.date).format('YYYY-MM-DD'))
         setRequestedBy(mts.requested_by)
         setTakenoutBy(mts.takenout_by)
         setApprovedBy(mts.approved_by)
         setReceivedBy(mts.received_by)
         setTotalAmount(mts.total_amount)
-        alert(mts.total_amount)
         
         let length = mts.rows.length
         let temp = []
