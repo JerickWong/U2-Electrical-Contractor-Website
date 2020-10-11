@@ -148,7 +148,8 @@ function MtsList(props) {
 
     async function fetchUser() {
         try {
-            return await (await users.getUser({token: localStorage.getItem('token')})).data.data
+            const current = await (await users.getUser({token: localStorage.getItem('token')})).data.data
+            return current
         } catch (error) {
             console.log(error)
             alert('user not logged in')
@@ -183,7 +184,14 @@ function MtsList(props) {
                 project_name: current_project,
                 status: status
             }
-            const new_mts = await (await api.getMTSByProject(payload)).data.data
+            let new_mts = await (await api.getMTSByProject(payload)).data.data
+            let current = await user
+            
+            new_mts = new_mts.filter(mts => {
+                if (mts.prepared_by === current.username) 
+                    return mts
+            })
+
             setMts(new_mts)
         } catch (error) {
             setMts([])
