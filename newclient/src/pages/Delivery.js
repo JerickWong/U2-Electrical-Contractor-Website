@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, InputAdornment, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography } from '@material-ui/core';
+import { Button, InputAdornment, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, CircularProgress } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -57,6 +57,12 @@ const useStyles = makeStyles((theme) => ({
     delete: {
         color: '#F04A42'
     },
+    parentCenter: {
+      height: '200px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
     
 }));
 
@@ -70,7 +76,7 @@ function Price() {
     const [mts, setMts] = useState([])
     const [first, setFirst] = useState('')
     const [changeProject, setChangeProject] = useState(true)
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     const classes = useStyles();    
     let temprows = []
     let dates = []
@@ -422,7 +428,6 @@ function Price() {
             alert('Something went wrong')
             setError(error)
         }
-        setLoading(false)
     }
 
     useEffect(() => {
@@ -491,76 +496,85 @@ function Price() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Item Name</th>
-                                    <th>Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* <tr>
-                                    <td>5/25/2020</td>
-                                    <td>PVC Pipe 4"</td>
-                                    <td>50</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>PVC Pipe 5"</td>
-                                    <td>50</td>
-                                </tr>
-                                <tr>
-                                    <td>5/26/2020</td>
-                                    <td>PVC Adapter 4"</td>
-                                    <td>50</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>PVC Adapter 1"</td>
-                                    <td>50</td>
-                                </tr> */}
-                                {
-                                    mts.map((obj) => {
-                                        return obj.items.map((item, index) => {
-                                            alert(item)
-                                            if (index === 0)
-                                                return (
-                                                    <tr>
-                                                        <td>{obj.date}</td>
-                                                        <td>{item}</td>
-                                                        <td>{obj.qty[index]}</td>
-                                                    </tr>
-                                                )
-                                            else 
-                                                return (
-                                                    <tr>
-                                                        <td>{}</td>
-                                                        <td>{item}</td>
-                                                        <td>{obj.qty[index]}</td>
-                                                    </tr>
-                                                )
-                                        })
-                                        // if (index === 0)
-                                        //     return (
-                                        //         <tr>
-                                        //             <td>{obj.date}</td>
-                                        //             <td>{obj.items}</td>
-                                        //             <td>{obj.qty}</td>
-                                        //         </tr>
-                                        //     )
-                                        // else 
-                                        //     return (
-                                        //         <tr>
-                                        //             <td>{}</td>
-                                        //             <td>{obj.items}</td>
-                                        //             <td>{obj.qty}</td>
-                                        //         </tr>
-                                        //     )
-                                    })
-                                }
-                            </tbody>                            
-                        </Table>
+
+                        {
+                            isLoading ?
+                            <div className={classes.parentCenter}>
+                                <CircularProgress size={70} />
+                            </div>
+
+                            :
+                            (
+                                !mts.length ? 
+                                (
+                                    <Container>
+                                        <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Item Name</th>
+                                                    <th>Qty</th>
+                                                </tr>
+                                            </thead>
+                                        </Table>
+                                        <div className={classes.parentCenter}>This list is empty.</div>
+                                    </Container>
+                                )
+                                :
+                                (
+                                    <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Item Name</th>
+                                                <th>Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                mts.map((obj) => {
+                                                    return obj.items.map((item, index) => {
+                                                        if (index === 0)
+                                                            return (
+                                                                <tr>
+                                                                    <td>{obj.date}</td>
+                                                                    <td>{item}</td>
+                                                                    <td>{obj.qty[index]}</td>
+                                                                </tr>
+                                                            )
+                                                        else 
+                                                            return (
+                                                                <tr>
+                                                                    <td>{}</td>
+                                                                    <td>{item}</td>
+                                                                    <td>{obj.qty[index]}</td>
+                                                                </tr>
+                                                            )
+                                                    })
+                                                    // if (index === 0)
+                                                    //     return (
+                                                    //         <tr>
+                                                    //             <td>{obj.date}</td>
+                                                    //             <td>{obj.items}</td>
+                                                    //             <td>{obj.qty}</td>
+                                                    //         </tr>
+                                                    //     )
+                                                    // else 
+                                                    //     return (
+                                                    //         <tr>
+                                                    //             <td>{}</td>
+                                                    //             <td>{obj.items}</td>
+                                                    //             <td>{obj.qty}</td>
+                                                    //         </tr>
+                                                    //     )
+                                                })
+                                            }
+                                        </tbody>                            
+                                    </Table>
+
+                                )
+                            )
+                        }
                     </MuiThemeProvider>
                 </main>
             </Container>
