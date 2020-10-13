@@ -1,3 +1,4 @@
+const moment = require('moment')
 const MTS = require('../models/MTS')
 
 createMTS = (req, res) => {
@@ -181,6 +182,91 @@ getMTSByProject = async (req, res) => {
     }
 }
 
+getDelivered = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+
+        // delivered object
+        const sortedByDate = mts.sort((a, b) => b.date - a.date)        
+        const firstItems = sortedByDate[0].rows.map(row => row.description)
+        const firstQty = sortedByDate[0].rows.map(row => row.qty)
+        // console.log(sortedByDate[0].rows)
+        // console.log("second")
+        // console.log(sortedByDate[1].rows)
+        console.log(firstItems)
+        console.log(firstQty)
+        const deliveredObject = [{
+            date: moment(mts[0].date).format('YYYY-MM-DD'),
+            items: firstItems,
+            qty: firstQty
+        }]
+        // console.log(sortedByDate[0].rows)
+        sortedByDate.map((mts, index) => {
+            if (index > 0) {
+                const date = moment(mts.date).format('YYYY-MM-DD')
+
+                // if the same date, += the qty                
+                if (deliveredObject.filter(obj => obj.date === date)) {
+                    deliveredObject.map(obj => {
+                        if (obj.date===date) {
+                            console.log('one')
+                            const { items, qty } = obj
+                            const { rows } = mts
+                            console.log('two')
+
+                            rows.map(row => {
+                                // item already exists                                 
+                                if (items.filter(item => row.description===item)) {
+                                    items.map((item, index) => {
+                                        console.log(`row description: ${row.description}`)
+                                        console.log(`item: ${item}`)
+                                        if (row.description===item) {
+                                            console.log('three')
+                                            qty[index] += row.qty
+                                        }
+                                    })
+                                } 
+                                // new item
+                                else {
+                                    console.log('four')
+                                    if (row.description && row.qty) {
+                                        console.log('five')
+
+                                        items.push(row.description)
+                                        qty.push(row.qty)
+                                    }
+                                }
+                            })
+                            
+                        }
+                    })
+                } else {
+                    const items = mts.rows.map(row => {
+                        if (row.description)
+                            return row.description
+                    })
+                    const qty = mts.rows.map(row => row.qty)
+                    deliveredObject.push({
+                        date,
+                        items,
+                        qty
+                    })
+                }
+            }
+        })
+        console.log(deliveredObject)
+        return res.status(200).json({ success: true, data: deliveredObject })
+    })
+}
+
 module.exports = {
     createMTS,
     updateMTS,
@@ -188,5 +274,6 @@ module.exports = {
     getAllMTS,
     getMTSById,
     getMTSByProject,
-    getMTSProjects
+    getMTSProjects,
+    getDelivered
 }

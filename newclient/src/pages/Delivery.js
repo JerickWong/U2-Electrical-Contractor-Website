@@ -72,6 +72,7 @@ function Price() {
     const classes = useStyles();    
     let temprows = []
     let dates = []
+    alert('yow')
     
     ////// INITIAL //////
     useEffect(() => {
