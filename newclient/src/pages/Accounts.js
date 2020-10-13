@@ -17,6 +17,7 @@ import '../styles/accounts.css';
 import Authenticate from '../components/Firestore/auth'
 import db from '../components/Firestore/firestore'
 import moment from 'moment'
+import users from '../api/users';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -113,25 +114,32 @@ function Accounts() {
     const handleEditRole = (event) => {
         setEditRole(event.target.value)
     }
-    const createAccount = () => {
-        const email = document.querySelector('#new-email').value
+    const createAccount = async () => {
+        // const email = document.querySelector('#new-email').value
         const username = document.querySelector('#new-username').value
         const password = document.querySelector('#new-password').value
-        console.log(email,username,password, newRole)        
-        db.collection('Accounts').add({
-            email,
-            password,
-            username,
-            role: newRole,
-            date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
-        })
-        .then(() => {
-            console.log('Account has been added')
-            Authenticate.signup(email, username, password, newRole)
-        })
-        .catch((err) => {
-            console.log (err)
-        })
+        // console.log(email,username,password, newRole)        
+        // db.collection('Accounts').add({
+        //     email,
+        //     password,
+        //     username,
+        //     role: newRole,
+        //     date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
+        // })
+        // .then(() => {
+        //     console.log('Account has been added')
+        //     Authenticate.signup(email, username, password, newRole)
+        // })
+        // .catch((err) => {
+        //     console.log (err)
+        // })
+        try {
+            const user = await (await users.register({ username, password, type: newRole })).data.data
+            console.log(user)
+            alert("user created")
+        } catch (error) {
+            alert(error)
+        }
     }
 
     const [open, setOpen] = React.useState(false);
@@ -197,7 +205,7 @@ function Accounts() {
                                         </DialogTitle>
                                         <DialogContent dividers>
                                             <div className="modalAcc">
-                                                <FormGroup>
+                                                {/* <FormGroup>
                                                     <InputLabel className={classes.modalFields}>Email</InputLabel>
                                                     <Input
                                                         id="new-email"
@@ -209,7 +217,7 @@ function Accounts() {
                                                             </InputAdornment>
                                                         }
                                                     />
-                                                </FormGroup>
+                                                </FormGroup> */}
                                                 <FormGroup>
                                                     <InputLabel className={classes.modalFields}>Username</InputLabel>
                                                     <Input
@@ -270,7 +278,7 @@ function Accounts() {
                                         </DialogTitle>
                                         <DialogContent dividers>
                                             <div className="modalAcc">
-                                               <FormGroup>
+                                               {/* <FormGroup>
                                                     <InputLabel className={classes.modalFields}>Email</InputLabel>
                                                     <Input
                                                         id="edit-email"
@@ -282,7 +290,7 @@ function Accounts() {
                                                             </InputAdornment>
                                                         }
                                                     />
-                                                </FormGroup>
+                                                </FormGroup> */}
                                                 <FormGroup>
                                                     <InputLabel className={classes.modalFields}>Username</InputLabel>
                                                     <Input

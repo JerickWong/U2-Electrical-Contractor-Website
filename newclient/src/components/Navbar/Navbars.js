@@ -13,6 +13,7 @@ import '../../styles/navbar.css';
 import Authenticate from '../Firestore/auth'
 import firebase from 'firebase'
 import { Redirect } from 'react-router-dom'
+import users from '../../api/users'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -119,22 +120,22 @@ function Navbars() {
     setOpen(false);
   };
 
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-        setUser(user.displayName)
-    } else {
-        setUser('')
+  // firebase.auth().onAuthStateChanged(user => {
+  //   if (user) {
+  //       setUser(user.displayName)
+  //   } else {
+  //       setUser('')
         
-    }
-  })
+  //   }
+  // })
 
-  const isLoggedin = () => {
-    if (user == '') {
-      alert('not logged in')
-      return <Redirect to='/' />
-    }
-    console.log(user)
-  }
+  // const isLoggedin = () => {
+  //   if (user == '') {
+  //     alert('not logged in')
+  //     return <Redirect to='/' />
+  //   }
+  //   console.log(user)
+  // }
   
   function refreshPage() {
     window.location.reload(false);
@@ -142,7 +143,7 @@ function Navbars() {
 
   return (
     <div className={classes.root}>
-      {isLoggedin()}
+      {/* {isLoggedin()} */}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
@@ -181,19 +182,19 @@ function Navbars() {
           <Divider />
           <List>
             <Link to='/MtsWindow'>
-              <ListItem onClick={refreshPage} button key="New MTS">
+              <ListItem button key="New MTS">
                 <ListItemIcon className={classes.listIcon}><NoteAdd /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="New MTS" />
               </ListItem>
             </Link>
             <Link to="/Mts">
-              <ListItem onClick={refreshPage} button key="MTS List">
+              <ListItem button key="MTS List">
                 <ListItemIcon className={classes.listIcon}><Assignment /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="MTS List" />
               </ListItem>
             </Link>
             <Link to="/Price">
-              <ListItem onClick={refreshPage} button key="Price List">
+              <ListItem button key="Price List">
                 <ListItemIcon className={classes.listIcon}><LocalOffer /></ListItemIcon>
                 <ListItemText className={classes.listIcon} primary="Price List" />
               </ListItem>
