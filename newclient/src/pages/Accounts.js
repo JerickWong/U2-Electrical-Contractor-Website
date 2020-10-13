@@ -17,7 +17,7 @@ import '../styles/accounts.css';
 import Authenticate from '../components/Firestore/auth'
 import db from '../components/Firestore/firestore'
 import moment from 'moment'
-import users from '../api/users';
+import api from '../api/users';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -102,22 +102,45 @@ const useStyles = makeStyles((theme) => ({
 
 function Accounts() {
     const classes = useStyles();
-    const [role, setRole] = React.useState('All');
-    const [newRole, setNewRole] = React.useState('Employee');
-    const [editRole, setEditRole] = React.useState('');
-    const handleChange = (event) => {
-        setRole(event.target.value)
+    // const [role, setRole] = useState('All');
+    // const [newRole, setNewRole] = useState('Employee');
+    // const [editRole, setEditRole] = useState('');
+    // const [first, setFirst] = useState(0)
+    const [users, setUsers] = useState([])
+    const [editUser, setEditUser] = useState()
+    const [username, setUsername] = useState()
+    const [password, setPassword] = useState()
+    const [role, setRole] = useState('Employee')
+    const [currentUser, setCurrent] = useState(fetchUser())
+
+    async function fetchUser() {
+        try {
+            return await (await api.getUser({ token: localStorage.getItem('token') })).data.data
+        } catch (error) {
+            
+        }
     }
-    const handleNewRole = (event) => {
-        setNewRole(event.target.value);
-    };
-    const handleEditRole = (event) => {
-        setEditRole(event.target.value)
+
+    const fetchData = async () => {
+        try {
+            const data = await (await api.getAllUsers()).data.data
+            
+            // setUsers(data)
+            setUsers([])
+        } catch (error) {
+            console.log(error)
+            alert(error)
+        }
     }
+
+    useEffect(() => {        
+        fetchData()
+    }, [])
+
     const createAccount = async () => {
         // const email = document.querySelector('#new-email').value
-        const username = document.querySelector('#new-username').value
-        const password = document.querySelector('#new-password').value
+        // const username = document.querySelector('#new-username').value
+        // const password = document.querySelector('#new-password').value
         // console.log(email,username,password, newRole)        
         // db.collection('Accounts').add({
         //     email,
@@ -127,24 +150,44 @@ function Accounts() {
         //     date_created: moment().format('MMMM DD, YYYY HH:mm:ss')
         // })
         // .then(() => {
-        //     console.log('Account has been added')
+            //     console.log('Account has been added')
         //     Authenticate.signup(email, username, password, newRole)
         // })
         // .catch((err) => {
         //     console.log (err)
         // })
         try {
-            const user = await (await users.register({ username, password, type: newRole })).data.data
+            const user = await (await api.register({ username, password, type: role })).data.data
             console.log(user)
+
+            setUsername()
+            setPassword()
+            setRole('Employee')
+
             alert("user created")
         } catch (error) {
             alert(error)
         }
+    }    
+
+    const [open, setOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
+    
+    const handleChange = (event) => {
+        setRole(event.target.value)
     }
-
-    const [open, setOpen] = React.useState(false);
-    const [edit, setEdit] = React.useState(false);
-
+    // const handleNewRole = (event) => {
+    //     setRole(event.target.value);
+    // };
+    const handleEditUser = (user) => {
+        setEditUser(user)
+        setUsername(user.username)
+        setPassword(user.password)
+        setRole(user.role)
+    }
+    // const handleEditRole = (event) => {
+    //     setEditRole(event.target.value)
+    // }
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -223,6 +266,8 @@ function Accounts() {
                                                     <Input
                                                         id="new-username"
                                                         className={classes.modalFields}
+                                                        value={username}
+                                                        onChange={(e) => setUsername(e.target.value)}
                                                         variant="outlined"
                                                         startAdornment={
                                                             <InputAdornment position="start">
@@ -236,6 +281,8 @@ function Accounts() {
                                                     <Input
                                                         id="new-password"
                                                         className={classes.modalFields}
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
                                                         type="password"
                                                         variant="outlined"
                                                         startAdornment={
@@ -252,8 +299,8 @@ function Accounts() {
                                                         labelId="demo-simple-select-filled-label"
                                                         id="demo-simple-select-filled"
                                                         defaultValue={'Employee'}
-                                                        value={newRole}
-                                                        onChange={handleNewRole}
+                                                        value={role}
+                                                        onChange={(e) => setRole(e.target.value)}
                                                     >
                                                         <MenuItem value={'Employee'}>Employee</MenuItem>
                                                         <MenuItem value={'Manager'}>Manager</MenuItem>
@@ -296,6 +343,8 @@ function Accounts() {
                                                     <Input
                                                         id="edit-username"
                                                         className={classes.modalFields}
+                                                        value={username}
+                                                        onChange={(e) => setUsername(e.target.value)}
                                                         variant="outlined"
                                                         startAdornment={
                                                             <InputAdornment position="start">
@@ -309,6 +358,8 @@ function Accounts() {
                                                     <Input
                                                         id="edit-password"
                                                         className={classes.modalFields}
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
                                                         type="password"
                                                         variant="outlined"
                                                         startAdornment={
@@ -325,8 +376,8 @@ function Accounts() {
                                                         labelId="demo-simple-select-filled-label"
                                                         id="demo-simple-select-filled"
                                                         defaultValue={'Employee'}
-                                                        value={editRole}
-                                                        onChange={handleEditRole}
+                                                        value={role}
+                                                        onChange={(e) => setRole(e.target.value)}
                                                     >
                                                         <MenuItem value={'Employee'}>Employee</MenuItem>
                                                         <MenuItem value={'Manager'}>Manager</MenuItem>
@@ -357,7 +408,26 @@ function Accounts() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {
+                                    !users.length ?
+                                    <p>Walang laman</p>
+                                    :
+                                    users.map( user => {
+                                        return (
+                                            <tr>
+                                                <td>{user.username}</td>
+                                                <td>{user.password}</td>
+                                                <td>{user.type}</td>
+                                                <td>{moment(user.date_created).format('MM/DD/YYYY')}</td>
+                                                <td>
+                                                    <IconButton color="primary" onClick={handleEditUser(user)} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                                    <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                                {/* <tr>
                                     <td>Teptep</td>
                                     <td>password1</td>
                                     <td>Manager</td>
@@ -406,7 +476,7 @@ function Accounts() {
                                         <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
-                                </tr>
+                                </tr> */}
                             </tbody>
                         </Table>
                         {/* <Button
