@@ -384,8 +384,7 @@ function AdminMts(props) {
                                                     <td><Link to={{
                                                         pathname:'/AdminMtsWindow',
                                                         state: {
-                                                            current_project: current_project,
-                                                            mts_number: m.MTS_number
+                                                            mts: m
                                                         }
                                                     }}>                                    
                                                     <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
