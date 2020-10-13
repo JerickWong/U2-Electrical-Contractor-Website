@@ -9,6 +9,7 @@ import UserAlert from '../components/UserAlert/UserAlert'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import '../styles/mts.css';
+import api from '../api';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -69,6 +70,7 @@ function Price() {
     const [mts, setMts] = useState([])
     const [first, setFirst] = useState('')
     const [changeProject, setChangeProject] = useState(true)
+    const [isLoading, setLoading] = useState(false)
     const classes = useStyles();    
     let temprows = []
     let dates = []
@@ -390,6 +392,22 @@ function Price() {
         
     // }, [changeProject])
 
+    async function fetchMts() {
+        setLoading(true)
+        try {
+            const delivered = await (await api.getDelivered({ project_name: current_project})).data.data
+            console.log(delivered)
+            setMts(delivered)
+        } catch (error) {
+            setError(error)
+        }
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchMts()
+    }, [current_project])
+
 
     async function fetchData() {
         setLoading(true)
@@ -503,25 +521,42 @@ function Price() {
                                     <td>50</td>
                                 </tr> */}
                                 {
-                                    mts.map(obj => {
-                                        obj.map((m, index) => {
+                                    mts.map((obj) => {
+                                        return obj.items.map((item, index) => {
+                                            alert(item)
                                             if (index === 0)
                                                 return (
                                                     <tr>
-                                                        <td>{m.date}</td>
-                                                        <td>{}</td>
-                                                        <td>{}</td>
+                                                        <td>{obj.date}</td>
+                                                        <td>{item}</td>
+                                                        <td>{obj.qty[index]}</td>
                                                     </tr>
                                                 )
                                             else 
                                                 return (
                                                     <tr>
                                                         <td>{}</td>
-                                                        <td>{}</td>
-                                                        <td>{}</td>
+                                                        <td>{item}</td>
+                                                        <td>{obj.qty[index]}</td>
                                                     </tr>
-                                                )   
+                                                )
                                         })
+                                        // if (index === 0)
+                                        //     return (
+                                        //         <tr>
+                                        //             <td>{obj.date}</td>
+                                        //             <td>{obj.items}</td>
+                                        //             <td>{obj.qty}</td>
+                                        //         </tr>
+                                        //     )
+                                        // else 
+                                        //     return (
+                                        //         <tr>
+                                        //             <td>{}</td>
+                                        //             <td>{obj.items}</td>
+                                        //             <td>{obj.qty}</td>
+                                        //         </tr>
+                                        //     )
                                     })
                                 }
                             </tbody>                            

@@ -212,33 +212,25 @@ getDelivered = async (req, res) => {
         sortedByDate.map((mts, index) => {
             if (index > 0) {
                 const date = moment(mts.date).format('YYYY-MM-DD')
-
                 // if the same date, += the qty                
-                if (deliveredObject.filter(obj => obj.date === date)) {
+                if (deliveredObject.filter(obj => obj.date === date).length>0) {
                     deliveredObject.map(obj => {
                         if (obj.date===date) {
-                            console.log('one')
                             const { items, qty } = obj
                             const { rows } = mts
-                            console.log('two')
 
                             rows.map(row => {
                                 // item already exists                                 
                                 if (items.filter(item => row.description===item)) {
                                     items.map((item, index) => {
-                                        console.log(`row description: ${row.description}`)
-                                        console.log(`item: ${item}`)
                                         if (row.description===item) {
-                                            console.log('three')
                                             qty[index] += row.qty
                                         }
                                     })
                                 } 
                                 // new item
                                 else {
-                                    console.log('four')
                                     if (row.description && row.qty) {
-                                        console.log('five')
 
                                         items.push(row.description)
                                         qty.push(row.qty)
@@ -248,11 +240,10 @@ getDelivered = async (req, res) => {
                             
                         }
                     })
-                } else {
-                    const items = mts.rows.map(row => {
-                        if (row.description)
-                            return row.description
-                    })
+                } 
+                
+                else {
+                    const items = mts.rows.map(row => row.description)
                     const qty = mts.rows.map(row => row.qty)
                     deliveredObject.push({
                         date,
