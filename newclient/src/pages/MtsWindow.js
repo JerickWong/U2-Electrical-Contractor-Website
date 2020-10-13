@@ -420,6 +420,11 @@ function MtsWindow(props) {
 
   async function handleConfirm() {
 
+    const clean_rows = rows.filter(row => {
+      if (row.description && row.qty)
+        return row
+    })
+
     const payload = {
       prepared_by,
       project_name,
@@ -432,7 +437,7 @@ function MtsWindow(props) {
       approved_by,
       takenout_by,
       received_by,
-      rows
+      rows: clean_rows
     }
 
     // editing
