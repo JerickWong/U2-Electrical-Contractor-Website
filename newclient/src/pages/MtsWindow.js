@@ -445,8 +445,10 @@ function MtsWindow(props) {
       try {
         const _id = props.location.state.mts._id
         const response = await (await api.updateMTSById(_id, payload)).data
-        console.log(response.data)
-        alert(response.message)      
+        
+        // delivered
+
+        alert(response.message)
       } catch (error) {
         alert(error)
       }
@@ -455,6 +457,9 @@ function MtsWindow(props) {
     else {
       try {
         const response = await (await api.insertMTS(payload)).data
+
+        // delivered
+
         alert(response.message)
       } catch (error) {
         alert(error.message)

@@ -252,15 +252,22 @@ function Price() {
     }
 
     async function getMTSFiltered() {
-        try {
-            console.log(to)
-            const data = await (await api.getDeliveredSummary({ project_name: current_project, to: to, from: from })).data.data
-            console.log(data)
-            setMts(data)
-        } catch (error) {
-            console.log(error)
-            setError(error)
+        if (to && from) {
+
+            try {
+                console.log(to)
+                const data = await (await api.getDeliveredSummary({ project_name: current_project, to: to, from: from })).data.data
+                console.log(data)
+                setMts(data)
+            } catch (error) {
+                setMts([])
+                console.log(error)
+                setError(error)
+            }
+        } else {
+            // get delivered
         }
+        
     }
 
     useEffect(() => {

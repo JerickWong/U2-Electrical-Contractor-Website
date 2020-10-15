@@ -198,11 +198,7 @@ getDelivered = async (req, res) => {
         const sortedByDate = mts.sort((a, b) => b.date - a.date)        
         const firstItems = sortedByDate[0].rows.map(row => row.description)
         const firstQty = sortedByDate[0].rows.map(row => row.qty)
-        // console.log(sortedByDate[0].rows)
-        // console.log("second")
-        // console.log(sortedByDate[1].rows)
-        console.log(firstItems)
-        console.log(firstQty)
+        
         const deliveredObject = [{
             date: moment(mts[0].date).format('YYYY-MM-DD'),
             items: firstItems,
@@ -253,7 +249,7 @@ getDelivered = async (req, res) => {
                 }
             }
         })
-        console.log(deliveredObject)
+        
         return res.status(200).json({ success: true, data: deliveredObject })
     })
 }
@@ -325,6 +321,28 @@ getDeliveredSummary = async (req, res) => {
     })
 }
 
+getProjectDates = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+
+        const sortedByDate = mts.sort((a, b) => a.date - b.date)
+        const dates = {
+            start: sortedByDate[0].date,
+            end: sortedByDate[sortedByDate.length-1].date
+        }
+
+        return res.status(200).json({ success: true, data: dates })
+    })
+}
+
 module.exports = {
     createMTS,
     updateMTS,
@@ -335,5 +353,6 @@ module.exports = {
     getMTSProjects,
     getDelivered,
     getCost,
-    getDeliveredSummary
+    getDeliveredSummary,
+    getProjectDates
 }

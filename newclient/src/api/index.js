@@ -14,6 +14,7 @@ export const getMTSProjects = () => api.get(`/project-names`)
 export const getDelivered = payload => api.post(`/delivered`, payload)
 export const getCost = payload => api.post(`/cost`, payload)
 export const getDeliveredSummary = payload => api.post(`/delivered-summary`, payload)
+export const getDates = payload => api.post(`/project-dates`, payload)
 
 
 const apis = {
@@ -26,7 +27,8 @@ const apis = {
     getMTSProjects,
     getDelivered,
     getCost,
-    getDeliveredSummary
+    getDeliveredSummary,
+    getDates
 }
 
 export default apis
