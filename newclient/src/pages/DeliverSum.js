@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton } from '@material-ui/core';
-import { ArrowBackIos, Save, Clear, Search } from '@material-ui/icons';
+import { ArrowBackIos, Save, Clear, Search, DateRange } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
@@ -32,6 +32,14 @@ const useStyles = makeStyles((theme) => ({
         color: primary,
         marginBottom: 10
     },
+    button1: {
+        backgroundColor: primary,
+        margin: theme.spacing(0),       
+        marginTop: 8,
+        color: white,
+        width: 100,
+        height: 35,
+      },
     root: {
         flexGrow: 1,
     },
@@ -296,6 +304,17 @@ function Price() {
                                         InputLabelProps={{ shrink: true }}
                                     />
                                 </Grid>
+                                <Grid item xs={1}>
+                                    <Button 
+                                        variant="contained" 
+                                        size="small" 
+                                        // onClick={addRow} 
+                                        className={classes.button1} 
+                                        startIcon={<DateRange />}
+                                        >
+                                        Filter
+                                    </Button>
+                                </Grid>                                
                             </Grid>
                         </div>
                         <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
