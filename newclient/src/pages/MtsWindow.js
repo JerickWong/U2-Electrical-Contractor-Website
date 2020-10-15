@@ -110,6 +110,7 @@ function MtsWindow(props) {
   const [approved_by, setApprovedBy] = useState('')
   const [received_by, setReceivedBy] = useState('')
   const [total_amount, setTotalAmount] = useState(0)
+  const [status, setStatus] = useState('For Approval')
   const [rows, setRows] = useState([{
     qty: '',
     description: '',
@@ -178,6 +179,7 @@ function MtsWindow(props) {
         setApprovedBy(mts.approved_by)
         setReceivedBy(mts.received_by)
         setTotalAmount(mts.total_amount)
+        setStatus(mts.status)
         
         let length = mts.rows.length
         let temp = []
@@ -437,7 +439,8 @@ function MtsWindow(props) {
       approved_by,
       takenout_by,
       received_by,
-      rows: clean_rows
+      rows: clean_rows,
+      status
     }
 
     // editing
