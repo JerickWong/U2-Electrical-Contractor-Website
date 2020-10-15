@@ -67,16 +67,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const dbMTS = db.collection('MTS-Collection');
+// const dbMTS = db.collection('MTS-Collection');
 
 function Price() {
     const classes = useStyles();
     const [current_project, setProject] = useState('');
     const [error, setError] = useState('')
-    const [projects, setProjDrop] = useState([])
+    const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
     const [to, setTo] = useState()
     const [from, setFrom] = useState()
+    const [isLoading, setLoading] = useState(true)
     // const [first, setFirst] = useState('')
     // const [date, setDate] = useState([])
     // const [changeProject, setChangeProject] = useState(true)
@@ -106,7 +107,7 @@ function Price() {
     //         })
     //     })
     //         .then(() => {
-    //             setProjDrop(projectnames)
+    //             setProjects(projectnames)
     //             setProject(firstproject)
     //             setError('')
     //         })
@@ -222,10 +223,42 @@ function Price() {
 
     // }, [changeProject])
 
-    async function fetchData () {
-        try {
-            // const data = await api.get
+    async function fetchData() {
+        setLoading(true)
+        try {    
+            const projectnames = await (await api.getMTSProjects()).data.data
+            
+            setProjects(projectnames)
+            setProject(projectnames[0])
+            
+            setError('')
         } catch (error) {
+            alert('Something went wrong')
+            setError(error)
+        }
+    }
+
+    async function getMTS() {
+        setLoading(true)
+        try {            
+            
+            // GET delivered
+
+            // setMts()
+        } catch (error) {
+            setMts([])
+        }
+        setLoading(false)
+    }
+
+    async function getMTSFiltered() {
+        try {
+            console.log(to)
+            const data = await (await api.getDeliveredSummary({ project_name: current_project, to: to, from: from })).data.data
+            console.log(data)
+            setMts(data)
+        } catch (error) {
+            console.log(error)
             setError(error)
         }
     }
@@ -233,6 +266,10 @@ function Price() {
     useEffect(() => {
         fetchData()
     }, [])
+
+    useEffect(() => {
+        getMTS()
+    }, [current_project])
 
     const handleChange = (event) => {
         console.log(event.target.value)
@@ -257,7 +294,13 @@ function Price() {
                                     <FormControl>
                                         <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt} value={current_project} onChange={handleChange} id="demo-simple-select">
-                                            {/* {projects} */}
+                                            {
+                                                projects.map(project => {
+                                                    return (
+                                                        <MenuItem value={project}>{project}</MenuItem>
+                                                    )
+                                                })
+                                            }
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -284,6 +327,17 @@ function Price() {
                                 <Grid item xs={12}></Grid>
                                 <Grid item xs={2}>
                                     <TextField
+                                        label="From"
+                                        type="date"
+                                        size="small"
+                                        value={from}
+                                        onChange={(e) => setFrom(e.target.value)}
+                                        className={classes.textField}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <TextField
                                         label="To"
                                         type="date"
                                         size="small"
@@ -292,23 +346,12 @@ function Price() {
                                         className={classes.textField}
                                         InputLabelProps={{ shrink: true }}
                                     />
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        label="From"
-                                        type="date"
-                                        size="small"
-                                        value={to}
-                                        onChange={(e) => setTo(e.target.value)}
-                                        className={classes.textField}
-                                        InputLabelProps={{ shrink: true }}
-                                    />
-                                </Grid>
+                                </Grid>                                
                                 <Grid item xs={1}>
                                     <Button 
                                         variant="contained" 
                                         size="small" 
-                                        // onClick={addRow} 
+                                        onClick={getMTSFiltered}
                                         className={classes.button1} 
                                         startIcon={<DateRange />}
                                         >
@@ -356,7 +399,17 @@ function Price() {
                                     <td>PVC Pipe 3"</td>
                                     <td>750</td>
                                 </tr> */}
-                                {mts}
+                                {
+                                    mts.map(m => {
+                                        return (
+                                            <tr>
+                                                <td>{m.estqty}</td>
+                                                <td>{m.item}</td>
+                                                <td>{m.total}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
 
                         </Table>

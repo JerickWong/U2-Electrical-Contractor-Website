@@ -7,7 +7,9 @@ const RowSchema = new mongoose.Schema({
 })
 
 const DeliveredSchema = new mongoose.Schema({
-    rows: [RowSchema]
+    rows: [RowSchema],
+    start: Date,
+    end: Date
 })
 
 const Delivered = mongoose.model('delivered', DeliveredSchema)

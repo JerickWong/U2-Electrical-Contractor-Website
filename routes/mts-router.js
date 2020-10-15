@@ -12,5 +12,6 @@ router.post('/MTS/project', MTSCntrl.getMTSByProject)
 router.get('/project-names', MTSCntrl.getMTSProjects)
 router.post('/delivered', MTSCntrl.getDelivered)
 router.post('/cost', MTSCntrl.getCost)
+router.post('/delivered-summary', MTSCntrl.getDeliveredSummary)
 
 module.exports = router

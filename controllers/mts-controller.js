@@ -287,6 +287,44 @@ getCost = async (req, res) => {
     })
 }
 
+getDeliveredSummary = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to } }).lean().exec( (err, mts) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+        
+        const sortedByDate = mts.sort((a, b) => a.date - b.date)
+
+        const deliveredSummary = []
+        
+        sortedByDate.map(mts => {
+            mts.rows.map(row => {
+                if (deliveredSummary.filter(obj => obj.item === row.description).length>0) {
+                    deliveredSummary.map(obj => {
+                        if (obj.item === row.description) 
+                            obj.total += row.qty
+                    })
+                }
+
+                else {
+                    deliveredSummary.push({
+                        item: row.description,
+                        total: row.qty
+                    })
+                }
+            })
+        })
+        
+        return res.status(200).json({ success: true, data: deliveredSummary })
+    })
+}
+
 module.exports = {
     createMTS,
     updateMTS,
@@ -296,5 +334,6 @@ module.exports = {
     getMTSByProject,
     getMTSProjects,
     getDelivered,
-    getCost
+    getCost,
+    getDeliveredSummary
 }
