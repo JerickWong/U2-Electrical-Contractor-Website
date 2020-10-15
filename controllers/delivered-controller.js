@@ -141,4 +141,5 @@ module.exports = {
     deleteDelivered,
     getAllDelivered,
     getDeliveredById,
+    getDeliveredByProject
 }
