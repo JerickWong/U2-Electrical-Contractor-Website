@@ -11,11 +11,17 @@ export const deleteMTSById = id => api.delete(`/MTS/${id}`)
 export const getMTSById = id => api.get(`/MTS/${id}`)
 export const getMTSByProject = payload => api.post(`/MTS/project`, payload)
 export const getMTSProjects = () => api.get(`/project-names`)
-export const getDelivered = payload => api.post(`/delivered`, payload)
+export const getDelivered = payload => api.post(`/delivered-objects`, payload)
 export const getCost = payload => api.post(`/cost`, payload)
 export const getDeliveredSummary = payload => api.post(`/delivered-summary`, payload)
 export const getDates = payload => api.post(`/project-dates`, payload)
 
+export const insertDelivered = payload => api.post(`/Delivered`, payload)
+export const getAllDelivered = () => api.get(`/All-Delivered`)
+export const updateDeliveredById = (id, payload) => api.put(`/Delivered/${id}`, payload)
+export const deleteDeliveredById = id => api.delete(`/Delivered/${id}`)
+export const getDeliveredById = id => api.get(`/Delivered/${id}`)
+export const getDeliveredByProject = payload => api.post(`/Delivered/project`, payload)
 
 const apis = {
     insertMTS,
@@ -28,7 +34,13 @@ const apis = {
     getDelivered,
     getCost,
     getDeliveredSummary,
-    getDates
+    getDates,
+    insertDelivered,
+    getAllDelivered,
+    updateDeliveredById,
+    deleteDeliveredById,
+    getDeliveredById,
+    getDeliveredByProject
 }
 
 export default apis

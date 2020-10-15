@@ -459,6 +459,12 @@ function MtsWindow(props) {
         const response = await (await api.insertMTS(payload)).data
 
         // delivered
+        const dates = await (await api.getDates({ project_name })).data.data
+        const delivered_rows = clean_rows.map(row => {
+          return { estqty: 0, item: row.description, total: row.qty }
+        })
+        const delivered = await (await api.insertDelivered({ project_name, start: date, end: date, rows: delivered_rows })).data.message
+        alert(delivered)
 
         alert(response.message)
       } catch (error) {
