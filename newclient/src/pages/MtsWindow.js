@@ -459,15 +459,45 @@ function MtsWindow(props) {
         const response = await (await api.insertMTS(payload)).data
 
         // delivered
-        const dates = await (await api.getDates({ project_name })).data.data
-        const delivered_rows = clean_rows.map(row => {
-          return { estqty: 0, item: row.description, total: row.qty }
-        })
-        const delivered = await (await api.insertDelivered({ project_name, start: date, end: date, rows: delivered_rows })).data.message
-        alert(delivered)
+        const isExist = await (await api.getDeliveredByProject({ project_name })).data.success
+        alert(isExist)
+        // if project already exists, append delivered object
+        if (isExist) {
+          const dates = await (await api.getDates({ project_name })).data.data
+          alert(dates)
+          const payload = {
+            project_name,
+            start: dates.start,
+            end: dates.end,            
+            rows: []
+          }
+
+          clean_rows.map(row => {
+            payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
+          })
+
+          if (dates.start > date) 
+            payload.start = date
+          else if (dates.end < date)
+            payload.end = date
+          
+          const delivered = await (await api.updateDelivered(payload)).data.message
+          alert(delivered)
+        }
+
+        // create new delivered object
+        else {
+          const dates = await (await api.getDates({ project_name })).data.data
+          const delivered_rows = clean_rows.map(row => {
+            return { estqty: 0, item: row.description, total: row.qty }
+          })
+          const delivered = await (await api.insertDelivered({ project_name, start: date, end: date, rows: delivered_rows })).data.message
+          alert(delivered)
+        }
 
         alert(response.message)
       } catch (error) {
+        console.log(error)
         alert(error.message)
       }
     }

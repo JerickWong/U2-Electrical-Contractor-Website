@@ -38,14 +38,16 @@ updateDelivered = async (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log(`what ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a body to update',
         })
     }
-
-    Delivered.findOne({ _id: req.params.id }, (err, delivered) => {
-        if (err) {            
+    
+    Delivered.findOne({ project_name: body.project_name }, (err, delivered) => {
+        if (err) {
+            console.log(err)
             return res.status(404).json({
                 err,
                 message: 'Delivered not found!',
@@ -54,7 +56,26 @@ updateDelivered = async (req, res) => {
         
         delivered.start = body.start
         delivered.end = body.end
-        delivered.rows = body.rows
+        
+        const rows = delivered.rows
+        console.log(delivered)
+        console.log(delivered.rows)
+        body.rows.map(row => {
+            if (rows.filter(r => r.item === row.item).length>0) {
+                rows.map(r => {
+                    if (r.item === row.item)
+                        r.total += row.total
+                })
+            }
+
+            else {
+                rows.push({
+                    estqty: 0,
+                    item: row.item,
+                    total: row.total
+                })
+            }
+        })
                 
         delivered
             .save()
@@ -128,7 +149,7 @@ getDeliveredByProject = async (req, res) => {
         }
         if (!delivered.length) {
             return res
-                .status(404)
+                .status(204)
                 .json({ success: false, error: `Delivered not found` })
         }
         return res.status(200).json({ success: true, data: delivered })

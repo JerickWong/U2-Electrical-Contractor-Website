@@ -18,7 +18,7 @@ export const getDates = payload => api.post(`/project-dates`, payload)
 
 export const insertDelivered = payload => api.post(`/Delivered`, payload)
 export const getAllDelivered = () => api.get(`/All-Delivered`)
-export const updateDeliveredById = (id, payload) => api.put(`/Delivered/${id}`, payload)
+export const updateDelivered = payload => api.put(`/Delivered/`, payload)
 export const deleteDeliveredById = id => api.delete(`/Delivered/${id}`)
 export const getDeliveredById = id => api.get(`/Delivered/${id}`)
 export const getDeliveredByProject = payload => api.post(`/Delivered/project`, payload)
@@ -37,7 +37,7 @@ const apis = {
     getDates,
     insertDelivered,
     getAllDelivered,
-    updateDeliveredById,
+    updateDelivered,
     deleteDeliveredById,
     getDeliveredById,
     getDeliveredByProject
