@@ -258,6 +258,35 @@ getDelivered = async (req, res) => {
     })
 }
 
+getCost = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name }).lean().exec( (err, mts) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+        
+        const sortedByDate = mts.sort((a, b) => a.date - b.date)
+        
+        sortedByDate[0].balance = sortedByDate[0].total_amount
+                
+        sortedByDate.reduce((total, mts) => {
+            if (total.total_amount)
+                mts.balance = total.total_amount + mts.total_amount
+            else
+                mts.balance = total + mts.total_amount
+
+            return mts.balance
+        })
+        
+        return res.status(200).json({ success: true, data: sortedByDate })
+    })
+}
+
 module.exports = {
     createMTS,
     updateMTS,
@@ -266,5 +295,6 @@ module.exports = {
     getMTSById,
     getMTSByProject,
     getMTSProjects,
-    getDelivered
+    getDelivered,
+    getCost
 }

@@ -7,6 +7,7 @@ import '../styles/mts.css';
 import moment from 'moment'
 import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
+import api from '../api';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -30,120 +31,150 @@ const dbMTS = db.collection('MTS-Collection');
 
 function Cost() {
     ////// STATES //////
-    const [projName, setProject] = useState('');    
-    const [errMessage, setError] = useState('')
-    const [projDropDown, setProjDrop] = useState([])
+    const [current_project, setProject] = useState('');
+    const [error, setError] = useState('')
+    const [projects, setProjects] = useState([])
     const [view, setView] = useState('Daily')
-    const [mtsRows, setMtsRows] = useState([])
-    const [first, setFirst] = useState('')
-    const [changeProject, setChangeProject] = useState(true)
-    const [balance, setBalance] = useState(0)
-    const classes = useStyles();    
-    let temprows = []
-    let tempbalance = 0
+    const [mts, setMts] = useState([])
+    const [isLoading, setLoading] = useState(true)
+    // const [changeProject, setChangeProject] = useState(true)
+    // const [balance, setBalance] = useState(0)
+    const classes = useStyles();
+    // let temprows = []
+    // let tempbalance = 0
     
     ////// INITIAL //////
-    useEffect(() => {
+    // useEffect(() => {
                 
-        const projectnames = [] // for dropdown
-        let firstproject = ''
+    //     const projectnames = [] // for dropdown
+    //     let firstproject = ''
 
-        ////// GETTING THE PROJECTS //////
-        function renderProjects(project, value) {
+    //     ////// GETTING THE PROJECTS //////
+    //     function renderProjects(project, value) {
             
-            if (value == 1) {
-                firstproject = project.data().name
-            }
-            console.log(project.data().name)
-            const name = project.data().name
-            projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )
-        }
+    //         if (value == 1) {
+    //             firstproject = project.data().name
+    //         }
+    //         console.log(project.data().name)
+    //         const name = project.data().name
+    //         projectnames.push( (<MenuItem value={name}>{name}</MenuItem>) )
+    //     }
 
-        dbMTS.get().then(projSnapshot => {
-            projSnapshot.docs.forEach((project, index) => {
-            renderProjects(project, index+1)
-            })
-        })
-        .then(() => {
-            setProjDrop(projectnames)
-            setProject(firstproject)
-            setError('')
-        })
-        .catch(err => {
-            setError(err.message)
-        })
+    //     dbMTS.get().then(projSnapshot => {
+    //         projSnapshot.docs.forEach((project, index) => {
+    //         renderProjects(project, index+1)
+    //         })
+    //     })
+    //     .then(() => {
+    //         setProjects(projectnames)
+    //         setProject(firstproject)
+    //         setError('')
+    //     })
+    //     .catch(err => {
+    //         setError(err.message)
+    //     })
 
-    }, [first])
+    // }, [first])
 
-    function renderError() {
-        if (errMessage) 
-            return <UserAlert severity='error' message={errMessage} />
-        else 
-            return ''
-    }
+    // function renderRows(mts) {
+    //     const mtsData = mts.data()
+    //     const name = current_project
+    //     tempbalance = mtsData.total_cost + tempbalance
+    //     temprows.push(
+    //         <tr>
+    //             <td>{mtsData.date}</td>
+    //             <td>{mtsData.MTS_number}</td>
+    //             <td>{mtsData.total_cost}</td>
+    //             <td>{tempbalance}</td>
+    //         </tr>
+    //     )
+    // }
 
-    function renderRows(mts) {
-        const mtsData = mts.data()
-        const name = projName
-        tempbalance = mtsData.total_cost + tempbalance
-        temprows.push(
-            <tr>
-                <td>{mtsData.date}</td>
-                <td>{mtsData.MTS_number}</td>
-                <td>{mtsData.total_cost}</td>
-                <td>{tempbalance}</td>
-            </tr>
-        )
-    }
+    // useEffect(() => {
+    //     console.log('not inf loop')
+    //     console.log(current_project)
+    //     if (current_project != '') {
+    //         setMts([])
+    //         temprows = []
+    //         tempbalance = 0
+    //         console.log(mts)
+    //         setChangeProject(!changeProject)
+    //     }        
+    // }, [current_project, view])
 
-    useEffect(() => {
-        console.log('not inf loop')
-        console.log(projName)
-        if (projName != '') {
-            setMtsRows([])
-            temprows = []
-            tempbalance = 0
-            console.log(mtsRows)
-            setChangeProject(!changeProject)
-        }        
-    }, [projName, view])
+    // useEffect(() => {
+    //     console.log(mts)
+    //     console.log(view)
 
-    useEffect(() => {
-        console.log(mtsRows)
-        console.log(view)
+    //     if (current_project != '') {            
 
-        if (projName != '') {            
+    //         if (view == 'Daily') {
 
-            if (view == 'Daily') {
+    //             dbMTS.doc(current_project).collection('MTS').where('status', '==', 'Confirmed').get().then(snap => {
+    //                 snap.docs.map(mts => {
+    //                     renderRows(mts)
+    //                 })
+    //             })
+    //             .then(() => {
+    //                 console.log(temprows)
+    //                 setMts(temprows)
+    //                 setBalance(tempbalance)
+    //             })
 
-                dbMTS.doc(projName).collection('MTS').where('status', '==', 'Confirmed').get().then(snap => {
-                    snap.docs.map(mts => {
-                        renderRows(mts)
-                    })
-                })
-                .then(() => {
-                    console.log(temprows)
-                    setMtsRows(temprows)
-                    setBalance(tempbalance)
-                })
+    //         } else {
+    //             // dbMTS.doc(current_project).collection('MTS').where('status', '==', status).get()
+    //             // .then(snap => {
+    //             //     snap.docs.map(mts => {
+    //             //         renderRows(mts)
+    //             //     })
+    //             // })
+    //             // .then(() => {
+    //             //     console.log(temprows)
+    //             //     setMts(temprows)
+    //             // })
 
-            } else {
-                // dbMTS.doc(projName).collection('MTS').where('status', '==', status).get()
-                // .then(snap => {
-                //     snap.docs.map(mts => {
-                //         renderRows(mts)
-                //     })
-                // })
-                // .then(() => {
-                //     console.log(temprows)
-                //     setMtsRows(temprows)
-                // })
-
-                // MONTHLY VIEW
-            }
-        }
+    //             // MONTHLY VIEW
+    //         }
+    //     }
         
-    }, [changeProject])
+    // }, [changeProject])
+
+    async function fetchData() {
+        setLoading(true)
+        try {    
+            const projectnames = await (await api.getMTSProjects()).data.data
+            
+            setProjects(projectnames)
+            setProject(projectnames[0])
+            
+            setError('')
+        } catch (error) {
+            console.log(error)
+            alert('Something went wrong')
+            setError(error)
+        }
+    }
+
+    
+    async function getMTS() {
+        setLoading(true)
+        try {
+            const cost = await (await api.getCost({ project_name: current_project })).data.data
+            console.log(cost)
+            console.log(cost[0].balance)
+            setMts(cost)
+        } catch (error) {
+            setMts([])
+        }
+        setLoading(false)
+    }
+    
+    function renderError() {
+        if (error) 
+        return <UserAlert severity='error' message={error} />
+        else 
+        return ''
+    }
 
     const handleChange = (event) => {
         console.log(event.target.value)
@@ -155,6 +186,14 @@ function Cost() {
         else
             setView(event.target.value)
     };
+    
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        getMTS()
+    }, [current_project])        
 
     return (
         <div className="App">
@@ -164,8 +203,15 @@ function Cost() {
                         <Grid item xs={6}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
-                                <Select labelId="demo-simple-select-label" value={projName} size="large" onChange={handleChange} name='selectProject'>
-                                    {projDropDown}
+                                <Select labelId="demo-simple-select-label" value={current_project} size="large" onChange={handleChange} name='selectProject'>
+                                    {/* {projects} */}
+                                    {
+                                        projects.map(project => {
+                                            return (
+                                                <MenuItem value={project}>{project}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -195,7 +241,19 @@ function Cost() {
                         </tr>
                     </thead>
                     <tbody>
-                        {mtsRows}
+                        {/* {mts} */}
+                        {
+                            mts.map(m => {
+                                return (
+                                    <tr>
+                                        <td>{moment(m.date).format("MM-DD-YYYY")}</td>
+                                        <td>{m.MTS_number}</td>
+                                        <td>{m.total_amount}</td>
+                                        <td>{m.balance}</td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
                     
 

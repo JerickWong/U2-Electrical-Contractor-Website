@@ -177,7 +177,6 @@ function MtsList(props) {
             alert('Something went wrong')
             setError(error)
         }
-        setLoading(false)
     }    
     
     function renderError() {
@@ -221,7 +220,7 @@ function MtsList(props) {
 
     useEffect(() => {
         fetchData()
-    }, [user])
+    }, [])
 
     useEffect( () => {
         if (current_project)

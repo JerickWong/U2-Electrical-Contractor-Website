@@ -12,6 +12,8 @@ export const getMTSById = id => api.get(`/MTS/${id}`)
 export const getMTSByProject = payload => api.post(`/MTS/project`, payload)
 export const getMTSProjects = () => api.get(`/project-names`)
 export const getDelivered = payload => api.post(`/delivered`, payload)
+export const getCost = payload => api.post(`/cost`, payload)
+
 
 const apis = {
     insertMTS,
@@ -21,7 +23,8 @@ const apis = {
     getMTSById,
     getMTSByProject,
     getMTSProjects,
-    getDelivered
+    getDelivered,
+    getCost
 }
 
 export default apis
