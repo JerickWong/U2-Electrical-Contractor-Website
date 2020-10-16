@@ -206,6 +206,8 @@ getDelivered = async (req, res) => {
         }]
         // console.log(sortedByDate[0].rows)
         sortedByDate.map((mts, index) => {
+            console.log(`mts: ${mts.rows}`)
+            console.log(`index: ${index}`)
             if (index > 0) {
                 const date = moment(mts.date).format('YYYY-MM-DD')
                 // if the same date, += the qty                
@@ -216,8 +218,9 @@ getDelivered = async (req, res) => {
                             const { rows } = mts
 
                             rows.map(row => {
-                                // item already exists                                 
-                                if (items.filter(item => row.description===item)) {
+                                // item already exists
+                                // console.log(row.description)
+                                if (items.filter(item => row.description===item).length>0) {
                                     items.map((item, index) => {
                                         if (row.description===item) {
                                             qty[index] += row.qty
@@ -228,9 +231,9 @@ getDelivered = async (req, res) => {
                                 else {
                                     if (row.description && row.qty) {
 
-                                        items.push(row.description)
-                                        qty.push(row.qty)
                                     }
+                                    items.push(row.description)
+                                    qty.push(row.qty)
                                 }
                             })
                             
@@ -249,6 +252,7 @@ getDelivered = async (req, res) => {
                 }
             }
         })
+        console.log(deliveredObject)
         
         return res.status(200).json({ success: true, data: deliveredObject })
     })

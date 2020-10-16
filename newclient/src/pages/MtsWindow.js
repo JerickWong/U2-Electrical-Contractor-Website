@@ -169,7 +169,7 @@ function MtsWindow(props) {
 
       if (props.location.state) {
         // const mts = Object.assign({}, props.location.state.mts)
-        const mts = JSON.parse(localStorage.getItem('mts'))        
+        const mts = props.location.state.mts
         // removeFromDelivered()
     
         setPreparedBy(mts.prepared_by)
@@ -547,7 +547,7 @@ function MtsWindow(props) {
     // editing
     if (props.location.state) {
       try {        
-        const _id = JSON.parse(localStorage.getItem('mts'))._id
+        const _id = props.location.state.mts._id
         const response = await (await api.updateMTSById(_id, payload)).data
         
         // delivered
