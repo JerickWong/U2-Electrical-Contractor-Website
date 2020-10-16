@@ -34,6 +34,69 @@ createDelivered = (req, res) => {
         })
 }
 
+// updateDelivered = async (req, res) => {
+//     const body = req.body
+
+//     if (!body) {
+//         console.log(`what ${body}`)
+//         return res.status(400).json({
+//             success: false,
+//             error: 'You must provide a body to update',
+//         })
+//     }
+    
+//     Delivered.findOne({ project_name: body.project_name }, (err, delivered) => {
+//         if (err) {
+//             console.log(err)
+//             return res.status(404).json({
+//                 err,
+//                 message: 'Delivered not found!',
+//             })
+//         }
+        
+//         delivered.start = body.start
+//         delivered.end = body.end
+        
+//         const rows = delivered.rows
+//         console.log(delivered)
+//         console.log(delivered.rows)
+//         body.rows.map(row => {
+//             if (rows.filter(r => r.item === row.item).length>0) {
+//                 rows.map(r => {
+//                     if (r.item === row.item)
+//                         r.total += row.total
+//                 })
+//             }
+
+//             else {
+//                 rows.push({
+//                     estqty: 0,
+//                     item: row.item,
+//                     total: row.total
+//                 })
+//             }
+//         })
+                
+//         delivered
+//             .save()
+//             .then(() => {
+//                 return res.status(200).json({
+//                     success: true,
+//                     id: delivered._id,
+//                     data: delivered,
+//                     message: 'Delivered updated!',
+//                 })
+//             })
+//             .catch(error => {
+//                 console.log(error)
+//                 return res.status(404).json({
+//                     error,
+//                     message: 'Delivered not updated!',
+//                 })
+//             })
+//     })
+// }
+
 updateDelivered = async (req, res) => {
     const body = req.body
 
@@ -47,36 +110,16 @@ updateDelivered = async (req, res) => {
     
     Delivered.findOne({ project_name: body.project_name }, (err, delivered) => {
         if (err) {
-            console.log(err)
             return res.status(404).json({
                 err,
                 message: 'Delivered not found!',
             })
         }
-        
+
+        delivered.rows = body.rows
         delivered.start = body.start
         delivered.end = body.end
-        
-        const rows = delivered.rows
-        console.log(delivered)
-        console.log(delivered.rows)
-        body.rows.map(row => {
-            if (rows.filter(r => r.item === row.item).length>0) {
-                rows.map(r => {
-                    if (r.item === row.item)
-                        r.total += row.total
-                })
-            }
 
-            else {
-                rows.push({
-                    estqty: 0,
-                    item: row.item,
-                    total: row.total
-                })
-            }
-        })
-                
         delivered
             .save()
             .then(() => {
@@ -147,7 +190,7 @@ removeItem = async (req, res) => {
 }
 
 deleteDelivered = async (req, res) => {
-    await Delivered.findOneAndDelete({ _id: req.params.id }, (err, delivered) => {
+    await Delivered.deleteMany({  }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -192,11 +235,11 @@ getAllDelivered = async (req, res) => {
 }
 
 getDeliveredByProject = async (req, res) => {
-    await Delivered.find({ project_name: req.body.project_name }, (err, delivered) => {
+    await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!delivered.length) {
+        if (!delivered) {
             return res
                 .status(204)
                 .json({ success: false, error: `Delivered not found` })

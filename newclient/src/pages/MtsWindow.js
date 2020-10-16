@@ -170,7 +170,7 @@ function MtsWindow(props) {
       if (props.location.state) {
         // const mts = Object.assign({}, props.location.state.mts)
         const mts = JSON.parse(localStorage.getItem('mts'))        
-        removeFromDelivered()
+        // removeFromDelivered()
     
         setPreparedBy(mts.prepared_by)
         setAddress(mts.address)
@@ -452,34 +452,71 @@ function MtsWindow(props) {
   }
 
   async function appendToDelivered() {
-    const clean_rows = rows.filter(row => {
-      if (row.description && row.qty)
-        return row
-    })
+    // const clean_rows = rows.filter(row => {
+    //   if (row.description && row.qty)
+    //     return row
+    // })
+
+    // try {
+    //   const dates = await (await api.getDates({ project_name })).data.data
+          
+    //   const payload = {
+    //     project_name,
+    //     start: new Date(dates.start),
+    //     end: new Date(dates.end),
+    //     rows: []
+    //   }
+
+    //   clean_rows.map(row => {
+    //     payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
+    //   })
+
+    //   if (dates.start > new Date(date)) 
+    //     payload.start = date
+    //   else if (dates.end < new Date(date))
+    //     payload.end = date
+      
+    //   const delivered = await (await api.updateDelivered(payload)).data.message
+    //   alert(delivered)
+    // } catch (error) {
+    //   console.log(error)
+    //   alert(error)
+    // }
 
     try {
       const dates = await (await api.getDates({ project_name })).data.data
-          
       const payload = {
         project_name,
-        start: new Date(dates.start),
-        end: new Date(dates.end),
-        rows: []
+        from: dates.start,
+        to: dates.end
       }
+      const delivered = await (await api.getDeliveredSummary(payload)).data.data
+      const realDelivered = await (await api.getDeliveredByProject({ project_name })).data.data
+      payload.start = dates.start
+      payload.end = dates.end      
+      payload.rows = []
+      delivered.map(mts => {
+        if (realDelivered.rows.filter(row => mts.item===row.item).length>0) {          
 
-      clean_rows.map(row => {
-        payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
+          realDelivered.rows.map(row => {
+            if (mts.item===row.item) {
+              payload.rows.push({ item: mts.item, total: mts.total, estqty: row.estqty })
+            }
+          })
+        } else {
+          payload.rows.push({ item: mts.item, total: mts.total, estqty: 0 })
+        }
       })
-
-      if (dates.start > new Date(date)) 
-        payload.start = date
-      else if (dates.end < new Date(date))
-        payload.end = date
       
-      const delivered = await (await api.updateDelivered(payload)).data.message
-      alert(delivered)
+      console.log(payload)
+      console.log(payload.rows[0])
+      console.log(payload.rows[0].item)
+
+      const data = await (await api.updateDelivered(payload)).data.data
+      console.log(data)
+      alert(data)
+
     } catch (error) {
-      console.log(error)
       alert(error)
     }
   }
