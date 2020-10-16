@@ -9,5 +9,6 @@ router.delete('/Delivered/:id', DeliveredCntrl.deleteDelivered)
 router.get('/Delivered/:id', DeliveredCntrl.getDeliveredById)
 router.get('/All-Delivered', DeliveredCntrl.getAllDelivered)
 router.post('/Delivered/project', DeliveredCntrl.getDeliveredByProject)
+router.put('/Delivered/remove', DeliveredCntrl.removeItem)
 
 module.exports = router

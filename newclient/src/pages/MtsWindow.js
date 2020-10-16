@@ -463,15 +463,15 @@ function MtsWindow(props) {
 
         // delivered
         const isExist = await (await api.getDeliveredByProject({ project_name })).data.success
-        alert(isExist)
+        
         // if project already exists, append delivered object
         if (isExist) {
           const dates = await (await api.getDates({ project_name })).data.data
-          alert(dates)
+          
           const payload = {
             project_name,
-            start: dates.start,
-            end: dates.end,            
+            start: new Date(dates.start),
+            end: new Date(dates.end),
             rows: []
           }
 
@@ -479,9 +479,9 @@ function MtsWindow(props) {
             payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
           })
 
-          if (dates.start > date) 
+          if (dates.start > new Date(date)) 
             payload.start = date
-          else if (dates.end < date)
+          else if (dates.end < new Date(date))
             payload.end = date
           
           const delivered = await (await api.updateDelivered(payload)).data.message
@@ -490,7 +490,7 @@ function MtsWindow(props) {
 
         // create new delivered object
         else {
-          const dates = await (await api.getDates({ project_name })).data.data
+          
           const delivered_rows = clean_rows.map(row => {
             return { estqty: 0, item: row.description, total: row.qty }
           })

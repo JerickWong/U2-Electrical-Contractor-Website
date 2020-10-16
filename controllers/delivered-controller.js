@@ -97,6 +97,55 @@ updateDelivered = async (req, res) => {
     })
 }
 
+removeItem = async (req, res) => {
+    await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!delivered) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Delivered not found` })
+        }
+
+        const { rows } = req.body
+
+        rows.map(row => {
+            if (delivered.rows.filter(d => d.item === row.item)) {
+                delivered.rows.map((d, index) => {
+                    if (d.item === row.item) {
+                        d.total -= row.total
+
+                        if (d.total === 0) {
+                            delivered.rows.splice(index, 1)
+                        }
+                    }
+                })
+            }
+        })        
+
+        delivered
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: delivered._id,
+                    data: delivered,
+                    message: 'Delivered updated!',
+                })
+            })
+            .catch(error => {
+                console.log(error)
+                return res.status(404).json({
+                    error,
+                    message: 'Delivered not updated!',
+                })
+            })
+
+    }).catch(err => console.log(err))
+}
+
 deleteDelivered = async (req, res) => {
     await Delivered.findOneAndDelete({ _id: req.params.id }, (err, delivered) => {
         if (err) {
@@ -162,5 +211,6 @@ module.exports = {
     deleteDelivered,
     getAllDelivered,
     getDeliveredById,
-    getDeliveredByProject
+    getDeliveredByProject,
+    removeItem
 }
