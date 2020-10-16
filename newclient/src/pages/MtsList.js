@@ -315,7 +315,7 @@ function MtsList(props) {
                                                             mts: m
                                                         }
                                                     }}>
-                                                    <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
+                                                    <Button variant="outlined" color="primary" onClick={()=>{localStorage.setItem('mts', JSON.stringify(m))}}><FontAwesomeIcon className="view" icon={faEye} />
                                                     View</Button>
                                                     </Link>
                                                     </td>

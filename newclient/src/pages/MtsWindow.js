@@ -8,6 +8,7 @@ import { InputBase } from '@material-ui/core';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
+import { Prompt } from 'react-router'
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
 import db from '../components/Firestore/firestore'
@@ -111,6 +112,7 @@ function MtsWindow(props) {
   const [received_by, setReceivedBy] = useState('')
   const [total_amount, setTotalAmount] = useState(0)
   const [status, setStatus] = useState('For Approval')
+  const [isUnsaved, setUnsaved] = useState(false)
   const [rows, setRows] = useState([{
     qty: '',
     description: '',
@@ -161,12 +163,14 @@ function MtsWindow(props) {
     remarks: '',
     total: 0
   }])
-
+  
   useEffect(() => {
     if (isEdit) {
 
       if (props.location.state) {
-        const mts = props.location.state.mts
+        // const mts = Object.assign({}, props.location.state.mts)
+        const mts = JSON.parse(localStorage.getItem('mts'))        
+        removeFromDelivered()
     
         setPreparedBy(mts.prepared_by)
         setAddress(mts.address)
@@ -200,6 +204,7 @@ function MtsWindow(props) {
           }
         }
         setRows([...mts.rows, ...temp])
+        setUnsaved(true)
       }
       else {
         users.getUser({ token: localStorage.getItem('token') })
@@ -207,15 +212,21 @@ function MtsWindow(props) {
           setPreparedBy(res.data.data.username)
         })
         .catch(err => {
-          alert("waz prob")
+          alert("not logged in")
         })
       }
     }
 
     setIsEdit(false)
-  }, [isEdit])
+  }, [])
 
-
+  function unsaved() {
+    if (isUnsaved) {
+      window.onbeforeunload = () => true
+    } else {
+      window.onbeforeunload = undefined
+    }
+  }
   // FIRESTORE SHIT
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   // const rows = []
@@ -420,6 +431,59 @@ function MtsWindow(props) {
       
   }
 
+  async function removeFromDelivered() {
+    try {
+      // console.log(oldRows)
+      const mts = JSON.parse(localStorage.getItem('mts'))
+      const rows = mts.rows.map(row => {
+        return { item: row.description, total: row.qty }
+      })
+      const payload = {
+        project_name: mts.project_name,
+        rows
+      }
+      
+      const success = await (await api.removeItem(payload)).data.success
+      
+    } catch (error) {
+      console.log(error)
+      alert(error)
+    }
+  }
+
+  async function appendToDelivered() {
+    const clean_rows = rows.filter(row => {
+      if (row.description && row.qty)
+        return row
+    })
+
+    try {
+      const dates = await (await api.getDates({ project_name })).data.data
+          
+      const payload = {
+        project_name,
+        start: new Date(dates.start),
+        end: new Date(dates.end),
+        rows: []
+      }
+
+      clean_rows.map(row => {
+        payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
+      })
+
+      if (dates.start > new Date(date)) 
+        payload.start = date
+      else if (dates.end < new Date(date))
+        payload.end = date
+      
+      const delivered = await (await api.updateDelivered(payload)).data.message
+      alert(delivered)
+    } catch (error) {
+      console.log(error)
+      alert(error)
+    }
+  }
+
   async function handleConfirm() {
 
     const clean_rows = rows.filter(row => {
@@ -445,11 +509,12 @@ function MtsWindow(props) {
 
     // editing
     if (props.location.state) {
-      try {
-        const _id = props.location.state.mts._id
+      try {        
+        const _id = JSON.parse(localStorage.getItem('mts'))._id
         const response = await (await api.updateMTSById(_id, payload)).data
         
         // delivered
+        appendToDelivered()
 
         alert(response.message)
       } catch (error) {
@@ -466,26 +531,7 @@ function MtsWindow(props) {
         
         // if project already exists, append delivered object
         if (isExist) {
-          const dates = await (await api.getDates({ project_name })).data.data
-          
-          const payload = {
-            project_name,
-            start: new Date(dates.start),
-            end: new Date(dates.end),
-            rows: []
-          }
-
-          clean_rows.map(row => {
-            payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
-          })
-
-          if (dates.start > new Date(date)) 
-            payload.start = date
-          else if (dates.end < new Date(date))
-            payload.end = date
-          
-          const delivered = await (await api.updateDelivered(payload)).data.message
-          alert(delivered)
+          appendToDelivered()
         }
 
         // create new delivered object
@@ -504,6 +550,7 @@ function MtsWindow(props) {
         alert(error.message)
       }
     }
+    setUnsaved(false)
     // FIRESTORE Saving
     // ACTUAL SAVING TO DB
     // const newID = MTS_number + ""
@@ -798,7 +845,12 @@ function MtsWindow(props) {
             </div>
           </MuiThemeProvider>
         </main>
-      </Container>      
+      </Container>
+      { unsaved() }
+      <Prompt
+        when={isUnsaved}
+        message='You have unsaved changes, are you sure you want to leave?'
+      />
     </div>
   );
 }
