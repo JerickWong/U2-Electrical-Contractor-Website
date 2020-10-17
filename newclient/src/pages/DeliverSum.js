@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton, InputBase } from '@material-ui/core';
+import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton, InputBase, CircularProgress } from '@material-ui/core';
 import { ArrowBackIos, Save, Clear, Search, DateRange } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -71,7 +71,13 @@ const useStyles = makeStyles((theme) => ({
     },
     back:{
         alignSelf:'right'
-    }
+    },
+    parentCenter: {
+        height: '200px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
 }));
 
 // const dbMTS = db.collection('MTS-Collection');
@@ -379,65 +385,65 @@ function Price() {
                                 </Grid>                                
                             </Grid>
                         </div>
-                        <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
-                            <thead>
-                                <tr>
-                                    <th>Est Qty</th>
-                                    <th>Item Name</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* <tr>
-                                    <td>625</td>
-                                    <td>PVC Pipe 4"</td>
-                                    <td>500</td>
-                                </tr>
-                                <tr>
-                                    <td>1250</td>
-                                    <td>PVC Pipe 3"</td>
-                                    <td>750</td>
-                                </tr>
-                                <tr>
-                                    <td>625</td>
-                                    <td>PVC Pipe 4"</td>
-                                    <td>500</td>
-                                </tr>
-                                <tr>
-                                    <td>1250</td>
-                                    <td>PVC Pipe 3"</td>
-                                    <td>750</td>
-                                </tr>
-                                <tr>
-                                    <td>625</td>
-                                    <td>PVC Pipe 4"</td>
-                                    <td>500</td>
-                                </tr>
-                                <tr>
-                                    <td>1250</td>
-                                    <td>PVC Pipe 3"</td>
-                                    <td>750</td>
-                                </tr> */}
-                                {
-                                    mts.map(m => {
-                                        return (
+                        {
+                            isLoading ?
+                            <div className={classes.parentCenter}>
+                                <CircularProgress size={70} />
+                            </div>
+                            
+                            :
+                            (
+                                !mts.length ?
+                                (
+                                    <Container>
+                                        <Table className="tbl1" hover bordercolor="#8f8f94" border="#8f8f94">
+                                        <thead>
                                             <tr>
-                                                {
-                                                    isFiltered ?
-                                                    <td className={classes.txt2}>{m.estqty}</td>
-                                                    :
-                                                    <td className={classes.txt2}><InputBase className={classes.txt1} pattern="[0-9*]" type="number" value={m.estqty} />
-                                                        </td>
-                                                }
-                                                <td>{m.item}</td>
-                                                <td>{m.total}</td>
+                                                <th>Project Name</th>
+                                                <th>MTS No.</th>
+                                                <th>Date Created</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
+                                        </thead>
+                                        </Table>
+                                        <div className={classes.parentCenter}>This list is empty.</div>
+                                    </Container>
+                                )
+                                :
+                                (
+                                    <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
+                                        <thead>
+                                            <tr>
+                                                <th>Est Qty</th>
+                                                <th>Item Name</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                
+                                            {
+                                                mts.map(m => {
+                                                    return (
+                                                        <tr>
+                                                            {
+                                                                isFiltered ?
+                                                                <td className={classes.txt2}>{m.estqty}</td>
+                                                                :
+                                                                <td className={classes.txt2}><InputBase className={classes.txt1} pattern="[0-9*]" type="number" value={m.estqty} />
+                                                                    </td>
+                                                            }
+                                                            <td>{m.item}</td>
+                                                            <td>{m.total}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
 
-                        </Table>
+                                    </Table>
+                                )
+                            )
+                        }
                     </MuiThemeProvider>
                 </main>
             </Container>
