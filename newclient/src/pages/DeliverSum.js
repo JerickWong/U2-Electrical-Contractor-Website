@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton } from '@material-ui/core';
+import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton, InputBase } from '@material-ui/core';
 import { ArrowBackIos, Save, Clear, Search, DateRange } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import db from '../components/Firestore/firestore';
 import UserAlert from '../components/UserAlert/UserAlert'
 import '../styles/mts.css';
 import api from '../api';
+import moment from 'moment'
 
 const primary = '#8083FF';
 const gray = '#838387';
@@ -47,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
         width: 390,
         marginTop: 15
     },
+    txt1: {
+        width: 50
+    },
+    txt2: {
+        width: 120
+    },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
@@ -78,6 +85,7 @@ function Price() {
     const [to, setTo] = useState()
     const [from, setFrom] = useState()
     const [isLoading, setLoading] = useState(true)
+    const [isFiltered, setFiltered] = useState(false)
     // const [first, setFirst] = useState('')
     // const [date, setDate] = useState([])
     // const [changeProject, setChangeProject] = useState(true)
@@ -243,8 +251,11 @@ function Price() {
         try {            
             
             // GET delivered
-
-            // setMts()
+            const delivered = await (await api.getDeliveredByProject({ project_name: current_project })).data.data
+            console.log(delivered)
+            setFrom(moment(delivered.start).format('YYYY-MM-DD'))
+            setTo(moment(delivered.end).format('YYYY-MM-DD'))
+            setMts(delivered.rows)
         } catch (error) {
             setMts([])
         }
@@ -253,7 +264,7 @@ function Price() {
 
     async function getMTSFiltered() {
         if (to && from) {
-
+            setFiltered(true)
             try {
                 console.log(to)
                 const data = await (await api.getDeliveredSummary({ project_name: current_project, to: to, from: from })).data.data
@@ -266,6 +277,7 @@ function Price() {
             }
         } else {
             // get delivered
+            setFiltered(false)
         }
         
     }
@@ -410,7 +422,13 @@ function Price() {
                                     mts.map(m => {
                                         return (
                                             <tr>
-                                                <td>{m.estqty}</td>
+                                                {
+                                                    isFiltered ?
+                                                    <td className={classes.txt2}>{m.estqty}</td>
+                                                    :
+                                                    <td className={classes.txt2}><InputBase className={classes.txt1} pattern="[0-9*]" type="number" value={m.estqty} />
+                                                        </td>
+                                                }
                                                 <td>{m.item}</td>
                                                 <td>{m.total}</td>
                                             </tr>
