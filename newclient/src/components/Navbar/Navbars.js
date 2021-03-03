@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, useTheme, Button, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, ListItemLink, Typography } from '@material-ui/core';
@@ -136,6 +136,20 @@ function Navbars() {
   //   }
   //   console.log(user)
   // }
+
+  const fetchUser = async () => {
+    try {
+      const data = (await users.getUser({ token: localStorage.getItem('token') })).data
+
+      setUser(data.data.username)
+    } catch (error) {
+      alert("error getting user")
+    }
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
   
   function refreshPage() {
     window.location.reload(false);
