@@ -129,7 +129,7 @@ function AdminNavbar() {
   // })
 
   const isLoggedin = () => {
-    if (user == '') {
+    if (user == null) {
       alert('not logged in')
       return <Redirect to='/' />
     }
@@ -142,6 +142,7 @@ function AdminNavbar() {
 
       setUser(data.data.username)
     } catch (error) {
+      setUser(null)
       console.log(error)
     }
   }

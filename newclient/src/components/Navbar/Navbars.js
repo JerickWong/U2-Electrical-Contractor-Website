@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 function Navbars() {
   const classes = useStyles();
   const theme = useTheme();
-  const [user, setUser] = React.useState('')
+  const [user, setUser] = React.useState(' ')
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -130,7 +130,7 @@ function Navbars() {
   // })
 
   const isLoggedin = () => {
-    if (user == '') {
+    if (user == null) {
       alert('not logged in')
       return <Redirect to='/' />
     }
@@ -143,6 +143,7 @@ function Navbars() {
 
       setUser(data.data.username)
     } catch (error) {
+      setUser(null)
       console.log(error)
     }
   }
