@@ -102,9 +102,41 @@ const useStyles = makeStyles((theme) => ({
 
 function Accounts() {
     const classes = useStyles();
-    const [role, setRole] = React.useState('All');
-    const [newRole, setNewRole] = React.useState('Employee');
-    const [editRole, setEditRole] = React.useState('');
+    const [role, setRole] = useState('All');
+    const [newRole, setNewRole] = useState('Employee');
+    const [editRole, setEditRole] = useState('');
+    const [accounts, setAccounts] = useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [edit, setEdit] = React.useState(false);
+
+    const fetchUsers = async () => {
+        try {
+            let dataArray = (await users.getAllUsers()).data.data
+            alert('dito ano')
+
+            dataArray = dataArray.map(data => {
+                const CryptoJS = require("crypto-js")                            
+                
+                const bytes  = CryptoJS.AES.decrypt(data.password, 'secret')
+                const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                console.log(`PUTAAA WHYYY: ${decrypted}`)
+                alert(decrypted)
+                return { ...data, password: decrypted }
+            })
+            
+            setAccounts(dataArray)
+            console.log(`DITO HOY TANGA: ${dataArray}`)
+            alert(dataArray)
+        } catch (error) {
+            console.log(error)
+            alert(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchUsers()
+    }, [])
+
     const handleChange = (event) => {
         setRole(event.target.value)
     }
@@ -140,10 +172,7 @@ function Accounts() {
         } catch (error) {
             alert(error)
         }
-    }
-
-    const [open, setOpen] = React.useState(false);
-    const [edit, setEdit] = React.useState(false);
+    }    
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -357,6 +386,22 @@ function Accounts() {
                                 </tr>
                             </thead>
                             <tbody>
+                                {
+                                    accounts.map((account, index) => {
+                                        return (
+                                            <tr>
+                                                <td>{account.username}</td>
+                                                <td>{account.password}</td>
+                                                <td>{account.type}</td>
+                                                <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
+                                                <td>
+                                                    <IconButton color="primary" onClick={handleClickEdit} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                                    <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                                 <tr>
                                     <td>Teptep</td>
                                     <td>password1</td>
