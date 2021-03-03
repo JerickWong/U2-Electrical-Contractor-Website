@@ -265,7 +265,7 @@ function AdminMts(props) {
         const { name, value } = event.target
         
         if (name === 'selectProject') 
-        setProject(value);
+            setProject(value);
             
         else
             setStatus(value)
