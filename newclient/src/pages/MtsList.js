@@ -175,7 +175,7 @@ function MtsList(props) {
             setError('')
         } catch (error) {
             alert('Something went wrong')
-            setError(error)
+            setError(error)            
         }
     }    
     
@@ -225,6 +225,8 @@ function MtsList(props) {
     useEffect( () => {
         if (current_project)
             getMTS()
+        else
+            setLoading(false)
     }, [current_project, status])
 
 
