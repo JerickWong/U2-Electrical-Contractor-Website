@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, Button, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
@@ -13,6 +13,7 @@ import '../../styles/navbar.css';
 import firebase from 'firebase'
 import Authenticate from '../Firestore/auth'
 import { Redirect } from 'react-router-dom'
+import users from '../../api/users'
 
 const drawerWidth = 220;
 const light = indigo[50];
@@ -119,21 +120,35 @@ function AdminNavbar() {
     setOpen(false);
   };
 
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-        setUser(user.displayName)
-    } else {
-        setUser('')
-    }
-  })
+  // firebase.auth().onAuthStateChanged(user => {
+  //   if (user) {
+  //       setUser(user.displayName)
+  //   } else {
+  //       setUser('')
+  //   }
+  // })
 
-  const isLoggedin = () => {
-    if (user == '') {
-      alert('not logged in')
-      return <Redirect to='/' />
+  // const isLoggedin = () => {
+  //   if (user == '') {
+  //     alert('not logged in')
+  //     return <Redirect to='/' />
+  //   }
+  //   console.log(user)
+  // }
+
+  const fetchUser = async () => {
+    try {
+      const data = (await users.getUser({ token: localStorage.getItem('token') })).data
+
+      setUser(data.data.username)
+    } catch (error) {
+      alert("error getting user")
     }
-    console.log(user)
   }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
 
   function refreshPage() {
     window.location.reload(false);
