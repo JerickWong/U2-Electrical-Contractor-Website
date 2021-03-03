@@ -31,6 +31,7 @@ const MTSSchema = new mongoose.Schema({
     approved_by: String,
     takenout_by: String,
     received_by: String,
+    address: String,
     status: {
         type: String,
         default: "For Approval"

@@ -405,6 +405,8 @@ function MtsWindow(props) {
       empty.push('Received By')
     if (date === '')
       empty.push('Date')    
+    if (address === '')
+      empty.push('Address')
 
     rows.map((row, index) => {
       const { qty, description, unit, brand, model, remarks } = row
@@ -527,6 +529,8 @@ function MtsWindow(props) {
       if (row.description && row.qty)
         return row
     })
+
+    alert(address)
 
     const payload = {
       prepared_by,

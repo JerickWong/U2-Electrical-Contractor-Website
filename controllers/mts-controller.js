@@ -1,7 +1,7 @@
 const moment = require('moment')
 const MTS = require('../models/MTS')
 
-createMTS = (req, res) => {
+const createMTS = (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -36,7 +36,7 @@ createMTS = (req, res) => {
         })
 }
 
-updateMTS = async (req, res) => {
+const updateMTS = async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -63,6 +63,7 @@ updateMTS = async (req, res) => {
         mts.approved_by = body.approved_by
         mts.takenout_by = body.takenout_by
         mts.received_by = body.received_by
+        mts.address = body.address
         mts.status = body.status
         mts.date = body.date
         mts.rows = body.rows
@@ -88,7 +89,7 @@ updateMTS = async (req, res) => {
     })
 }
 
-deleteMTS = async (req, res) => {
+const deleteMTS = async (req, res) => {
     await MTS.findOneAndDelete({ _id: req.params.id }, (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -104,7 +105,7 @@ deleteMTS = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getMTSById = async (req, res) => {
+const getMTSById = async (req, res) => {
     await MTS.findOne({ _id: req.params.id }, (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -119,7 +120,7 @@ getMTSById = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getAllMTS = async (req, res) => {
+const getAllMTS = async (req, res) => {
     await MTS.find({}, (err, mtss) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -133,7 +134,7 @@ getAllMTS = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getMTSProjects = async (req, res) => {
+const getMTSProjects = async (req, res) => {
     await MTS.distinct('project_name', (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -148,7 +149,7 @@ getMTSProjects = async (req, res) => {
     })
 }
 
-getMTSByProject = async (req, res) => {
+const getMTSByProject = async (req, res) => {
     if (req.body.status === "All") {
 
         await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
@@ -182,7 +183,7 @@ getMTSByProject = async (req, res) => {
     }
 }
 
-getDelivered = async (req, res) => {
+const getDelivered = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -258,7 +259,7 @@ getDelivered = async (req, res) => {
     })
 }
 
-getCost = async (req, res) => {
+const getCost = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name }).lean().exec( (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -287,7 +288,7 @@ getCost = async (req, res) => {
     })
 }
 
-getDeliveredSummary = async (req, res) => {
+const getDeliveredSummary = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to } }).lean().exec( (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -325,7 +326,7 @@ getDeliveredSummary = async (req, res) => {
     })
 }
 
-getProjectDates = async (req, res) => {
+const getProjectDates = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
