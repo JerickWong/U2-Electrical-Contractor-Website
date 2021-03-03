@@ -128,13 +128,13 @@ function AdminNavbar() {
   //   }
   // })
 
-  // const isLoggedin = () => {
-  //   if (user == '') {
-  //     alert('not logged in')
-  //     return <Redirect to='/' />
-  //   }
-  //   console.log(user)
-  // }
+  const isLoggedin = () => {
+    if (user == '') {
+      alert('not logged in')
+      return <Redirect to='/' />
+    }
+    console.log(user)
+  }
 
   const fetchUser = async () => {
     try {
@@ -142,8 +142,12 @@ function AdminNavbar() {
 
       setUser(data.data.username)
     } catch (error) {
-      alert("error getting user")
+      console.log(error)
     }
+  }
+
+  const handleLogout = () => {    
+    localStorage.setItem('token', '')
   }
 
   useEffect(() => {
@@ -156,7 +160,7 @@ function AdminNavbar() {
 
   return (
     <div className={classes.root}>
-      {/* {isLoggedin()} */}
+      {isLoggedin()}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
@@ -170,7 +174,7 @@ function AdminNavbar() {
             </IconButton>
             <Typography className={classes.login}>Logged in as: {user}</Typography>
             <Link to='/'>
-              <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+              <Button onClick={handleLogout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
             </Link>            
           </Toolbar>
         </AppBar>

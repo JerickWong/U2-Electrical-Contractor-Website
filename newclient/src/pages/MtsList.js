@@ -159,7 +159,6 @@ function MtsList(props) {
             return current
         } catch (error) {
             console.log(error)
-            alert('user not logged in')
             return null
         }
     }

@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 function Navbars() {
   const classes = useStyles();
   const theme = useTheme();
-  const [user, setUser] = React.useState(' ')
+  const [user, setUser] = React.useState('')
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -129,13 +129,13 @@ function Navbars() {
   //   }
   // })
 
-  // const isLoggedin = () => {
-  //   if (user == '') {
-  //     alert('not logged in')
-  //     return <Redirect to='/' />
-  //   }
-  //   console.log(user)
-  // }
+  const isLoggedin = () => {
+    if (user == '') {
+      alert('not logged in')
+      return <Redirect to='/' />
+    }
+    console.log(user)
+  }
 
   const fetchUser = async () => {
     try {
@@ -143,13 +143,17 @@ function Navbars() {
 
       setUser(data.data.username)
     } catch (error) {
-      alert("error getting user")
+      console.log(error)
     }
   }
 
   useEffect(() => {
     fetchUser()
   }, [])
+
+  const handleLogout = () => {    
+    localStorage.setItem('token', '')
+  }
   
   function refreshPage() {
     window.location.reload(false);
@@ -157,7 +161,7 @@ function Navbars() {
 
   return (
     <div className={classes.root}>
-      {/* {isLoggedin()} */}
+      {isLoggedin()}
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
@@ -171,7 +175,7 @@ function Navbars() {
             </IconButton>
             <Typography className={classes.login}>Logged in as: {user}</Typography>
             <Link to='/'>
-              <Button onClick={Authenticate.logout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
+              <Button onClick={handleLogout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt}/>}>Logout</Button>
             </Link>            
           </Toolbar>
         </AppBar>

@@ -212,7 +212,7 @@ function MtsWindow(props) {
           setPreparedBy(res.data.data.username)
         })
         .catch(err => {
-          alert("not logged in")
+          console.log(err)
         })
       }
     }

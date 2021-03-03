@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const keys = require('../db/index')
 const cookies = require('cookie-parser')
 
-loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
     if (!req.body.password) {
         return res.status(400).json({
             success: false,
@@ -61,11 +61,11 @@ loginUser = async (req, res) => {
 
 }
 
-logoutUser = async (req, res) => {
+const logoutUser = async (req, res) => {
 
 }
 
-registerUser = (req, res) => {
+const registerUser = (req, res) => {
     const { password, username, type } = req.body
     const newUser = new User({
         username,
@@ -86,7 +86,7 @@ registerUser = (req, res) => {
     // return res.send("etits")
 }
 
-deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
     await User.findOneAndDelete({ _id: req.params.id }, (err, user) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -102,7 +102,7 @@ deleteUser = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getAllUser = async (req, res) => {
+const getAllUser = async (req, res) => {
     await User.find({}, (err, users) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -116,7 +116,7 @@ getAllUser = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getUser = async (req, res) => {
+const getUser = async (req, res) => {
     const token = req.body.token
     // console.log(token)
     // console.log(req.body.token)
@@ -144,7 +144,7 @@ getUser = async (req, res) => {
     }
 }
 
-updatePassword = async (req, res) => {
+const updatePassword = async (req, res) => {
     const { password, isAdmin } = req.body
 
     if (!req.body) {
@@ -186,7 +186,7 @@ updatePassword = async (req, res) => {
         });    
 }
 
-updatePRFFolder = async (req, res) => {
+const updatePRFFolder = async (req, res) => {
 
     const { password, isAdmin } = req.body
 
@@ -225,7 +225,7 @@ updatePRFFolder = async (req, res) => {
     })
 }
 
-updatePOFolder = async (req, res) => {
+const updatePOFolder = async (req, res) => {
 
     const { password, isAdmin } = req.body
     
