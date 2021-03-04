@@ -108,23 +108,23 @@ function Accounts() {
     const [editPassword, setPassword] = useState('');
     const [editRole, setEditRole] = useState('');
     const [accounts, setAccounts] = useState([]);
-    const [open, setOpen] = React.useState(false);
-    const [edit, setEdit] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [oldUsername, setOldUsername] = useState(null)
 
     const fetchUsers = async () => {
         try {
             let dataArray = (await users.getAllUsers()).data.data
-            alert('dito ano')
 
-            dataArray = dataArray.map(data => {
-                const CryptoJS = require("crypto-js")                            
+            // dataArray = dataArray.map(data => {
+            //     const CryptoJS = require("crypto-js")                            
                 
-                const bytes  = CryptoJS.AES.decrypt(data.password, 'secret')
-                const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-                console.log(`PUTAAA WHYYY: ${decrypted}`)
-                alert(decrypted)
-                return { ...data, password: decrypted }
-            })
+            //     const bytes  = CryptoJS.AES.decrypt(data.password, 'secret')
+            //     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+            //     console.log(`PUTAAA WHYYY: ${decrypted}`)
+            //     // alert(decrypted)
+            //     return { ...data, password: decrypted }
+            // })
             
             setAccounts(dataArray)
         } catch (error) {
@@ -172,20 +172,34 @@ function Accounts() {
         } catch (error) {
             alert(error)
         }
+        fetchUsers();
     }
 
     const editAccount = async () => {
         try {
-            // await users.
+            alert(oldUsername)
+            const payload = {
+                oldUsername,
+                username: editUsername,
+                password: editPassword
+            }
+            console.log(payload)
+            alert(payload)
+            const message = await (await users.updateUser(payload)).data.message
+            alert(message)
         } catch (error) {
-            console.log(error)
+            console.log(`TAENAAAA ${error}`)
+            alert(error.message)
         }
+        handleCloseEdit();
+        fetchUsers();
     }
 
     const prepareEdit = (account) => {
         setUsername(account.username)
         setPassword(account.password)
         setEditRole(account.type)
+        setOldUsername(account.username)
         setEdit(true)
     }
 
@@ -250,7 +264,7 @@ function Accounts() {
                         <Button onClick={handleCloseEdit} variant="contained" color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={handleCloseEdit} variant="contained" color="primary">
+                        <Button onClick={editAccount} variant="contained" color="primary">
                             Edit Account
                         </Button>
                     </DialogActions>

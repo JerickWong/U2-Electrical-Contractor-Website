@@ -118,10 +118,6 @@ const getAllUser = async (req, res) => {
 
 const getUser = async (req, res) => {
     const token = req.body.token
-    // console.log(token)
-    // console.log(req.body.token)
-    // console.log(token, " baket wala huhu")
-    // alert(token)    
 
     if (!token) 
         res.status(400).json({ msg: "No token, authorization denied" });
@@ -129,23 +125,22 @@ const getUser = async (req, res) => {
     try {
         // Verify token
         const decodedUser = jwt.verify(token, keys.secretOrKey);
-        // const decodedUser = jwt_decode(token)
 
         // Add user to payload
         req.user = decodedUser;
         
         const user = await User.findById({ _id: decodedUser.id }).select('-password')
-        // console.log(user)
+        
         return res.status(200).json({ success: true, data: user })
-        // next();
+        
     } catch (error) {
         console.log(error)
         res.status(404).json({ msg: "Token is not valid" })
     }
 }
 
-const updatePassword = async (req, res) => {
-    const { password, isAdmin } = req.body
+const updateUser = async (req, res) => {
+    const { password, username, oldUsername } = req.body
 
     if (!req.body) {
         return res.status(400).json({
@@ -154,7 +149,7 @@ const updatePassword = async (req, res) => {
         })
     }
 
-    User.findOne({isAdmin: isAdmin}, (err, user) => {
+    User.findOne({ username: oldUsername }, (err, user) => {
         if (err) {
             return res.status(404).json({
                 err,
@@ -166,6 +161,7 @@ const updatePassword = async (req, res) => {
             bcrypt.hash(password, salt, (err, hash) => {
                 if (err) throw err;
                 user.password = hash;
+                user.username = username;
                 user
             .save()
             .then(() => {
@@ -186,83 +182,6 @@ const updatePassword = async (req, res) => {
         });    
 }
 
-const updatePRFFolder = async (req, res) => {
-
-    const { password, isAdmin } = req.body
-
-    const body = req.body
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: 'You must provide a body to update',
-        })
-    }
-
-    User.findOne({isAdmin: isAdmin}, (err, user) => {
-        if (err) {
-            return res.status(404).json({
-                err,
-                message: 'User not found!',
-            })
-        }
-        user.prf_folder = body.prf_folder
-        
-        user
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: user._id,
-                    message: 'PRF Folder updated!',
-                })
-            })
-            .catch(error => {
-                return res.status(404).json({
-                    error,
-                    message: 'PRF Folder  not updated!',
-                })
-            })
-    })
-}
-
-const updatePOFolder = async (req, res) => {
-
-    const { password, isAdmin } = req.body
-    
-    const body = req.body
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: 'You must provide a body to update',
-        })
-    }
-
-    User.findOne({isAdmin: isAdmin}, (err, user) => {
-        if (err) {
-            return res.status(404).json({
-                err,
-                message: 'User not found!',
-            })
-        }
-        user.po_folder = body.po_folder
-        
-        user
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: user._id,
-                    message: 'PO Folder updated!',
-                })
-            })
-            .catch(error => {
-                return res.status(404).json({
-                    error,
-                    message: 'PO Folder  not updated!',
-                })
-            })
-    })
-}
 module.exports = {
     loginUser,
     logoutUser,
@@ -270,7 +189,5 @@ module.exports = {
     deleteUser,    
     getAllUser,
     getUser,
-    updatePassword,
-    updatePRFFolder,
-    updatePOFolder
+    updateUser,
 }
