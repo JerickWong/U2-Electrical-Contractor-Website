@@ -157,13 +157,35 @@ const updateUser = async (req, res) => {
             })
         }
 
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(password, salt, (err, hash) => {
-                if (err) throw err;
-                user.password = hash;
-                user.username = username;
-                user.type = type;
-                user
+        if (password !== '') {
+            
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(password, salt, (err, hash) => {
+                        if (err) throw err;
+                        user.password = hash;
+                        user.username = username;
+                        user.type = type;
+                        user
+                        .save()
+                        .then(() => {
+                            return res.status(200).json({
+                                success: true,
+                                id: user._id,
+                                message: 'User updated!',
+                            })
+                        })
+                        .catch(error => {
+                            return res.status(404).json({
+                            error,
+                            message: 'User not updated!',
+                            })
+                        })
+                })
+            });            
+        } else {
+            user.username = username;
+            user.type = type;
+            user
             .save()
             .then(() => {
                 return res.status(200).json({
@@ -171,16 +193,15 @@ const updateUser = async (req, res) => {
                     id: user._id,
                     message: 'User updated!',
                 })
-                            })
-                            .catch(error => {
-                            return res.status(404).json({
-                            error,
-                            message: 'User not updated!',
-                            })
-                        })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                error,
+                message: 'User not updated!',
                 })
-            });
-        });    
+            })
+        }
+    });    
 }
 
 module.exports = {

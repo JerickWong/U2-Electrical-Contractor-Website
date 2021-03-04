@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import {
     Button, TextField, InputAdornment, Input, Grid, makeStyles, createMuiTheme, IconButton,
-    Select, MenuItem, InputLabel, FormControl, Typography, FormGroup
+    Select, MenuItem, InputLabel, FormControl, FormHelperText, FormGroup
 } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -115,16 +115,6 @@ function Accounts() {
     const fetchUsers = async () => {
         try {
             let dataArray = (await users.getAllUsers()).data.data
-
-            // dataArray = dataArray.map(data => {
-            //     const CryptoJS = require("crypto-js")                            
-                
-            //     const bytes  = CryptoJS.AES.decrypt(data.password, 'secret')
-            //     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-            //     console.log(`PUTAAA WHYYY: ${decrypted}`)
-            //     // alert(decrypted)
-            //     return { ...data, password: decrypted }
-            // })
             
             setAccounts(dataArray)
         } catch (error) {
@@ -177,15 +167,12 @@ function Accounts() {
 
     const editAccount = async () => {
         try {
-            alert(oldUsername)
             const payload = {
                 oldUsername,
                 username: editUsername,
                 password: editPassword,
                 type: editRole
             }
-            console.log(payload)
-            alert(payload)
             const message = await (await users.updateUser(payload)).data.message
             alert(message)
         } catch (error) {
@@ -193,85 +180,14 @@ function Accounts() {
             alert(error.message)
         }
         handleCloseEdit();
-        fetchUsers();
+        fetchUsers();        
     }
 
     const prepareEdit = (account) => {
         setUsername(account.username)
-        setPassword(account.password)
         setEditRole(account.type)
         setOldUsername(account.username)
         setEdit(true)
-    }
-
-    const handleEditAccount = () => {
-        if (edit) {
-            
-            return (
-                <Dialog fullWidth="true" maxWidth="sm" open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">
-                        <h3>Edit Account</h3>
-                    </DialogTitle>
-                    <DialogContent dividers>
-                        <div className="modalAcc">
-                            <FormGroup>
-                                <InputLabel className={classes.modalFields}>Username</InputLabel>
-                                <Input
-                                    id="edit-username"
-                                    className={classes.modalFields}
-                                    variant="outlined"
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <AccountCircle color="primary" />
-                                        </InputAdornment>
-                                    }
-                                    value={editUsername}
-                                    onChange={(e) => {setUsername(e.target.value)}}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <InputLabel className={classes.modalFields}>Password</InputLabel>
-                                <Input
-                                    id="edit-password"
-                                    className={classes.modalFields}
-                                    type="password"
-                                    variant="outlined"
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <Lock color="primary" />
-                                        </InputAdornment>
-                                    }
-                                    value={editPassword}
-                                    onChange={(e) => {setPassword(e.target.value)}}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <InputLabel className={classes.modalFields}>Role</InputLabel>
-                                <Select
-                                    className={classes.modalFields}
-                                    labelId="demo-simple-select-filled-label"
-                                    id="demo-simple-select-filled"
-                                    defaultValue={'Employee'}
-                                    value={editRole}
-                                    onChange={handleEditRole}
-                                >
-                                    <MenuItem value={'Employee'}>Employee</MenuItem>
-                                    <MenuItem value={'Manager'}>Manager</MenuItem>
-                                </Select>
-                            </FormGroup>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseEdit} variant="contained" color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={editAccount} variant="contained" color="primary">
-                            Edit Account
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            )
-        }
     }
 
     const handleClickOpen = () => {
@@ -286,6 +202,10 @@ function Accounts() {
     // }
     const handleCloseEdit = () => {
         setEdit(false);
+        setUsername('')
+        setEditRole('')
+        setOldUsername('')
+        setPassword('')
     }
     return (
         <div className="Accounts">
@@ -401,7 +321,69 @@ function Accounts() {
                                     </Dialog>
 
                                     {/* EDIT ACCOUNT */}
-                                    { handleEditAccount() }
+                                    <Dialog fullWidth="true" maxWidth="sm" open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            <h3>Edit Account</h3>
+                                        </DialogTitle>
+                                        <DialogContent dividers>
+                                            <div className="modalAcc">
+                                                <FormGroup>
+                                                    <InputLabel className={classes.modalFields}>Username</InputLabel>
+                                                    <Input
+                                                        id="edit-username"
+                                                        className={classes.modalFields}
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <AccountCircle color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                        value={editUsername}
+                                                        onChange={(e) => {setUsername(e.target.value)}}
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel className={classes.modalFields}>Password</InputLabel>
+                                                    <Input
+                                                        id="edit-password"
+                                                        className={classes.modalFields}
+                                                        type="password"
+                                                        variant="outlined"
+                                                        startAdornment={
+                                                            <InputAdornment position="start">
+                                                                <Lock color="primary" />
+                                                            </InputAdornment>
+                                                        }
+                                                        value={editPassword}
+                                                        onChange={(e) => {setPassword(e.target.value)}}                                                        
+                                                    />
+                                                    <FormHelperText className={classes.modalFields}>Leave blank to have password unchanged</FormHelperText>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <InputLabel className={classes.modalFields}>Role</InputLabel>
+                                                    <Select
+                                                        className={classes.modalFields}
+                                                        labelId="demo-simple-select-filled-label"
+                                                        id="demo-simple-select-filled"
+                                                        defaultValue={'Employee'}
+                                                        value={editRole}
+                                                        onChange={handleEditRole}
+                                                    >
+                                                        <MenuItem value={'Employee'}>Employee</MenuItem>
+                                                        <MenuItem value={'Manager'}>Manager</MenuItem>
+                                                    </Select>
+                                                </FormGroup>
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
+                                                Cancel
+                                            </Button>
+                                            <Button onClick={editAccount} variant="contained" color="primary">
+                                                Edit Account
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </Grid>
                             </Grid>
                         </div>
@@ -409,7 +391,6 @@ function Accounts() {
                             <thead>
                                 <tr>
                                     <th>Username</th>
-                                    <th>Password</th>
                                     <th>Role</th>
                                     <th>Date Created</th>
                                     <th>Actions</th>
@@ -421,7 +402,6 @@ function Accounts() {
                                         return (
                                             <tr key={index}>
                                                 <td>{account.username}</td>
-                                                <td>{account.password}</td>
                                                 <td>{account.type}</td>
                                                 <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
                                                 <td>
@@ -432,56 +412,6 @@ function Accounts() {
                                         )
                                     })
                                 }
-                                {/* <tr>
-                                    <td>Teptep</td>
-                                    <td>password1</td>
-                                    <td>Manager</td>
-                                    <td>05/15/2020</td>
-                                    <td>
-                                        <IconButton color="primary" onClick={handleClickEdit} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jerick Wong</td>
-                                    <td>password2</td>
-                                    <td>Employee</td>
-                                    <td>05/16/2020</td>
-                                    <td>
-                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Marybelle Tandoc</td>
-                                    <td>password3</td>
-                                    <td>Manager</td>
-                                    <td>05/17/2020</td>
-                                    <td>
-                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Aaron Uy</td>
-                                    <td>password4</td>
-                                    <td>Employee</td>
-                                    <td>05/18/2020</td>
-                                    <td>
-                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Randy Uy</td>
-                                    <td>bestTaokeEver</td>
-                                    <td>Admin</td>
-                                    <td>01/05/2020</td>
-                                    <td>
-                                        <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                        <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
-                                    </td>
-                                </tr> */}
                             </tbody>
                         </Table>
                         {/* <Button
