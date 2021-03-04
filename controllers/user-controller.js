@@ -140,7 +140,7 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const { password, username, oldUsername } = req.body
+    const { password, username, oldUsername, type } = req.body
 
     if (!req.body) {
         return res.status(400).json({
@@ -162,6 +162,7 @@ const updateUser = async (req, res) => {
                 if (err) throw err;
                 user.password = hash;
                 user.username = username;
+                user.type = type;
                 user
             .save()
             .then(() => {

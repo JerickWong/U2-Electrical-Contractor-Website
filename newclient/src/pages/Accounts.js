@@ -181,7 +181,8 @@ function Accounts() {
             const payload = {
                 oldUsername,
                 username: editUsername,
-                password: editPassword
+                password: editPassword,
+                type: editRole
             }
             console.log(payload)
             alert(payload)
