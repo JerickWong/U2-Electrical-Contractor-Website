@@ -104,6 +104,8 @@ function Accounts() {
     const classes = useStyles();
     const [role, setRole] = useState('All');
     const [newRole, setNewRole] = useState('Employee');
+    const [editUsername, setUsername] = useState('');
+    const [editPassword, setPassword] = useState('');
     const [editRole, setEditRole] = useState('');
     const [accounts, setAccounts] = useState([]);
     const [open, setOpen] = React.useState(false);
@@ -125,8 +127,6 @@ function Accounts() {
             })
             
             setAccounts(dataArray)
-            console.log(`DITO HOY TANGA: ${dataArray}`)
-            alert(dataArray)
         } catch (error) {
             console.log(error)
             alert(error)
@@ -172,7 +172,92 @@ function Accounts() {
         } catch (error) {
             alert(error)
         }
-    }    
+    }
+
+    const editAccount = async () => {
+        try {
+            // await users.
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const prepareEdit = (account) => {
+        setUsername(account.username)
+        setPassword(account.password)
+        setEditRole(account.type)
+        setEdit(true)
+    }
+
+    const handleEditAccount = () => {
+        if (edit) {
+            
+            return (
+                <Dialog fullWidth="true" maxWidth="sm" open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">
+                        <h3>Edit Account</h3>
+                    </DialogTitle>
+                    <DialogContent dividers>
+                        <div className="modalAcc">
+                            <FormGroup>
+                                <InputLabel className={classes.modalFields}>Username</InputLabel>
+                                <Input
+                                    id="edit-username"
+                                    className={classes.modalFields}
+                                    variant="outlined"
+                                    startAdornment={
+                                        <InputAdornment position="start">
+                                            <AccountCircle color="primary" />
+                                        </InputAdornment>
+                                    }
+                                    value={editUsername}
+                                    onChange={(e) => {setUsername(e.target.value)}}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <InputLabel className={classes.modalFields}>Password</InputLabel>
+                                <Input
+                                    id="edit-password"
+                                    className={classes.modalFields}
+                                    type="password"
+                                    variant="outlined"
+                                    startAdornment={
+                                        <InputAdornment position="start">
+                                            <Lock color="primary" />
+                                        </InputAdornment>
+                                    }
+                                    value={editPassword}
+                                    onChange={(e) => {setPassword(e.target.value)}}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <InputLabel className={classes.modalFields}>Role</InputLabel>
+                                <Select
+                                    className={classes.modalFields}
+                                    labelId="demo-simple-select-filled-label"
+                                    id="demo-simple-select-filled"
+                                    defaultValue={'Employee'}
+                                    value={editRole}
+                                    onChange={handleEditRole}
+                                >
+                                    <MenuItem value={'Employee'}>Employee</MenuItem>
+                                    <MenuItem value={'Manager'}>Manager</MenuItem>
+                                </Select>
+                            </FormGroup>
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseEdit} variant="contained" color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleCloseEdit} variant="contained" color="primary">
+                            Edit Account
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )
+        }
+    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -180,10 +265,10 @@ function Accounts() {
     const handleClose = () => {
         setOpen(false);
     };
-    const handleClickEdit = (event) => {
-        setEdit(true);
-        // get username, password, and role to display to the click modal
-    }
+    // const handleClickEdit = (event) => {
+    //     setEdit(true);
+    //     // get username, password, and role to display to the click modal
+    // }
     const handleCloseEdit = () => {
         setEdit(false);
     }
@@ -197,7 +282,7 @@ function Accounts() {
                             <Grid container spacing={2}>
                                 <Grid item xs={3}>
                                     <FormControl>
-                                        <InputLabel className={classes.label} id="demo-simple-select-label">Project Name</InputLabel>
+                                        <InputLabel className={classes.label} id="demo-simple-select-label">Role</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt} defaultValue={'All'} value={role} onChange={handleChange} id="demo-simple-select">
                                             <MenuItem value={'All'}>All</MenuItem>
                                             <MenuItem value={'Employee'}>Employee</MenuItem>
@@ -301,77 +386,7 @@ function Accounts() {
                                     </Dialog>
 
                                     {/* EDIT ACCOUNT */}
-                                    <Dialog fullWidth="true" maxWidth="sm" open={edit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
-                                        <DialogTitle id="form-dialog-title">
-                                            <h3>Edit Account</h3>
-                                        </DialogTitle>
-                                        <DialogContent dividers>
-                                            <div className="modalAcc">
-                                               {/* <FormGroup>
-                                                    <InputLabel className={classes.modalFields}>Email</InputLabel>
-                                                    <Input
-                                                        id="edit-email"
-                                                        className={classes.modalFields}
-                                                        variant="outlined"
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                <EmailIcon color="primary" />
-                                                            </InputAdornment>
-                                                        }
-                                                    />
-                                                </FormGroup> */}
-                                                <FormGroup>
-                                                    <InputLabel className={classes.modalFields}>Username</InputLabel>
-                                                    <Input
-                                                        id="edit-username"
-                                                        className={classes.modalFields}
-                                                        variant="outlined"
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                <AccountCircle color="primary" />
-                                                            </InputAdornment>
-                                                        }
-                                                    />
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <InputLabel className={classes.modalFields}>Password</InputLabel>
-                                                    <Input
-                                                        id="edit-password"
-                                                        className={classes.modalFields}
-                                                        type="password"
-                                                        variant="outlined"
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                <Lock color="primary" />
-                                                            </InputAdornment>
-                                                        }
-                                                    />
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <InputLabel className={classes.modalFields}>Role</InputLabel>
-                                                    <Select
-                                                        className={classes.modalFields}
-                                                        labelId="demo-simple-select-filled-label"
-                                                        id="demo-simple-select-filled"
-                                                        defaultValue={'Employee'}
-                                                        value={editRole}
-                                                        onChange={handleEditRole}
-                                                    >
-                                                        <MenuItem value={'Employee'}>Employee</MenuItem>
-                                                        <MenuItem value={'Manager'}>Manager</MenuItem>
-                                                    </Select>
-                                                </FormGroup>
-                                            </div>
-                                        </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
-                                                Cancel
-                                            </Button>
-                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
-                                                Create Account
-                                            </Button>
-                                        </DialogActions>
-                                    </Dialog>
+                                    { handleEditAccount() }
                                 </Grid>
                             </Grid>
                         </div>
@@ -389,20 +404,20 @@ function Accounts() {
                                 {
                                     accounts.map((account, index) => {
                                         return (
-                                            <tr>
+                                            <tr key={index}>
                                                 <td>{account.username}</td>
                                                 <td>{account.password}</td>
                                                 <td>{account.type}</td>
                                                 <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
                                                 <td>
-                                                    <IconButton color="primary" onClick={handleClickEdit} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                                    <IconButton color="primary" onClick={() => {prepareEdit(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                                     <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                                 </td>
                                             </tr>
                                         )
                                     })
                                 }
-                                <tr>
+                                {/* <tr>
                                     <td>Teptep</td>
                                     <td>password1</td>
                                     <td>Manager</td>
@@ -451,7 +466,7 @@ function Accounts() {
                                         <IconButton color="primary" onClick={handleClickEdit}><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                         <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                     </td>
-                                </tr>
+                                </tr> */}
                             </tbody>
                         </Table>
                         {/* <Button
