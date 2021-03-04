@@ -7,7 +7,7 @@ import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import { InputBase } from '@material-ui/core';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Prompt } from 'react-router'
 import '../styles/mts.css';
 import MtsRow from "../components/MtsRow/MtsRow";
@@ -92,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MtsWindow(props) {  
   const classes = useStyles();
+  const history = useHistory();
   // let row_index = 0;
   // DOCUMENTATION: 09/03/2020
   // utilized states for each input
@@ -112,6 +113,7 @@ function MtsWindow(props) {
   const [received_by, setReceivedBy] = useState('')
   const [total_amount, setTotalAmount] = useState(0)
   const [status, setStatus] = useState('For Approval')
+  const [confirmed, setConfirmed] = useState(false)
   const [isUnsaved, setUnsaved] = useState(false)
   const [rows, setRows] = useState([{
     qty: '',
@@ -184,6 +186,9 @@ function MtsWindow(props) {
         setReceivedBy(mts.received_by)
         setTotalAmount(mts.total_amount)
         setStatus(mts.status)
+
+        if (mts.status === "Confirmed")
+          setConfirmed(true)
         
         let length = mts.rows.length
         let temp = []
@@ -221,7 +226,7 @@ function MtsWindow(props) {
   }, [])
 
   function unsaved() {
-    if (isUnsaved) {
+    if (isUnsaved && !confirmed) {
       window.onbeforeunload = () => true
     } else {
       window.onbeforeunload = undefined
@@ -515,8 +520,6 @@ function MtsWindow(props) {
       console.log(payload.rows[0].item)
 
       const data = await (await api.updateDelivered(payload)).data.data
-      console.log(data)
-      alert(data)
 
     } catch (error) {
       alert(error)
@@ -529,8 +532,6 @@ function MtsWindow(props) {
       if (row.description && row.qty)
         return row
     })
-
-    alert(address)
 
     const payload = {
       prepared_by,
@@ -645,6 +646,7 @@ function MtsWindow(props) {
     // })
 
     closeConfirmDialog();
+    history.push('/Mts')
   }
 
   function closeConfirmDialog() {
@@ -698,7 +700,7 @@ function MtsWindow(props) {
             <div className={classes.root}>
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField id="input-with-icon-textfield"
+                  <TextField id="input-with-icon-textfield"                        
                     className={classes.txt4}
                     label="Prepared by"
                     id='preparedby'
@@ -712,6 +714,7 @@ function MtsWindow(props) {
                           <Person color="primary" />
                         </InputAdornment>
                       ),
+                      readOnly: confirmed
                     }}
                     inputProps={{maxLength:50}} >
                     </TextField>
@@ -732,6 +735,7 @@ function MtsWindow(props) {
                           <LocationOn color="primary" />
                         </InputAdornment>
                       ),
+                      readOnly: confirmed
                     }}
                     inputProps={{maxLength:75}}
                   />
@@ -756,6 +760,7 @@ function MtsWindow(props) {
                           <Edit color="primary" />
                         </InputAdornment>
                       ),
+                      readOnly: confirmed
                     }}
                     inputProps={{maxLength:6}}
                   />
@@ -778,6 +783,7 @@ function MtsWindow(props) {
                           <Folder color="primary" />
                         </InputAdornment>
                       ),
+                      readOnly: confirmed,
                       maxLength:50
                     }}
                     inputProps={{maxLength:50}}
@@ -798,6 +804,7 @@ function MtsWindow(props) {
                           <LocalShipping color="primary" />
                         </InputAdornment>
                       ),
+                      readOnly: confirmed,
                       maxLength:75
                     }}
                     inputProps={{maxLength:50}}
@@ -815,6 +822,9 @@ function MtsWindow(props) {
                     onChange={(e) => setDate(e.target.value)}
                     className={classes.textField}
                     InputLabelProps={{ shrink: true }}
+                    InputProps={{                      
+                      readOnly: confirmed
+                    }}
                     required
                   />
                 </Grid>
@@ -865,22 +875,22 @@ function MtsWindow(props) {
             <div className="tbl">
               <Grid container spacing={3}>
                 <Grid item xs={4}>
-                  <TextField error={!requested_by} value={requested_by} InputLabelProps={{shrink:true}} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={(e) => setRequestedBy(e.target.value)} name='requested_by' variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField error={!requested_by} value={requested_by} InputLabelProps={{shrink:true}} className={classes.txt4} id="requestedby" size="small" label="Requested by" required onChange={(e) => setRequestedBy(e.target.value)} name='requested_by' variant="outlined" inputProps={{readOnly: confirmed, maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} value={takenout_by} onChange={(e) => setTakenoutBy(e.target.value)} InputLabelProps={{shrink:true}} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{maxLength:50}}></TextField>
+                  <TextField className={classes.txt4} value={takenout_by} onChange={(e) => setTakenoutBy(e.target.value)} InputLabelProps={{shrink:true}} id="takenoutby" size="small" label="Taken out by" variant="outlined" inputProps={{readOnly: confirmed, maxLength:50}}></TextField>
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper}><Typography className={classes.total}>Total Amount: {total_amount}</Typography></Paper>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} value={approved_by} onChange={(e) => setApprovedBy(e.target.value)} InputLabelProps={{shrink:true}} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} value={approved_by} onChange={(e) => setApprovedBy(e.target.value)} InputLabelProps={{shrink:true}} id="approvedby" size="small" label="Approved by" variant="outlined" inputProps={{readOnly: confirmed, maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <TextField className={classes.txt4} value={received_by} onChange={(e) => setReceivedBy(e.target.value)} InputLabelProps={{shrink:true}} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{maxLength:50}}/>
+                  <TextField className={classes.txt4} value={received_by} onChange={(e) => setReceivedBy(e.target.value)} InputLabelProps={{shrink:true}} id="receivedby" size="small" label="Received by" variant="outlined" inputProps={{readOnly: confirmed, maxLength:50}}/>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={!MTS_number || !project_name || !requested_by} className={classes.button} startIcon={<Save />}> SAVE </Button>
+                  <Button variant="contained" color="primary" size="large" id='save' onClick={saveMTS} disabled={!MTS_number || !project_name || !requested_by || confirmed} className={classes.button} startIcon={<Save />}> SAVE </Button>
                 </Grid>
               </Grid>
             </div>
@@ -889,7 +899,7 @@ function MtsWindow(props) {
       </Container>
       { unsaved() }
       <Prompt
-        when={isUnsaved}
+        when={isUnsaved && !confirmed}
         message='You have unsaved changes, are you sure you want to leave?'
       />
     </div>
