@@ -129,14 +129,30 @@ function Accounts() {
         fetchUsers()
     }, [])
 
+    useEffect(() => {
+        handleFilterRole()
+    }, [role])
+
     const handleChange = (event) => {
-        setRole(event.target.value)
+        setRole(event.target.value)        
     }
     const handleNewRole = (event) => {
         setNewRole(event.target.value);
     };
     const handleEditRole = (event) => {
         setEditRole(event.target.value)
+    }
+    const handleFilterRole = () => {
+        if (role === "All") {
+            setAccounts(backupAccounts)
+        } else {
+            const accs = [...backupAccounts]
+            const filtered = accs.filter(acc => {
+                if (acc.type === role)
+                    return acc
+            })
+            setAccounts(filtered)
+        }
     }
     const handleSearch = (event) => {
         
@@ -423,7 +439,8 @@ function Accounts() {
                                     </Dialog>
                                 </Grid>
                             </Grid>
-                        </div>
+                        </div>                        
+
                         <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94">
                             <thead>
                                 <tr>
