@@ -162,12 +162,13 @@ function Accounts() {
             const accs = [...backupAccounts]
             const filtered = accs.filter(acc => {
                 const lowerUser = acc.username.toLowerCase()
-                if ((lowerUser).includes(query))
-                    return acc
+                if (acc.type === role) 
+                    if ((lowerUser).includes(query))
+                        return acc
             })
             setAccounts(filtered)
         } else {
-            setAccounts(backupAccounts)
+            handleFilterRole()
         }
 
     }
