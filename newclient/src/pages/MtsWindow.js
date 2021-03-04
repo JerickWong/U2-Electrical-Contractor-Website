@@ -589,7 +589,7 @@ function MtsWindow(props) {
         alert(response.message)
       } catch (error) {
         console.log(error)
-        alert(error.message)
+        alert('MTS Number already exists')
       }
     }
     setUnsaved(false)

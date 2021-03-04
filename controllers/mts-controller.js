@@ -5,7 +5,6 @@ const createMTS = (req, res) => {
     const body = req.body
 
     if (!body) {
-        console.log(`body ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a MTS',
@@ -15,7 +14,6 @@ const createMTS = (req, res) => {
     const mts = new MTS(body)
 
     if (!mts) {
-        console.log(`mts ${mts}`)
         return res.status(400).json({ success: false, error: err })
     }
 
@@ -28,7 +26,7 @@ const createMTS = (req, res) => {
                 message: 'MTS created!',
             })
         })
-        .catch(error => {            
+        .catch(error => {
             return res.status(400).json({
                 error,
                 message: 'MTS not created!',
@@ -79,8 +77,6 @@ const updateMTS = async (req, res) => {
                 })
             })
             .catch(error => {
-                console.log(error)
-                console.log("dito")
                 return res.status(404).json({
                     error,
                     message: 'MTS not updated!',
