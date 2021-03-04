@@ -45,7 +45,7 @@ function AdminMts(props) {
     const [mts, setMts] = useState([])
     const [user, setUser] = useState(fetchUser())
     const [current_mts, setCurrent] = useState(null)
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -281,6 +281,7 @@ function AdminMts(props) {
             console.log(current_mts)
             alert(error)
         }
+        getMTS();
     }
 
     useEffect(() => {
@@ -391,9 +392,8 @@ function AdminMts(props) {
                                                     View</Button>
                                                     </Link>
                                                     {
-                                                        status !== "Confirm" ?  
-                                                            <Button variant="outlined" onClick={() => { setCurrent(m) }}>Confirm</Button>
-                                                            : ""
+                                                        m.status === "Confirmed" ? ""
+                                                            : <Button variant="outlined" onClick={() => { setCurrent(m); }}>Confirm</Button>
                                                     }
                                                     </td>
                                                 </tr>
