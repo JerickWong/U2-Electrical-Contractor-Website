@@ -104,6 +104,8 @@ function Accounts() {
     const classes = useStyles();
     const [role, setRole] = useState('All');
     const [newRole, setNewRole] = useState('Employee');
+    const [username, setNewUsername] = useState('')
+    const [password, setNewPassword] = useState('')
     const [editUsername, setUsername] = useState('');
     const [editPassword, setPassword] = useState('');
     const [editRole, setEditRole] = useState('');
@@ -112,6 +114,7 @@ function Accounts() {
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
     const [oldUsername, setOldUsername] = useState(null)
+    const [complete, setComplete] = useState(false)
 
     const fetchUsers = async () => {
         try {
@@ -132,6 +135,13 @@ function Accounts() {
     useEffect(() => {
         handleFilterRole()
     }, [role])
+
+    useEffect(() => {
+        if (username === '' || password === '')
+            setComplete(false)
+        else
+            setComplete(true)
+    }, [username, password])
 
     const handleChange = (event) => {
         setRole(event.target.value)        
@@ -173,9 +183,12 @@ function Accounts() {
 
     }
     const createAccount = async () => {
+        handleClose()
         // const email = document.querySelector('#new-email').value
-        const username = document.querySelector('#new-username').value
-        const password = document.querySelector('#new-password').value
+        // const username = document.querySelector('#new-username').value
+        // const password = document.querySelector('#new-password').value
+
+
         // console.log(email,username,password, newRole)        
         // db.collection('Accounts').add({
         //     email,
@@ -332,6 +345,8 @@ function Accounts() {
                                                                 <AccountCircle color="primary" />
                                                             </InputAdornment>
                                                         }
+                                                        value={username}
+                                                        onChange={(e) => setNewUsername(e.target.value)}
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
@@ -346,6 +361,8 @@ function Accounts() {
                                                                 <Lock color="primary" />
                                                             </InputAdornment>
                                                         }
+                                                        value={password}
+                                                        onChange={(e) => setNewPassword(e.target.value)}
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
@@ -368,7 +385,7 @@ function Accounts() {
                                             <Button onClick={handleClose} variant="contained" color="primary">
                                                 Cancel
                                             </Button>
-                                            <Button onClick={() => {handleClose(); createAccount();}} className={classes.create} variant="contained" color="primary">
+                                            <Button onClick={() => { complete ? createAccount() : alert('Please fill out all fields!')}} className={classes.create} variant="contained" color="primary">
                                                 Create Account
                                             </Button>
                                         </DialogActions>
@@ -409,7 +426,7 @@ function Accounts() {
                                                             </InputAdornment>
                                                         }
                                                         value={editPassword}
-                                                        onChange={(e) => {setPassword(e.target.value)}}                                                        
+                                                        onChange={(e) => {setPassword(e.target.value)}}
                                                     />
                                                     <FormHelperText className={classes.modalFields}>Leave blank to have password unchanged</FormHelperText>
                                                 </FormGroup>
