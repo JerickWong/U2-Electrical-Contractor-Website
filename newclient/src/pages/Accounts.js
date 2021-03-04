@@ -108,6 +108,7 @@ function Accounts() {
     const [editPassword, setPassword] = useState('');
     const [editRole, setEditRole] = useState('');
     const [accounts, setAccounts] = useState([]);
+    const [backupAccounts, setBackup] = useState([]);
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
     const [oldUsername, setOldUsername] = useState(null)
@@ -117,6 +118,7 @@ function Accounts() {
             let dataArray = (await users.getAllUsers()).data.data
             
             setAccounts(dataArray)
+            setBackup(dataArray)
         } catch (error) {
             console.log(error)
             alert(error)
@@ -135,6 +137,23 @@ function Accounts() {
     };
     const handleEditRole = (event) => {
         setEditRole(event.target.value)
+    }
+    const handleSearch = (event) => {
+        
+        let query = event.target.value
+        if (query !== '') {
+            query = query.toLowerCase()
+            const accs = [...backupAccounts]
+            const filtered = accs.filter(acc => {
+                const lowerUser = acc.username.toLowerCase()
+                if ((lowerUser).includes(query))
+                    return acc
+            })
+            setAccounts(filtered)
+        } else {
+            setAccounts(backupAccounts)
+        }
+
     }
     const createAccount = async () => {
         // const email = document.querySelector('#new-email').value
@@ -256,6 +275,7 @@ function Accounts() {
                                                 </InputAdornment>
                                             ),
                                         }}
+                                        onChange={handleSearch}
                                     />
                                 </Grid>
                                 <Grid item xs={2} />
