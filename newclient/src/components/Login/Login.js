@@ -21,13 +21,12 @@ export default class LoginBox extends Component {
     username: '',
     password: ''
   }
-  setRedirect = (result, message) => {
+  setRedirect = (result) => {
     this.setState({
       redirect: result,
       wrongCredentials: !result,
-      errorMessage: message
+      errorMessage: "Incorrect username or password"
     })
-    console.log(message)
   }
   renderRedirect = () => {
     if (this.state.redirect) {
@@ -61,13 +60,12 @@ export default class LoginBox extends Component {
     // alert(password)
     try {
       const token = await (await users.login({username, password})).data.token
-      console.log(token)
       localStorage.setItem('token', token)
+      
       this.setRedirect(true)
       this.setState({ redirect: true })
-      alert("correct")
     } catch (error) {
-      this.setState({ wrongCredentials: true, errorMessage: error.message })
+      this.setState({ wrongCredentials: true, errorMessage: "Incorrect username or password" })
     }
   }
 
