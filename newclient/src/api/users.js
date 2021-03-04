@@ -10,6 +10,7 @@ export const getUser = payload => user.post(`/current-user`, payload)
 export const getAllUsers = () => user.get(`/all-users`)
 export const register = payload => user.post(`/register-user`, payload)
 export const updateUser = payload => user.put(`/update-user`, payload)
+export const deleteUser = id => user.delete(`/${id}`)
 
 const users = {
     login,
@@ -17,7 +18,8 @@ const users = {
     getUser,
     getAllUsers,
     register,
-    updateUser
+    updateUser,
+    deleteUser
 }
 
 export default users

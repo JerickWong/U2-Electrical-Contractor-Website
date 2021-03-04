@@ -176,11 +176,28 @@ function Accounts() {
             const message = await (await users.updateUser(payload)).data.message
             alert(message)
         } catch (error) {
-            console.log(`TAENAAAA ${error}`)
             alert(error.message)
         }
         handleCloseEdit();
         fetchUsers();        
+    }
+
+    const deleteAccount = async (account) => {
+
+        const confirmed = window.confirm(`Are you sure you want to delete ${account.username}'s account?`)
+
+        if (confirmed) {
+
+            try {
+                await (await users.deleteUser( account._id )).data.success
+                alert(`Deleted Successfully!`)
+            } catch (error) {
+                console.log(error)
+                alert(error)
+            }
+        }
+
+        fetchUsers();
     }
 
     const prepareEdit = (account) => {
@@ -406,7 +423,7 @@ function Accounts() {
                                                 <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
                                                 <td>
                                                     <IconButton color="primary" onClick={() => {prepareEdit(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                                    <IconButton color="primary"><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
+                                                    <IconButton color="primary" onClick={() => {deleteAccount(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                                 </td>
                                             </tr>
                                         )
