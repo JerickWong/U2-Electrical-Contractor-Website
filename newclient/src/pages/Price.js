@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
+import Dropzone from "react-dropzone";
+import {useDropzone} from 'react-dropzone';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -69,7 +71,18 @@ function Price() {
     const [category, setCategory] = React.useState('');
     const handleChange = (event) => {
         setCategory(event.target.value);
-    };
+    };    
+
+    const {acceptedFiles, getRootProps, getInputProps} = 
+        useDropzone({ 
+            accept: 'application/vnd.ms-excel', 
+            onDropAccepted: files => uploadExcel(files),
+            onDropRejected: () => alert('file type rejected') 
+        });    
+
+    const uploadExcel = async (files) => {
+        alert(files)
+    }
 
     return (
         <div className="PriceList">
@@ -118,12 +131,12 @@ function Price() {
                                 </tr>
                             </thead>
                             <tr>
-                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
+                                <td>unit</td>
+                                <td>description</td>
+                                <td>brand</td>
+                                <td>model</td>                                                            
+                                <td>price</td>
+                                <td>remarks</td>
                             </tr>
                             <tr>
                                 <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
@@ -161,7 +174,8 @@ function Price() {
                         <div className="tbl">
                             <Grid container spacing={2}>
                                 <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
+                                    <Button {...getRootProps({className: 'dropzone'})} 
+                                    variant="contained" color="primary" size="medium" startIconclassName={classes.button}> <input {...getInputProps()} /><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
                                 </Grid>
 
                                 <Grid item xs={2}>
@@ -169,6 +183,20 @@ function Price() {
                                 </Grid>
                             </Grid>
                         </div>
+
+                        {/* <Dropzone onDrop={onDrop} accept={}>
+                            {({ getRootProps, getInputProps }) => (
+                            <div {...getRootProps({ className: 'drop-zone' })} ref={dropRef}>
+                                <input {...getInputProps()} />
+                                <p>Drag and drop a file OR click here to select a file</p>
+                                {file && (
+                                <div>
+                                    <strong>Selected file:</strong> {file.name}
+                                </div>
+                                )}
+                            </div>
+                            )}
+                        </Dropzone> */}
                     </MuiThemeProvider>
                 </main>
             </Container>
