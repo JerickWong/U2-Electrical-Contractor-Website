@@ -75,7 +75,7 @@ function Price() {
 
     const {acceptedFiles, getRootProps, getInputProps} = 
         useDropzone({ 
-            accept: 'application/vnd.ms-excel', 
+            accept: '.csv, text/csv', 
             onDropAccepted: files => uploadExcel(files),
             onDropRejected: () => alert('file type rejected') 
         });    

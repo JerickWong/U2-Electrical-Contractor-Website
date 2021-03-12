@@ -9,10 +9,10 @@ const db = require('./db').connection
 const userRouter = require('./routes/user-router')
 const mtsRouter = require('./routes/mts-router')
 const deliveredRouter = require('./routes/delivered-router')
+const supplierRouter = require('./routes/supplier-router')
 
 // Init middleware
 app.use(express.json({ extended: false }))
-
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser());
@@ -22,6 +22,7 @@ app.use(cors())
 app.use('/api', mtsRouter)
 app.use('/api', deliveredRouter)
 app.use('/user', userRouter)
+app.use('/supplier', supplierRouter)
 
 // app.get('/', (req, res) => { res.send(_server) });
 

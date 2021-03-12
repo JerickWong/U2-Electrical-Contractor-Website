@@ -2,7 +2,6 @@ const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const keys = require('../db/index')
-const cookies = require('cookie-parser')
 
 const loginUser = async (req, res) => {
     if (!req.body.password) {
