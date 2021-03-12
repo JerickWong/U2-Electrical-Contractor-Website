@@ -112,6 +112,10 @@ function AdminPrice() {
         setOpen(false);
     };
 
+    const addSupplier = () => {
+        
+    }
+
     return (
         <div className="PriceList">
             <Container className="cont">

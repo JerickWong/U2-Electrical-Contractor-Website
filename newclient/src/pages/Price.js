@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { Button, InputBase, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
 import { Save, Clear, Search } from '@material-ui/icons';
@@ -10,6 +10,7 @@ import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
 import {useDropzone} from 'react-dropzone';
+import suppliers from '../api/supplier';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -67,7 +68,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Price() {
     const classes = useStyles();
-    const [category, setCategory] = React.useState('');
+    const [category, setCategory] = useState(null);
+    const [categories, setCategories] = useState([]);
+
     const handleChange = (event) => {
         setCategory(event.target.value);
     };    
@@ -79,11 +82,35 @@ function Price() {
             onDropRejected: () => alert('file type rejected') 
         });    
 
+    const fetchSuppliers = async () => {
+        try {
+            const temp = await (await suppliers.getAllSupplier()).data.data
+            setCategories(temp)
+            console.log(temp)
+            setCategory(temp[0])
+        } catch (error) {
+            alert('error in getting suppliers')
+        }
+    }
+
+    useEffect(() => {
+        fetchSuppliers();
+    }, [])
+
+    useEffect(() => {
+        if (category) {
+            console.log(category)
+            console.log(category.items)
+            alert(category)
+        }
+    }, [category])
+
     const parseCSV = (files) => {        
         const Papa = require('papaparse')
         
         Papa.parse(files[0], {
             header: true,
+            transformHeader: h => h.trim(),
             complete: (results, file) => {
                 console.log("Parsing complete:", results, file);
                 alert('Parsing complete!')
@@ -91,18 +118,22 @@ function Price() {
                 if (category === '') {
                     alert('No selected Supplier yet')
                 } else {
-                    const final = window.confirm(`Are you sure you want to replace the price list for ${category}?`)
+                    const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
                     if (final)
-                        uploadItems(results)
+                        uploadItems(results.data)
                 }
             }
         })
         
     }
 
-    const uploadItems = async (results) => {
+    const uploadItems = async (items) => {
         try {
 
+            console.log(items[0].net_price)
+            const payload = {...category}
+            payload.items = items
+            await suppliers.updateSupplierById(category._id, payload)
             alert('uploaded')
         } catch (error) {
             alert('error saving to database')
@@ -135,10 +166,14 @@ function Price() {
                                 <Grid item xs={5}>
                                     <FormControl>
                                         <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt1} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
-                                            <MenuItem value={1}>Category1</MenuItem>
-                                            <MenuItem value={2}>Category2</MenuItem>
-                                            <MenuItem value={3}>Category3</MenuItem>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt1} defaultValue={categories[0]} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
+                                            {
+                                                categories.map(cat => {
+                                                    return (
+                                                        <MenuItem key={cat._id} value={cat}>{cat.name}</MenuItem>
+                                                    )
+                                                })
+                                            }                                            
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -151,7 +186,9 @@ function Price() {
                                     <th>Description</th>
                                     <th>Brand</th>
                                     <th>Model</th>                                    
-                                    <th>Price</th>
+                                    <th>List Price</th>
+                                    <th>Price Adjustments</th>
+                                    <th>Net Price</th>
                                     <th>Remarks</th>
                                 </tr>
                             </thead>
@@ -160,10 +197,31 @@ function Price() {
                                 <td>description</td>
                                 <td>brand</td>
                                 <td>model</td>                                                            
-                                <td>price</td>
+                                <td>list price</td>
+                                <td>45</td>
+                                <td>net price</td>
                                 <td>remarks</td>
                             </tr>
-                            <tr>
+                            {
+                                category ? 
+                                category.items.map(cat => {
+                                    return (
+                                        <tr key={cat._id}>
+                                            <td>{cat.unit}</td>
+                                            <td>{cat.product_name}</td>
+                                            <td>{cat.brand_name}</td>
+                                            <td>{cat.model_name}</td>
+                                            <td>{cat.list_price}</td>
+                                            <td>{cat.price_adjustment}</td>
+                                            <td>{cat.net_price}</td>
+                                            <td>{cat.remarks}</td>
+                                        </tr>
+                                    )
+                                })
+                                :
+                                'No items to show'
+                            }
+                            {/* <tr>
                                 <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
                                 <td><InputBase multiline variant="outlined" size="small" /></td>
                                 <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
@@ -194,7 +252,7 @@ function Price() {
                                 <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
                                 <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
                                 <td><InputBase multiline variant="outlined" size="small" /></td>
-                            </tr>
+                            </tr> */}
                         </Table>
                         <div className="tbl">
                             <Grid container spacing={2}>
@@ -209,19 +267,6 @@ function Price() {
                             </Grid>
                         </div>
 
-                        {/* <Dropzone onDrop={onDrop} accept={}>
-                            {({ getRootProps, getInputProps }) => (
-                            <div {...getRootProps({ className: 'drop-zone' })} ref={dropRef}>
-                                <input {...getInputProps()} />
-                                <p>Drag and drop a file OR click here to select a file</p>
-                                {file && (
-                                <div>
-                                    <strong>Selected file:</strong> {file.name}
-                                </div>
-                                )}
-                            </div>
-                            )}
-                        </Dropzone> */}
                     </MuiThemeProvider>
                 </main>
             </Container>
