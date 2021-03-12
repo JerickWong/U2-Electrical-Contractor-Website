@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
-import Dropzone from "react-dropzone";
 import {useDropzone} from 'react-dropzone';
 
 const primary = '#8083FF';
@@ -82,6 +81,17 @@ function Price() {
 
     const uploadExcel = async (files) => {
         alert(files)
+        console.log(files)
+        const Papa = require('papaparse')
+        let json
+        Papa.parse(files[0], {
+            header: true,
+            complete: (results, file) => {
+                console.log("Parsing complete:", results, file);
+                alert('Parsing complete!')
+            }
+        })
+        
     }
 
     return (
