@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useState, useEffect} from 'react';
 import MaterialTable, { MTable, MTableToolbar } from 'material-table';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -17,8 +17,9 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { Height } from '@material-ui/icons';
 
-export default function PriceTable(props) {
-    const [state, setState] = React.useState({
+ export default function PriceTable (props) {
+    
+    const [state, setState] = useState({
         columns: [
             { title: 'Unit', field: 'unit' },
             { title: 'Product Name', field: 'product_name' },
@@ -31,6 +32,11 @@ export default function PriceTable(props) {
         ],
         data: props.data,
     });
+
+    useEffect(() => {
+        setState({...state, data: props.data})
+    }, [props.data])
+
     const tableIcons = {
         Add: forwardRef((props, ref) => <AddShoppingCart {...props} ref={ref} />),
         Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
