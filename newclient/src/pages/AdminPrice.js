@@ -239,7 +239,10 @@ function AdminPrice() {
                         <div className="tbl">
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>
-                                    <Button variant="contained" color="primary" className={classes.button}><FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel</Button>
+                                    <Button variant="contained" color="primary" className={classes.button} {...getRootProps({className: 'dropzone'})}>
+                                        <input {...getInputProps()} />
+                                        <FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel
+                                    </Button>
                                     <Button variant="contained" color="primary" className={classes.button3} startIcon={<GetAppIcon />}>Download</Button>
                                 </Grid>
                                 <Grid item xs={3} />
