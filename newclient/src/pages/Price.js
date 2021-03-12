@@ -72,26 +72,41 @@ function Price() {
         setCategory(event.target.value);
     };    
 
-    const {acceptedFiles, getRootProps, getInputProps} = 
+    const {getRootProps, getInputProps} = 
         useDropzone({ 
             accept: '.csv, text/csv', 
-            onDropAccepted: files => uploadExcel(files),
+            onDropAccepted: files => parseCSV(files),
             onDropRejected: () => alert('file type rejected') 
         });    
 
-    const uploadExcel = async (files) => {
-        alert(files)
-        console.log(files)
+    const parseCSV = (files) => {        
         const Papa = require('papaparse')
-        let json
+        
         Papa.parse(files[0], {
             header: true,
             complete: (results, file) => {
                 console.log("Parsing complete:", results, file);
                 alert('Parsing complete!')
+
+                if (category === '') {
+                    alert('No selected Supplier yet')
+                } else {
+                    const final = window.confirm(`Are you sure you want to replace the price list for ${category}?`)
+                    if (final)
+                        uploadItems(results)
+                }
             }
         })
         
+    }
+
+    const uploadItems = async (results) => {
+        try {
+
+            alert('uploaded')
+        } catch (error) {
+            alert('error saving to database')
+        }
     }
 
     return (
