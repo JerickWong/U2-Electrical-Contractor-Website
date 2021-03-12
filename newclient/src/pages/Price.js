@@ -121,8 +121,13 @@ function Price() {
     const uploadItems = async (items) => {
 
         items = items.map(item => {
-            return {...item, list_price: parseFloat(item.list_price), net_price: parseFloat(item.net_price), price_adjustment: parseFloat(item.price_adjustment)}
+            const list_price = parseFloat(item.list_price.trim().replace(',', ''))
+            console.log(list_price)
+            const net_price = parseFloat(item.net_price.trim().replace(',', ''))
+            const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
+            return {...item, list_price, net_price, price_adjustment}
         })
+        console.log(items)
 
         try {
 
@@ -133,7 +138,6 @@ function Price() {
             await fetchSuppliers();
             setCategory(payload);
         } catch (error) {
-            console.log(error)
             alert('error saving to database')
         }
     }
@@ -190,25 +194,27 @@ function Price() {
                                     <th>Remarks</th>
                                 </tr>
                             </thead>
-                            {
-                                category ? 
-                                category.items.map(cat => {
-                                    return (
-                                        <tr key={cat._id}>
-                                            <td>{cat.unit}</td>
-                                            <td>{cat.product_name}</td>
-                                            <td>{cat.brand_name}</td>
-                                            <td>{cat.model_name}</td>
-                                            <td>{cat.list_price}</td>
-                                            <td>{cat.price_adjustment ? cat.price_adjustment : ''}</td>
-                                            <td>{cat.net_price}</td>
-                                            <td>{cat.remarks}</td>
-                                        </tr>
-                                    )
-                                })
-                                :
-                                'No items to show'
-                            }
+                            <tbody>
+                                {
+                                    category ? 
+                                    category.items.map(cat => {
+                                        return (
+                                            <tr key={cat._id}>
+                                                <td>{cat.unit}</td>
+                                                <td>{cat.product_name}</td>
+                                                <td>{cat.brand_name}</td>
+                                                <td>{cat.model_name}</td>
+                                                <td>{cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                                                <td>{cat.price_adjustment ? cat.price_adjustment : ''}</td>
+                                                <td>{cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                                                <td>{cat.remarks}</td>
+                                            </tr>
+                                        )
+                                    })
+                                    :
+                                    'No items to show'
+                                }
+                            </tbody>
                         </Table>
                         <div className="tbl">
                             <Grid container spacing={2}>
