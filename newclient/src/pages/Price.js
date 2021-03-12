@@ -86,9 +86,9 @@ function Price() {
         try {
             const temp = await (await suppliers.getAllSupplier()).data.data
             setCategories(temp)
-            console.log(temp)
             setCategory(temp[0])
         } catch (error) {
+            console.log(error)
             alert('error in getting suppliers')
         }
     }
@@ -97,14 +97,6 @@ function Price() {
         fetchSuppliers();
     }, [])
 
-    useEffect(() => {
-        if (category) {
-            console.log(category)
-            console.log(category.items)
-            alert(category)
-        }
-    }, [category])
-
     const parseCSV = (files) => {        
         const Papa = require('papaparse')
         
@@ -112,7 +104,6 @@ function Price() {
             header: true,
             transformHeader: h => h.trim(),
             complete: (results, file) => {
-                console.log("Parsing complete:", results, file);
                 alert('Parsing complete!')
 
                 if (category === '') {
@@ -128,14 +119,21 @@ function Price() {
     }
 
     const uploadItems = async (items) => {
+
+        items = items.map(item => {
+            return {...item, list_price: parseFloat(item.list_price), net_price: parseFloat(item.net_price), price_adjustment: parseFloat(item.price_adjustment)}
+        })
+
         try {
 
-            console.log(items[0].net_price)
             const payload = {...category}
             payload.items = items
-            await suppliers.updateSupplierById(category._id, payload)
+            await suppliers.updateSupplierById(payload._id, payload)
             alert('uploaded')
+            await fetchSuppliers();
+            setCategory(payload);
         } catch (error) {
+            console.log(error)
             alert('error saving to database')
         }
     }
@@ -192,16 +190,6 @@ function Price() {
                                     <th>Remarks</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>unit</td>
-                                <td>description</td>
-                                <td>brand</td>
-                                <td>model</td>                                                            
-                                <td>list price</td>
-                                <td>45</td>
-                                <td>net price</td>
-                                <td>remarks</td>
-                            </tr>
                             {
                                 category ? 
                                 category.items.map(cat => {
@@ -212,7 +200,7 @@ function Price() {
                                             <td>{cat.brand_name}</td>
                                             <td>{cat.model_name}</td>
                                             <td>{cat.list_price}</td>
-                                            <td>{cat.price_adjustment}</td>
+                                            <td>{cat.price_adjustment ? cat.price_adjustment : ''}</td>
                                             <td>{cat.net_price}</td>
                                             <td>{cat.remarks}</td>
                                         </tr>
@@ -221,38 +209,6 @@ function Price() {
                                 :
                                 'No items to show'
                             }
-                            {/* <tr>
-                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                            </tr>
-                            <tr>
-                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                            </tr>
-                            <tr>
-                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                            </tr>
-                            <tr>
-                                <td><InputBase className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline className={classes.medium} variant="outlined" size="small" /></td>                                                            
-                                <td><InputBase multiline className={classes.short} variant="outlined" size="small" /></td>
-                                <td><InputBase multiline variant="outlined" size="small" /></td>
-                            </tr> */}
                         </Table>
                         <div className="tbl">
                             <Grid container spacing={2}>

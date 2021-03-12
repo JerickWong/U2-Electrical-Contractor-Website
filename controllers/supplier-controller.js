@@ -65,6 +65,7 @@ const updateSupplier = async (req, res) => {
                 })
             })
             .catch(error => {
+                console.log(error)
                 return res.status(404).json({
                     error,
                     message: 'Supplier not updated!',
