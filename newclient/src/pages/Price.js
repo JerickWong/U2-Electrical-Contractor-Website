@@ -175,7 +175,7 @@ function Price() {
                                                         <MenuItem key={cat._id} value={cat}>{cat.name}</MenuItem>
                                                     )
                                                 })
-                                            }                                            
+                                            }
                                         </Select>
                                     </FormControl>
                                 </Grid>

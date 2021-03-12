@@ -17,40 +17,19 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { Height } from '@material-ui/icons';
 
-export default function PriceTable() {
+export default function PriceTable(props) {
     const [state, setState] = React.useState({
         columns: [
             { title: 'Unit', field: 'unit' },
-            { title: 'Description', field: 'description' },
-            { title: 'Brand', field: 'brand' },
-            { title: 'Model', field: 'model' },
-            { title: 'List Price', field: 'listPrice' },
-            { title: 'Price Adjustment', field: 'priceAdj' },
-            { title: 'Net Price', field: 'netPrice' },
+            { title: 'Product Name', field: 'product_name' },
+            { title: 'Brand', field: 'brand_name' },
+            { title: 'Model', field: 'model_name' },
+            { title: 'List Price', field: 'list_price' },
+            { title: 'Price Adjustment', field: 'price_adjustment' },
+            { title: 'Net Price', field: 'net_price' },
             { title: 'Remarks', field: 'remarks' }
         ],
-        data: [
-            {
-                unit: '5', description: 'something', brand: 'some brand',
-                model: 'some model', listPrice: 'xxx.xx', priceAdj: 'xx%', netPrice: 'xx.xx', remarks: 'hekhek'
-            },
-            {
-                unit: '5', description: 'something', brand: 'some brand',
-                model: 'some model', listPrice: 'xxx.xx', priceAdj: 'xx%', netPrice: 'xx.xx', remarks: 'hekhek'
-            },
-            {
-                unit: '5', description: 'something', brand: 'some brand',
-                model: 'some model', listPrice: 'xxx.xx', priceAdj: 'xx%', netPrice: 'xx.xx', remarks: 'hekhek'
-            },
-            {
-                unit: '5', description: 'something', brand: 'some brand',
-                model: 'some model', listPrice: 'xxx.xx', priceAdj: 'xx%', netPrice: 'xx.xx', remarks: 'hekhek'
-            },
-            {
-                unit: '5', description: 'something', brand: 'some brand',
-                model: 'some model', listPrice: 'xxx.xx', priceAdj: 'xx%', netPrice: 'xx.xx', remarks: 'hekhek'
-            }
-        ],
+        data: props.data,
     });
     const tableIcons = {
         Add: forwardRef((props, ref) => <AddShoppingCart {...props} ref={ref} />),

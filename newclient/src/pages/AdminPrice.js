@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table, } from 'react-bootstrap';
 import {
     Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem,
@@ -22,6 +22,8 @@ import { faEdit, faTrashAlt, faFileExcel } from "@fortawesome/free-solid-svg-ico
 import PriceTable from '../components/AdminPriceTable/PriceTable';
 import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
+import {useDropzone} from 'react-dropzone';
+import suppliers from '../api/supplier';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -100,8 +102,10 @@ const useStyles = makeStyles((theme) => ({
 
 function AdminPrice() {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    const [category, setCategory] = React.useState('');
+    const [open, setOpen] = useState(false);
+    const [category, setCategory] = useState('');
+    const [categories, setCategories] = useState([]);
+
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
@@ -113,7 +117,74 @@ function AdminPrice() {
     };
 
     const addSupplier = () => {
+
+    }
+
+    const {getRootProps, getInputProps} = 
+        useDropzone({ 
+            accept: '.csv, text/csv', 
+            onDropAccepted: files => parseCSV(files),
+            onDropRejected: () => alert('file type rejected') 
+        });    
+
+    const fetchSuppliers = async () => {
+        try {
+            const temp = await (await suppliers.getAllSupplier()).data.data
+            setCategories(temp)
+            setCategory(temp[0])
+        } catch (error) {
+            console.log(error)
+            alert('error in getting suppliers')
+        }
+    }
+
+    useEffect(() => {
+        fetchSuppliers();
+    }, [])
+
+    const parseCSV = (files) => {        
+        const Papa = require('papaparse')
         
+        Papa.parse(files[0], {
+            header: true,
+            transformHeader: h => h.trim(),
+            complete: (results, file) => {
+                alert('Parsing complete!')
+
+                if (category === '') {
+                    alert('No selected Supplier yet')
+                } else {
+                    const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
+                    if (final)
+                        uploadItems(results.data)
+                }
+            }
+        })
+        
+    }
+
+    const uploadItems = async (items) => {
+
+        items = items.map(item => {
+            const list_price = parseFloat(item.list_price.trim().replace(',', ''))
+            console.log(list_price)
+            const net_price = parseFloat(item.net_price.trim().replace(',', ''))
+            const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
+            return {...item, list_price, net_price, price_adjustment}
+        })
+        console.log(items)
+
+        try {
+
+            const payload = {...category}
+            payload.items = items
+            await suppliers.updateSupplierById(payload._id, payload)
+            alert('uploaded')
+            await fetchSuppliers();
+            setCategory(payload);
+        } catch (error) {
+            alert('error saving to database')
+        }
     }
 
     return (
@@ -141,10 +212,14 @@ function AdminPrice() {
                                 <Grid item xs={4}>
                                     <FormControl>
                                         <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt1} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
-                                            <MenuItem value={1}>Category1</MenuItem>
-                                            <MenuItem value={2}>Category2</MenuItem>
-                                            <MenuItem value={3}>Category3</MenuItem>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt1} defaultValue={categories[0]} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
+                                            {
+                                                categories.map(cat => {
+                                                    return (
+                                                        <MenuItem key={cat._id} value={cat}>{cat.name}</MenuItem>
+                                                    )
+                                                })
+                                            }
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -160,7 +235,7 @@ function AdminPrice() {
                             </Grid>
                         </div>
                             <br></br>
-                            <PriceTable />
+                            <PriceTable data={category.items} />
                         <div className="tbl">
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>
