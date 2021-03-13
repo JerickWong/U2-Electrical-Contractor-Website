@@ -203,8 +203,8 @@ const getDelivered = async (req, res) => {
         }]
         // console.log(sortedByDate[0].rows)
         sortedByDate.map((mts, index) => {
-            console.log(`mts: ${mts.rows}`)
-            console.log(`index: ${index}`)
+            // console.log(`mts: ${mts.rows}`)
+            // console.log(`index: ${index}`)
             if (index > 0) {
                 const date = moment(mts.date).format('YYYY-MM-DD')
                 // if the same date, += the qty                
@@ -249,7 +249,7 @@ const getDelivered = async (req, res) => {
                 }
             }
         })
-        console.log(deliveredObject)
+        // console.log(deliveredObject)
         
         return res.status(200).json({ success: true, data: deliveredObject })
     })
@@ -286,6 +286,8 @@ const getCost = async (req, res) => {
 
 const getDeliveredSummary = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to }, status: "Confirmed" }).lean().exec( (err, mts) => {
+        console.log(req.body.from)
+        console.log(req.body.to)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -338,7 +340,7 @@ const getProjectDates = async (req, res) => {
         const dates = {
             start: sortedByDate[0].date,
             end: sortedByDate[sortedByDate.length-1].date
-        }
+        }        
 
         return res.status(200).json({ success: true, data: dates })
     })

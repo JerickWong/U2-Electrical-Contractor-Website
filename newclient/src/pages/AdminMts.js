@@ -259,45 +259,6 @@ function AdminMts(props) {
         }
         setLoading(false)
     }
-
-    // async function appendToDelivered() {
-
-    //     try {
-    //       const dates = await (await api.getDates({ project_name })).data.data
-    //       const payload = {
-    //         project_name,
-    //         from: dates.start,
-    //         to: dates.end
-    //       }
-    //       const delivered = await (await api.getDeliveredSummary(payload)).data.data
-    //       const realDelivered = await (await api.getDeliveredByProject({ project_name })).data.data
-    //       payload.start = dates.start
-    //       payload.end = dates.end      
-    //       payload.rows = []
-    //       delivered.map(mts => {
-    //         if (realDelivered.rows.filter(row => mts.item===row.item).length>0) {          
-    
-    //           realDelivered.rows.map(row => {
-    //             if (mts.item===row.item) {
-    //               payload.rows.push({ item: mts.item, total: mts.total, estqty: row.estqty })
-    //             }
-    //           })
-    //         } else {
-    //           payload.rows.push({ item: mts.item, total: mts.total, estqty: 0 })
-    //         }
-    //       })
-          
-    //       console.log(payload)
-    //       console.log(payload.rows[0])
-    //       console.log(payload.rows[0].item)
-    
-    //       const data = await (await api.updateDelivered(payload)).data.data
-    
-    //     } catch (error) {
-    //       alert(error)
-    //     }
-    // }
-
     
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -314,23 +275,24 @@ function AdminMts(props) {
             current_mts.status = "Confirmed"
             await api.updateMTSById(current_mts._id, current_mts)
 
-            // // delivered
-            // const isExist = await (await api.getDeliveredByProject({ project_name })).data.success
-            
-            // // if project already exists, append delivered object
-            // if (isExist) {
-            //     appendToDelivered()
-            // }
+            // delivered
+            const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
+            alert(`ISEXIST ${isExist}`)
+            // if project already exists, append delivered object
+            if (isExist) {
+                await api.addItem({ project_name: current_project, rows: current_mts.rows, date: current_mts.date })
+                alert('added item')
+            }
 
-            // // create new delivered object
-            // else {
+            // create new delivered object
+            else {
             
-            // const delivered_rows = clean_rows.map(row => {
-            //     return { estqty: 0, item: row.description, total: row.qty }
-            // })
-            // const delivered = await (await api.insertDelivered({ project_name, start: date, end: date, rows: delivered_rows })).data.message
-            // alert(delivered)
-            // }
+                const delivered_rows = current_mts.rows.map(row => {
+                    return { estqty: 0, item: row.description, total: row.qty }
+                })
+                const delivered = await (await api.insertDelivered({ project_name: current_project, start: current_mts.date, end: current_mts.date, rows: delivered_rows })).data.message
+                alert(delivered)
+            }
 
             alert('all goods')
         } catch (error) {

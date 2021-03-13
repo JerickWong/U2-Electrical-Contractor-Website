@@ -139,6 +139,68 @@ const updateDelivered = async (req, res) => {
     })
 }
 
+const addItem = async (req, res) => {
+    // req.body = project_name, rows (item, total), date. Basically MTS nalang ipasa ko
+    await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!delivered) {
+            console.log(`ADDITEM ${err}`)
+            return res
+                .status(404)
+                .json({ success: false, error: `Delivered not found` })
+        }
+
+        const { rows } = req.body
+
+        rows.map(row => {
+            if (delivered.rows.filter(d => d.item === row.description).length>0) {
+                delivered.rows.map((d, index) => {
+                    if (d.item === row.description) {
+                        d.total += row.qty
+                    }
+                })
+            } else {
+                delivered.rows.push({
+                    estqty: 0,
+                    item: row.description,
+                    total: row.qty
+                })
+            }
+        })
+
+        const date = new Date(req.body.date)
+
+        if (!(!date - delivered.start === 0 || !date - delivered.end === 0)) {
+            if (date - delivered.start < 0) 
+                delivered.start = date            
+            else if (date - delivered.end > 0) 
+                delivered.end = date
+        }
+
+        delivered
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: delivered._id,
+                    data: delivered,
+                    message: 'Delivered updated!',
+                })
+            })
+            .catch(error => {
+                console.log(`deliverednotupdated ${error}`)
+                return res.status(404).json({
+                    error,
+                    message: 'Delivered not updated!',
+                })
+            })
+
+    }).catch(err => console.log(err))
+}
+
 const removeItem = async (req, res) => {
     await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
         if (err) {
@@ -154,7 +216,7 @@ const removeItem = async (req, res) => {
         const { rows } = req.body
 
         rows.map(row => {
-            if (delivered.rows.filter(d => d.item === row.item)) {
+            if (delivered.rows.filter(d => d.item === row.item).length>0) {
                 delivered.rows.map((d, index) => {
                     if (d.item === row.item) {
                         d.total -= row.total
@@ -166,6 +228,8 @@ const removeItem = async (req, res) => {
                 })
             }
         })        
+
+        // FIX NEW START / END DATE
 
         delivered
             .save()
@@ -240,7 +304,7 @@ const getDeliveredByProject = async (req, res) => {
         }
         if (!delivered) {
             return res
-                .status(204)
+                .status(404)
                 .json({ success: false, error: `Delivered not found` })
         }
         return res.status(200).json({ success: true, data: delivered })
@@ -254,5 +318,6 @@ module.exports = {
     getAllDelivered,
     getDeliveredById,
     getDeliveredByProject,
+    addItem,
     removeItem
 }

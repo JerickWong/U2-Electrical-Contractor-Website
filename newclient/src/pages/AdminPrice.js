@@ -151,6 +151,7 @@ function AdminPrice() {
         }
         handleClose();
         setName('')
+        setItems([])
     }
 
     const {getRootProps, getInputProps} = 
