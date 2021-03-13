@@ -10,6 +10,6 @@ router.post('/current-user', UserCntrl.getUser)
 router.get('/all-users', UserCntrl.getAllUser)
 router.get('/logout-user', UserCntrl.logoutUser)
 router.delete('/:id', UserCntrl.deleteUser)
-router.put('/update-user', UserCntrl.updateUser)
+router.put('/update-user/:id', UserCntrl.updateUser)
 
 module.exports = router

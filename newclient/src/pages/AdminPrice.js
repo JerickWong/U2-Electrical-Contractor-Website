@@ -7,7 +7,7 @@ import {
 import {
     AddBox, ArrowDownward, Edit, Clear, Search, GroupAdd, QueryBuilder, AddShoppingCart,
     ChevronRight, DeleteOutline, FilterList, FirstPage, LastPage,
-    Remove, SaveAlt, ViewColumn
+    Remove, SaveAlt, ViewColumn, AccountCircle
 } from '@material-ui/icons';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
 import { MaterialTable } from 'material-table';
@@ -97,7 +97,26 @@ const useStyles = makeStyles((theme) => ({
     },
     button3: {
         marginLeft: 10,
-    }
+    },
+    modalIcons: {
+        color: 'primary',
+        display: 'flex',
+        fontSize: 30
+    },
+    modalTitle: {
+        fontSize: 20,
+        display: 'flex',
+        marginTop: 30,
+        padding: theme.spacing(2)
+
+    },
+    modalFields: {
+        width: 400,
+        marginBottom: 20,
+        alignItems: 'center',
+        display: 'flex',
+        marginLeft: 30
+    },
 }));
 
 function AdminPrice() {
@@ -230,12 +249,81 @@ function AdminPrice() {
                                     </Badge>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Button variant="contained" color="primary" className={classes.AddBtn2} startIcon={<GroupAdd />}>Add Supplier</Button>
+                                    <Button variant="contained" color="primary" className={classes.AddBtn2} startIcon={<GroupAdd />} onClick={handleClickOpen}>
+                                        Add Supplier
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </div>
-                            <br></br>
-                            <PriceTable data={category.items} category={category}/>
+                        <br></br>
+                        <PriceTable data={category.items} category={category}/>
+
+                            {/* ADD SUPPLIER */}
+                        <Dialog fullWidth="true" maxWidth="sm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">
+                                <h3>New Supplier</h3>
+                            </DialogTitle>
+                            <DialogContent dividers>
+                                <div className="modalAcc">                                    
+                                    <FormGroup>
+                                        <InputLabel className={classes.modalFields}>Name</InputLabel>
+                                        <Input
+                                            className={classes.modalFields}
+                                            variant="outlined"
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    <AccountCircle color="primary" />
+                                                </InputAdornment>
+                                            }
+                                            // value={username}
+                                            // onChange={(e) => setNewUsername(e.target.value)}
+                                        />
+                                    </FormGroup>
+                                    {/* <FormGroup>
+                                        <InputLabel className={classes.modalFields}>Password</InputLabel>
+                                        <Input
+                                            id="new-password"
+                                            className={classes.modalFields}
+                                            type="password"
+                                            variant="outlined"
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    <Lock color="primary" />
+                                                </InputAdornment>
+                                            }
+                                            value={password}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <InputLabel className={classes.modalFields}>Role</InputLabel>
+                                        <Select
+                                            className={classes.modalFields}
+                                            labelId="demo-simple-select-filled-label"
+                                            id="demo-simple-select-filled"
+                                            defaultValue={'Employee'}
+                                            value={newRole}
+                                            onChange={handleNewRole}
+                                        >
+                                            <MenuItem value={'Employee'}>Employee</MenuItem>
+                                            <MenuItem value={'Manager'}>Manager</MenuItem>
+                                        </Select>
+                                    </FormGroup> */}
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} variant="contained" >
+                                    Cancel
+                                </Button>
+                                <Button variant="contained" color="primary" className={classes.button} {...getRootProps({className: 'dropzone'})}>
+                                    <input {...getInputProps()} />
+                                    <FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel
+                                </Button>
+                                <Button className={classes.create} variant="contained" color="primary">
+                                    Create Supplier
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                         <div className="tbl">
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>

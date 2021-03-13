@@ -153,10 +153,13 @@ function Price() {
             query = query.toLowerCase()
             const price = [...backupCategory.items]
             const filtered = price.filter(p => {
+                const lowerUnit = p.unit.toLowerCase()
                 const lowerName = p.product_name.toLowerCase()
                 const lowerBrand = p.brand_name.toLowerCase()
                 const lowerModel = p.model_name.toLowerCase()
-                if ((lowerName).includes(query) || lowerBrand.includes(query) || lowerModel.includes(query))
+                const lowerRemarks = p.remarks.toLowerCase()
+                if (lowerUnit.includes(query) || lowerName.includes(query) || lowerBrand.includes(query) || 
+                    lowerModel.includes(query) || lowerRemarks.includes(query))
                     return p
                 
             })
@@ -206,7 +209,7 @@ function Price() {
                                     </FormControl>
                                 </Grid>
                             </Grid>
-                        </div>
+                        </div>                        
                         <Table responsive name='table' hover bordercolor="#8f8f94" border="#8f8f94" >
                             <thead>
                                 <tr>

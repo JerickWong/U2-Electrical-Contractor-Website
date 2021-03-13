@@ -106,6 +106,7 @@ function Accounts() {
     const [newRole, setNewRole] = useState('Employee');
     const [username, setNewUsername] = useState('')
     const [password, setNewPassword] = useState('')
+    const [editAccount, setAccount] = useState(null);
     const [editUsername, setUsername] = useState('');
     const [editPassword, setPassword] = useState('');
     const [editRole, setEditRole] = useState('');
@@ -113,7 +114,6 @@ function Accounts() {
     const [backupAccounts, setBackup] = useState([]);
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
-    const [oldUsername, setOldUsername] = useState(null)
     const [complete, setComplete] = useState(false)
 
     const fetchUsers = async () => {
@@ -124,7 +124,7 @@ function Accounts() {
             setBackup(dataArray)
         } catch (error) {
             console.log(error)
-            alert(error)
+            alert('error getting users')
         }
     }
 
@@ -210,23 +210,22 @@ function Accounts() {
             console.log(user)
             alert("user created")
         } catch (error) {
-            alert(error)
+            alert('error in creating user, username already exists')
         }
         fetchUsers();
     }
 
-    const editAccount = async () => {
+    const handleEditAccount = async () => {
         try {
             const payload = {
-                oldUsername,
                 username: editUsername,
                 password: editPassword,
                 type: editRole
             }
-            const message = await (await users.updateUser(payload)).data.message
+            const message = await (await users.updateUser(editAccount._id , payload)).data.message
             alert(message)
         } catch (error) {
-            alert(error.message)
+            alert('error in editing user')
         }
         handleCloseEdit();
         fetchUsers();        
@@ -243,7 +242,7 @@ function Accounts() {
                 alert(`Deleted Successfully!`)
             } catch (error) {
                 console.log(error)
-                alert(error)
+                alert('error in deleting user')
             }
         }
 
@@ -253,7 +252,6 @@ function Accounts() {
     const prepareEdit = (account) => {
         setUsername(account.username)
         setEditRole(account.type)
-        setOldUsername(account.username)
         setEdit(true)
     }
 
@@ -271,7 +269,6 @@ function Accounts() {
         setEdit(false);
         setUsername('')
         setEditRole('')
-        setOldUsername('')
         setPassword('')
     }
     return (
@@ -383,7 +380,7 @@ function Accounts() {
                                             </div>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleClose} variant="contained" color="primary">
+                                            <Button onClick={handleClose} variant="contained">
                                                 Cancel
                                             </Button>
                                             <Button onClick={() => { complete ? createAccount() : alert('Please fill out all fields!')}} className={classes.create} variant="contained" color="primary">
@@ -448,10 +445,10 @@ function Accounts() {
                                             </div>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleCloseEdit} variant="contained" color="primary">
+                                            <Button onClick={handleCloseEdit} variant="contained">
                                                 Cancel
                                             </Button>
-                                            <Button onClick={editAccount} variant="contained" color="primary">
+                                            <Button onClick={handleEditAccount} variant="contained" color="primary">
                                                 Edit Account
                                             </Button>
                                         </DialogActions>
@@ -478,7 +475,7 @@ function Accounts() {
                                                 <td>{account.type}</td>
                                                 <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
                                                 <td>
-                                                    <IconButton color="primary" onClick={() => {prepareEdit(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
+                                                    <IconButton color="primary" onClick={() => {prepareEdit(account); setAccount(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
                                                     <IconButton color="primary" onClick={() => {deleteAccount(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                                 </td>
                                             </tr>

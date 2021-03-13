@@ -79,7 +79,12 @@ const registerUser = (req, res) => {
             newUser
             .save()
             .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err)
+                return res
+                    .status(409)
+                    .json({ success: false, error: `username already exists` })
+            });
         });
     });    
     // return res.send("etits")
@@ -139,7 +144,7 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const { password, username, oldUsername, type } = req.body
+    const { password, username, type } = req.body
 
     if (!req.body) {
         return res.status(400).json({
@@ -148,7 +153,7 @@ const updateUser = async (req, res) => {
         })
     }
 
-    User.findOne({ username: oldUsername }, (err, user) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) {
             return res.status(404).json({
                 err,
