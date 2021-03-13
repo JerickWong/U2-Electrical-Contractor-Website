@@ -235,7 +235,7 @@ function AdminPrice() {
                             </Grid>
                         </div>
                             <br></br>
-                            <PriceTable data={category.items} />
+                            <PriceTable data={category.items} category={category}/>
                         <div className="tbl">
                             <Grid container spacing={1}>
                                 <Grid item xs={5}>

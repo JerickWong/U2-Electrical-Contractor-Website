@@ -16,6 +16,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { Height } from '@material-ui/icons';
+import supplier from '../../api/supplier'
 
  export default function PriceTable (props) {
     
@@ -77,38 +78,52 @@ import { Height } from '@material-ui/icons';
             }}
             editable={{
                 onRowAdd: (newData) =>
+                    // await updateData(newData, null, "add"),
                     new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve();
-                            setState((prevState) => {
-                                const data = [...prevState.data];
+                        try {                            
+                            setTimeout( async () => {
+
+                                const data = [...state.data];
                                 data.push(newData);
-                                return { ...prevState, data };
-                            });
-                        }, 600);
+                                setState({...state, data})
+                                
+                                await supplier.updateSupplierById(props.category._id, {...props.category, items: data})
+                                resolve();
+                            }, 600);
+                        } catch (error) {
+                            alert('error in adding')
+                        }
                     }),
-                onRowUpdate: (newData, oldData) =>
+                onRowUpdate: async (newData, oldData) =>
+                    // await updateData(newData, oldData, "update"),
                     new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve();
-                            if (oldData) {
-                                setState((prevState) => {
-                                    const data = [...prevState.data];
+                        setTimeout(async () => {
+                            try {
+                                if (oldData) {
+                                    const data = [...state.data];
                                     data[data.indexOf(oldData)] = newData;
-                                    return { ...prevState, data };
-                                });
+                                    setState({...state, data})
+                                    await supplier.updateSupplierById(props.category._id, {...props.category, items: data})
+                                }
+                                resolve();
+                            } catch (error) {
+                                alert('error in updating')
                             }
                         }, 600);
                     }),
-                onRowDelete: (oldData) =>
+                onRowDelete: async (oldData) =>
+                    // await updateData(null, oldData, "delete"),
                     new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve();
-                            setState((prevState) => {
-                                const data = [...prevState.data];
+                        setTimeout(async () => {
+                            try {
+                                const data = [...state.data];
                                 data.splice(data.indexOf(oldData), 1);
-                                return { ...prevState, data };
-                            });
+                                setState({...state, data})
+                                await supplier.updateSupplierById(props.category._id, {...props.category, items: data})
+                                resolve();
+                            } catch (error) {
+                                alert('error in deleting')
+                            }
                         }, 600);
                     }),
             }}

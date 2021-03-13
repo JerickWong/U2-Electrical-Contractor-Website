@@ -456,75 +456,7 @@ function MtsWindow(props) {
       console.log(error)
       alert(error)
     }
-  }
-
-  async function appendToDelivered() {
-    // const clean_rows = rows.filter(row => {
-    //   if (row.description && row.qty)
-    //     return row
-    // })
-
-    // try {
-    //   const dates = await (await api.getDates({ project_name })).data.data
-          
-    //   const payload = {
-    //     project_name,
-    //     start: new Date(dates.start),
-    //     end: new Date(dates.end),
-    //     rows: []
-    //   }
-
-    //   clean_rows.map(row => {
-    //     payload.rows.push({ estqty:0, item: row.description, total: parseInt(row.qty) })
-    //   })
-
-    //   if (dates.start > new Date(date)) 
-    //     payload.start = date
-    //   else if (dates.end < new Date(date))
-    //     payload.end = date
-      
-    //   const delivered = await (await api.updateDelivered(payload)).data.message
-    //   alert(delivered)
-    // } catch (error) {
-    //   console.log(error)
-    //   alert(error)
-    // }
-
-    try {
-      const dates = await (await api.getDates({ project_name })).data.data
-      const payload = {
-        project_name,
-        from: dates.start,
-        to: dates.end
-      }
-      const delivered = await (await api.getDeliveredSummary(payload)).data.data
-      const realDelivered = await (await api.getDeliveredByProject({ project_name })).data.data
-      payload.start = dates.start
-      payload.end = dates.end      
-      payload.rows = []
-      delivered.map(mts => {
-        if (realDelivered.rows.filter(row => mts.item===row.item).length>0) {          
-
-          realDelivered.rows.map(row => {
-            if (mts.item===row.item) {
-              payload.rows.push({ item: mts.item, total: mts.total, estqty: row.estqty })
-            }
-          })
-        } else {
-          payload.rows.push({ item: mts.item, total: mts.total, estqty: 0 })
-        }
-      })
-      
-      console.log(payload)
-      console.log(payload.rows[0])
-      console.log(payload.rows[0].item)
-
-      const data = await (await api.updateDelivered(payload)).data.data
-
-    } catch (error) {
-      alert(error)
-    }
-  }
+  }  
 
   async function handleConfirm() {
 
@@ -553,10 +485,7 @@ function MtsWindow(props) {
     if (props.location.state) {
       try {        
         const _id = props.location.state.mts._id
-        const response = await (await api.updateMTSById(_id, payload)).data
-        
-        // delivered
-        appendToDelivered()
+        const response = await (await api.updateMTSById(_id, payload)).data        
 
         alert(response.message)
       } catch (error) {
@@ -567,24 +496,6 @@ function MtsWindow(props) {
     else {
       try {
         const response = await (await api.insertMTS(payload)).data
-
-        // delivered
-        const isExist = await (await api.getDeliveredByProject({ project_name })).data.success
-        
-        // if project already exists, append delivered object
-        if (isExist) {
-          appendToDelivered()
-        }
-
-        // create new delivered object
-        else {
-          
-          const delivered_rows = clean_rows.map(row => {
-            return { estqty: 0, item: row.description, total: row.qty }
-          })
-          const delivered = await (await api.insertDelivered({ project_name, start: date, end: date, rows: delivered_rows })).data.message
-          alert(delivered)
-        }
 
         alert(response.message)
       } catch (error) {

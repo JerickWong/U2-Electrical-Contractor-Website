@@ -1,7 +1,6 @@
-const moment = require('moment')
 const Delivered = require('../models/DeliveredSummary')
 
-createDelivered = (req, res) => {
+const createDelivered = (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -97,7 +96,7 @@ createDelivered = (req, res) => {
 //     })
 // }
 
-updateDelivered = async (req, res) => {
+const updateDelivered = async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -140,7 +139,7 @@ updateDelivered = async (req, res) => {
     })
 }
 
-removeItem = async (req, res) => {
+const removeItem = async (req, res) => {
     await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -189,7 +188,7 @@ removeItem = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-deleteDelivered = async (req, res) => {
+const deleteDelivered = async (req, res) => {
     await Delivered.deleteMany({  }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -205,7 +204,7 @@ deleteDelivered = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getDeliveredById = async (req, res) => {
+const getDeliveredById = async (req, res) => {
     await Delivered.findOne({ _id: req.params.id }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -220,7 +219,7 @@ getDeliveredById = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getAllDelivered = async (req, res) => {
+const getAllDelivered = async (req, res) => {
     await Delivered.find({}, (err, delivereds) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -234,7 +233,7 @@ getAllDelivered = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getDeliveredByProject = async (req, res) => {
+const getDeliveredByProject = async (req, res) => {
     await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
