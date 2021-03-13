@@ -605,7 +605,8 @@ function MtsWindow(props) {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {/* {backToMTS} */}
-          <UserAlert severity='info' message='Project Name, MTS Number and Requested By fields are required to be filled-up before saving.'/>
+          <UserAlert severity='info' message={confirmed ? 'This MTS is Read Only' : 
+          'Project Name, MTS Number and Requested By fields are required to be filled-up before saving.'}/>
           
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>

@@ -4,6 +4,7 @@ const createSupplier = (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log(error)
         return res.status(400).json({
             success: false,
             error: 'You must provide a Supplier',
@@ -13,6 +14,7 @@ const createSupplier = (req, res) => {
     const supplier = new Supplier(body)
 
     if (!supplier) {
+        console.log(err)
         return res.status(400).json({ success: false, error: err })
     }
 
@@ -26,6 +28,7 @@ const createSupplier = (req, res) => {
             })
         })
         .catch(error => {
+            console.log(error)
             return res.status(400).json({
                 error,
                 message: 'Supplier not created!',

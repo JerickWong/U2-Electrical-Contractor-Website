@@ -124,6 +124,8 @@ function AdminPrice() {
     const [open, setOpen] = useState(false);
     const [category, setCategory] = useState('');
     const [categories, setCategories] = useState([]);
+    const [name, setName] = useState('');
+    const [items, setItems] = useState([])
 
     const handleChange = (event) => {
         setCategory(event.target.value);
@@ -135,8 +137,20 @@ function AdminPrice() {
         setOpen(false);
     };
 
-    const addSupplier = () => {
-
+    const addSupplier = async () => {
+        try {
+            const payload = {
+                name,
+                items
+            }
+            await suppliers.insertSupplier(payload)
+            alert('successfully adding suppliers')
+            fetchSuppliers();
+        } catch (error) {
+            alert('error in adding supplier')
+        }
+        handleClose();
+        setName('')
     }
 
     const {getRootProps, getInputProps} = 
@@ -173,9 +187,14 @@ function AdminPrice() {
                 if (category === '') {
                     alert('No selected Supplier yet')
                 } else {
-                    const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
-                    if (final)
-                        uploadItems(results.data)
+                    // check if not open, meaning youre not adding a new supplier
+                    if (!open) {
+                        const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
+                        if (final)
+                            uploadItems(results.data)
+                    } else {
+                        setItems(results.data)
+                    }
                 }
             }
         })
@@ -204,6 +223,8 @@ function AdminPrice() {
         } catch (error) {
             alert('error saving to database')
         }
+
+        setItems([])
     }
 
     return (
@@ -275,40 +296,10 @@ function AdminPrice() {
                                                     <AccountCircle color="primary" />
                                                 </InputAdornment>
                                             }
-                                            // value={username}
-                                            // onChange={(e) => setNewUsername(e.target.value)}
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
                                         />
                                     </FormGroup>
-                                    {/* <FormGroup>
-                                        <InputLabel className={classes.modalFields}>Password</InputLabel>
-                                        <Input
-                                            id="new-password"
-                                            className={classes.modalFields}
-                                            type="password"
-                                            variant="outlined"
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                    <Lock color="primary" />
-                                                </InputAdornment>
-                                            }
-                                            value={password}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <InputLabel className={classes.modalFields}>Role</InputLabel>
-                                        <Select
-                                            className={classes.modalFields}
-                                            labelId="demo-simple-select-filled-label"
-                                            id="demo-simple-select-filled"
-                                            defaultValue={'Employee'}
-                                            value={newRole}
-                                            onChange={handleNewRole}
-                                        >
-                                            <MenuItem value={'Employee'}>Employee</MenuItem>
-                                            <MenuItem value={'Manager'}>Manager</MenuItem>
-                                        </Select>
-                                    </FormGroup> */}
                                 </div>
                             </DialogContent>
                             <DialogActions>
@@ -319,7 +310,7 @@ function AdminPrice() {
                                     <input {...getInputProps()} />
                                     <FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel
                                 </Button>
-                                <Button className={classes.create} variant="contained" color="primary">
+                                <Button className={classes.create} variant="contained" color="primary" onClick={() => { name ? addSupplier() : alert('Enter a name')}}>
                                     Create Supplier
                                 </Button>
                             </DialogActions>

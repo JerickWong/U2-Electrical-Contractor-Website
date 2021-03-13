@@ -256,7 +256,7 @@ const getDelivered = async (req, res) => {
 }
 
 const getCost = async (req, res) => {
-    await MTS.find({ project_name: req.body.project_name }).lean().exec( (err, mts) => {
+    await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -285,7 +285,7 @@ const getCost = async (req, res) => {
 }
 
 const getDeliveredSummary = async (req, res) => {
-    await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to } }).lean().exec( (err, mts) => {
+    await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to }, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
