@@ -69,10 +69,12 @@ const useStyles = makeStyles((theme) => ({
 function Price() {
     const classes = useStyles();
     const [category, setCategory] = useState(null);
+    const [backupCategory, setBackup] = useState(null);
     const [categories, setCategories] = useState([]);
 
     const handleChange = (event) => {
         setCategory(event.target.value);
+        setBackup(event.target.value);
     };    
 
     const {getRootProps, getInputProps} = 
@@ -87,6 +89,7 @@ function Price() {
             const temp = await (await suppliers.getAllSupplier()).data.data
             setCategories(temp)
             setCategory(temp[0])
+            setBackup(temp[0])
         } catch (error) {
             console.log(error)
             alert('error in getting suppliers')
@@ -137,9 +140,31 @@ function Price() {
             alert('uploaded')
             await fetchSuppliers();
             setCategory(payload);
+            setBackup(payload)
         } catch (error) {
             alert('error saving to database')
         }
+    }
+
+    const handleSearch = (event) => {
+        
+        let query = event.target.value
+        if (query !== '') {
+            query = query.toLowerCase()
+            const price = [...backupCategory.items]
+            const filtered = price.filter(p => {
+                const lowerName = p.product_name.toLowerCase()
+                const lowerBrand = p.brand_name.toLowerCase()
+                const lowerModel = p.model_name.toLowerCase()
+                if ((lowerName).includes(query) || lowerBrand.includes(query) || lowerModel.includes(query))
+                    return p
+                
+            })
+            setCategory({...category, items: filtered})
+        } else {
+            setCategory(backupCategory)
+        }
+
     }
 
     return (
@@ -162,6 +187,7 @@ function Price() {
                                                 </InputAdornment>
                                             ),
                                         }}
+                                        onChange={handleSearch}
                                     />
                                 </Grid>
                                 <Grid item xs={2} />

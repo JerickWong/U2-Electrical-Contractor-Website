@@ -78,7 +78,6 @@ import supplier from '../../api/supplier'
             }}
             editable={{
                 onRowAdd: (newData) =>
-                    // await updateData(newData, null, "add"),
                     new Promise((resolve) => {
                         try {                            
                             setTimeout( async () => {
@@ -95,7 +94,6 @@ import supplier from '../../api/supplier'
                         }
                     }),
                 onRowUpdate: async (newData, oldData) =>
-                    // await updateData(newData, oldData, "update"),
                     new Promise((resolve) => {
                         setTimeout(async () => {
                             try {
@@ -112,7 +110,6 @@ import supplier from '../../api/supplier'
                         }, 600);
                     }),
                 onRowDelete: async (oldData) =>
-                    // await updateData(null, oldData, "delete"),
                     new Promise((resolve) => {
                         setTimeout(async () => {
                             try {
