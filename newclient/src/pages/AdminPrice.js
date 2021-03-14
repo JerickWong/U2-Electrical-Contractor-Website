@@ -126,6 +126,7 @@ function AdminPrice() {
     const [categories, setCategories] = useState([]);
     const [name, setName] = useState('');
     const [items, setItems] = useState([])
+    const Papa = require('papaparse')
 
     const handleChange = (event) => {
         setCategory(event.target.value);
@@ -176,8 +177,36 @@ function AdminPrice() {
         fetchSuppliers();
     }, [])
 
-    const parseCSV = (files) => {        
-        const Papa = require('papaparse')
+    const downloadFile = () => {
+        const data = category.items.filter(c => {
+            delete c._id
+            return delete c.tableData
+        })
+
+        const csv = Papa.unparse(data, {
+            header: true
+        })
+        const filename = `${category.name}.csv` || `export.csv`
+
+        if (csv === null)
+            alert('empty')
+        
+        const blob = new Blob([csv]);
+        if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+            window.navigator.msSaveBlob(blob, filename);
+        else
+        {
+            const a = window.document.createElement("a");
+            a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+            document.body.removeChild(a);
+        }
+    }
+
+
+    const parseCSV = (files) => {                
         
         Papa.parse(files[0], {
             header: true,
@@ -323,7 +352,9 @@ function AdminPrice() {
                                         <input {...getInputProps()} />
                                         <FontAwesomeIcon className="excel" icon={faFileExcel} />Upload Excel
                                     </Button>
-                                    <Button variant="contained" color="primary" className={classes.button3} startIcon={<GetAppIcon />}>Download</Button>
+                                    <Button variant="contained" color="primary" className={classes.button3} startIcon={<GetAppIcon />} onClick={downloadFile}>
+                                        Download
+                                    </Button>
                                 </Grid>
                                 <Grid item xs={3} />
                             </Grid>

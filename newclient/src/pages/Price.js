@@ -71,6 +71,7 @@ function Price() {
     const [category, setCategory] = useState(null);
     const [backupCategory, setBackup] = useState(null);
     const [categories, setCategories] = useState([]);
+    const Papa = require('papaparse')
 
     const handleChange = (event) => {
         setCategory(event.target.value);
@@ -100,8 +101,7 @@ function Price() {
         fetchSuppliers();
     }, [])
 
-    const parseCSV = (files) => {        
-        const Papa = require('papaparse')
+    const parseCSV = (files) => {
         
         Papa.parse(files[0], {
             header: true,
@@ -168,6 +168,33 @@ function Price() {
             setCategory(backupCategory)
         }
 
+    }
+
+    const downloadFile = () => {
+        const data = category.items.filter(c => {
+            return delete c._id
+        })
+
+        const csv = Papa.unparse(data, {
+            header: true
+        })
+        const filename = `${category.name}.csv` || `export.csv`
+
+        if (csv === null)
+            alert('empty')
+        
+        const blob = new Blob([csv]);
+        if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+            window.navigator.msSaveBlob(blob, filename);
+        else
+        {
+            const a = window.document.createElement("a");
+            a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+            document.body.removeChild(a);
+        }
     }
 
     return (
@@ -253,7 +280,9 @@ function Price() {
                                 </Grid>
 
                                 <Grid item xs={2}>
-                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<GetAppIcon />}>Download</Button>
+                                    <Button variant="contained" color="primary" size="medium" startIconclassName={classes.button} startIcon={<GetAppIcon />} onClick={downloadFile}>
+                                        Download
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </div>

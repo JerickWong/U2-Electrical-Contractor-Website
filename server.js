@@ -24,8 +24,4 @@ app.use('/api', deliveredRouter)
 app.use('/user', userRouter)
 app.use('/supplier', supplierRouter)
 
-// app.get('/', (req, res) => { res.send(_server) });
-
 app.listen(PORT, () => console.log(`Live at port ${PORT}`))
-
-// module.exports = app;
