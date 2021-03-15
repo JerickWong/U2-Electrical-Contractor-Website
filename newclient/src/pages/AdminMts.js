@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import DeleteIcon from '@material-ui/icons/Delete';
 import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button, CircularProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom'
@@ -10,7 +11,7 @@ import db from '../components/Firestore/firestore';
 import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
-import api from '../api';
+import api, { deleteMTSById } from '../api';
 import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
@@ -302,6 +303,18 @@ function AdminMts(props) {
         getMTS();
     }
 
+    const handleDelete = async (mts) => {
+        try {
+            // console.log(mts)
+            // alert(mts._id)
+            await api.deleteMTSById(mts._id)
+            alert('successfully deleted')
+        } catch (error) {
+            alert('error in deleting')
+        }
+        getMTS();
+    }
+
     useEffect(() => {
         fetchData()
     }, [user])
@@ -413,6 +426,8 @@ function AdminMts(props) {
                                                         m.status === "Confirmed" ? ""
                                                             : <Button variant="outlined" onClick={() => { setCurrent(m); }}>Confirm</Button>
                                                     }
+                                                    <Button variant="outlined" color="secondary" onClick={() => { handleDelete(m) }}><DeleteIcon />
+                                                    Delete</Button>
                                                     </td>
                                                 </tr>
                                             )
