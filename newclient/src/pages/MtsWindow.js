@@ -525,6 +525,28 @@ function MtsWindow(props) {
       }
     }
     setUnsaved(false)
+    if (selected.pendingItems.length > 0) {
+      const pending = [...new Set(selected.pendingItems)]
+      const pendingRows = pending.map(index => clean_rows[index])
+      try {
+        const payload = []
+        pendingRows.map(row => {
+          const { unit, description, brand, model, remarks, price } = row
+          payload.push({
+            unit,
+            product_name: description,
+            brand_name: brand,
+            model_name: model,
+            remarks,
+            net_price: price,
+            price_adjustment: 0,
+            list_price: price
+          })
+        })
+      } catch (error) {
+        alert('failed to add pending items')
+      }
+    }
     // FIRESTORE Saving
     // ACTUAL SAVING TO DB
     // const newID = MTS_number + ""
@@ -793,7 +815,6 @@ function MtsWindow(props) {
                           <Autocomplete
                             value={row.unit}                            
                             onChange={(event, newValue) => {
-                              // GET THE INDEX OR SOMETHING
                               const newRows = [...rows]
                               newRows[index]['unit'] = newValue
                               setRows(newRows)                              
@@ -801,23 +822,10 @@ function MtsWindow(props) {
                               let tempItems = [...suppliers]  
                               tempItems = tempItems.filter(item => item.unit === newValue)
                               selected.selectedItems[index] = tempItems
-                              // will this work ^?
-                            }}                            
-                            id="free-solo-dialog-demo"
-                            options={units}
-                            getOptionLabel={(option) => {
-                              // e.g value selected with enter, right from the input
-                              if (typeof option === 'string') {
-                                return option;
-                              }
-                              if (option.inputValue) {
-                                return option.inputValue;
-                              }
-                              return option;
                             }}
+                            options={units}
                             selectOnFocus
                             handleHomeEndKeys
-                            renderOption={(option) => option}
                             freeSolo
                             renderInput={(params) => (
                               <TextField className={classes.txt1} {...params}  />
@@ -827,22 +835,29 @@ function MtsWindow(props) {
                         <td>
                           <Autocomplete
                             value={row.description}
-                            onChange={(event, newValue) => {
-                              if (typeof newValue === 'string') {
-                                // setValue({
-                                //   title: newValue,
-                                // });
-                              } else if (newValue && newValue.inputValue) {
-                                // Create a new value from the user input
-                                // setValue({
-                                //   title: newValue.inputValue,
-                                // });
+                            onChange={(event, newValue) => {                              
+                              if (newValue && newValue.inputValue) {
+                                alert(`${newValue.inputValue} will be added to pending items`)
+                                selected.pendingItems.push(index) // needs new Set array
                               } else {
-                                // setValue(newValue);
-
                                 const newRows = [...rows]
                                 newRows[index]['description'] = newValue
                                 setRows(newRows)
+
+                                if (newValue) {
+
+                                  const { model_name, brand_name, remarks, net_price } = newValue
+                                  if (model_name)
+                                    row.model = model_name
+                                  if (brand_name)
+                                    row.brand = brand_name
+                                  if (remarks)
+                                    row.remarks = remarks
+                                  if (net_price) {
+                                    row.price = net_price
+                                    updateTotal(event, index)
+                                  }
+                                }
                                 
                               }
                             }}
@@ -862,7 +877,7 @@ function MtsWindow(props) {
                             selectOnFocus
                             handleHomeEndKeys
                             options={selected.selectedItems[index]}
-                            getOptionLabel={(option) => {
+                            getOptionLabel={(option) => {                              
                               // Value selected with enter, right from the input
                               if (typeof option === 'string') {
                                 return option;
@@ -871,9 +886,11 @@ function MtsWindow(props) {
                               if (option.inputValue) {
                                 return option.inputValue;
                               }
-                              // Regular option
+                              row.price = option.net_price
+                              // Regular option                              
                               return option.product_name;
                             }}
+                            getOptionSelected={(option, value) => option.product_name === value.product_name}
                             renderOption={(option) => option.product_name}
                             freeSolo
                             renderInput={(params) => (
