@@ -847,15 +847,21 @@ function MtsWindow(props) {
                                 if (newValue) {
 
                                   const { model_name, brand_name, remarks, net_price } = newValue
-                                  if (model_name)
-                                    row.model = model_name
-                                  if (brand_name)
-                                    row.brand = brand_name
-                                  if (remarks)
-                                    row.remarks = remarks
                                   if (net_price) {
                                     row.price = net_price
                                     updateTotal(event, index)
+                                    if (model_name)
+                                      row.model = model_name
+                                    else
+                                      row.model = ''
+                                    if (brand_name)
+                                      row.brand = brand_name
+                                    else
+                                      row.brand = ''
+                                    if (remarks)
+                                      row.remarks = remarks
+                                    else
+                                      row.remarks = ''
                                   }
                                 }
                                 
