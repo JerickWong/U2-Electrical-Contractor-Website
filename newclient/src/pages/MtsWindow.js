@@ -18,7 +18,10 @@ import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDia
 import firebase from 'firebase'
 import api from '../api';
 import users from '../api/users';
+import supplier from '../api/supplier';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
+const filter = createFilterOptions();
 const primary = '#8083FF';
 const white = '#FFFFFF';
 const theme = createMuiTheme({
@@ -115,6 +118,11 @@ function MtsWindow(props) {
   const [status, setStatus] = useState('For Approval')
   const [confirmed, setConfirmed] = useState(false)
   const [isUnsaved, setUnsaved] = useState(false)
+  const [suppliers, setSuppliers] = useState([])
+  const [units, setUnits] = useState({
+    list: [],
+    selected: null
+  })
   const [rows, setRows] = useState([{
     qty: '',
     description: '',
@@ -213,16 +221,27 @@ function MtsWindow(props) {
       }
       else {
         users.getUser({ token: localStorage.getItem('token') })
-        .then(res => {
-          setPreparedBy(res.data.data.username)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        .then(res => setPreparedBy(res.data.data.username))
+        .catch(err => console.log(err))
       }
     }
 
     setIsEdit(false)
+    supplier.getAllSupplier()
+    .then(res => {
+      const raw = res.data.data
+      let compiled = [], tempUnits = []
+      raw.map(supp => {
+        const items = supp.items
+        compiled = compiled.concat(items)
+        items.map(item => tempUnits.push(item.unit))
+      })
+      tempUnits = [...new Set(tempUnits)]
+      setUnits({...units, list: tempUnits})
+      setSuppliers(compiled)
+    })
+    .catch(err => console.log(`no suppliers: ${err}`))
+
   }, [])
 
   function unsaved() {
@@ -232,6 +251,11 @@ function MtsWindow(props) {
       window.onbeforeunload = undefined
     }
   }
+
+  useEffect(() => {
+    console.log(units.list)
+    alert('yey')
+  }, [units])
   // FIRESTORE SHIT
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   // const rows = []
@@ -768,7 +792,59 @@ function MtsWindow(props) {
                   return (
                     <tr>
                         <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
-                        <td><InputBase className={classes.txt} name='unit'size="small" value={row.unit} onChange={(e) => handleRowChange(e, index)}/></td>
+                        <td>
+                          <Autocomplete
+                            value={row.unit}                            
+                            onChange={(event, newValue) => {
+                              if (typeof newValue === 'string') {
+                                // timeout to avoid instant validation of the dialog's form.
+                                setTimeout(() => {
+                                  alert('item to be added in price list')
+                                  // GET THE INDEX OR SOMETHING
+                                });
+                              } else if (newValue && newValue.inputValue) {
+                                alert('item to be added in price list')
+                                // GET THE INDEX OR SOMETHING
+                              } else {
+                                const newRows = [...rows]
+                                newRows[index]['unit'] = newValue
+                                setRows(newRows)                                
+                              }
+                            }}
+                            filterOptions={(options, params) => {
+                              const filtered = filter(options, params);
+
+                              if (params.inputValue !== '') {
+                                filtered.push({
+                                  inputValue: params.inputValue,
+                                  title: `Add "${params.inputValue}"`,
+                                });
+                              }
+
+                              return filtered;
+                            }}
+                            id="free-solo-dialog-demo"
+                            options={units.list}
+                            getOptionLabel={(option) => {
+                              // e.g value selected with enter, right from the input
+                              if (typeof option === 'string') {
+                                return option;
+                              }
+                              if (option.inputValue) {
+                                return option.inputValue;
+                              }
+                              return option;
+                            }}
+                            selectOnFocus
+                            handleHomeEndKeys
+                            renderOption={(option) => option}
+                            freeSolo
+                            renderInput={(params) => (
+                              <TextField className={classes.txt1} {...params}  />
+                              // <InputBase {...params} className={classes.txt} size="small" />
+                            )}
+                          />
+                          </td>
                         <td><InputBase className='description' name='description'size="small" value={row.description} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline /></td>
