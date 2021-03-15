@@ -278,7 +278,7 @@ function AdminMts(props) {
 
             // delivered
             const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
-            alert(`ISEXIST ${isExist}`)
+            
             // if project already exists, append delivered object
             if (isExist) {
                 await api.addItem({ project_name: current_project, rows: current_mts.rows, date: current_mts.date })
@@ -305,11 +305,14 @@ function AdminMts(props) {
 
     const handleDelete = async (mts) => {
         try {
-            // console.log(mts)
-            // alert(mts._id)
+            
+            if (mts.status === "Confirmed")
+                await api.removeItem({ project_name: current_project, date: mts.date, rows: mts.rows })
+            
             await api.deleteMTSById(mts._id)
             alert('successfully deleted')
         } catch (error) {
+            console.log(error)
             alert('error in deleting')
         }
         getMTS();

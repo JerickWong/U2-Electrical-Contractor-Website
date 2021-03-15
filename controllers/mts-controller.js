@@ -192,7 +192,7 @@ const getDelivered = async (req, res) => {
         }
 
         // delivered object
-        const sortedByDate = mts.sort((a, b) => b.date - a.date)        
+        const sortedByDate = mts.sort((a, b) => b.date - a.date)
         const firstItems = sortedByDate[0].rows.map(row => row.description)
         const firstQty = sortedByDate[0].rows.map(row => row.qty)
         

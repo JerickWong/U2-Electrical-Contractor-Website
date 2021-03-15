@@ -841,7 +841,7 @@ function MtsWindow(props) {
                                 selected.pendingItems.push(index) // needs new Set array
                               } else {
                                 const newRows = [...rows]
-                                newRows[index]['description'] = newValue
+                                newRows[index]['description'] = newValue.product_name
                                 setRows(newRows)
 
                                 if (newValue) {

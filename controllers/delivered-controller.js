@@ -173,12 +173,23 @@ const addItem = async (req, res) => {
 
         const date = new Date(req.body.date)
 
-        if (!(!date - delivered.start === 0 || !date - delivered.end === 0)) {
-            if (date - delivered.start < 0) 
-                delivered.start = date            
-            else if (date - delivered.end > 0) 
-                delivered.end = date
-        }
+        const dates = delivered.dates
+        dates.push(date)
+
+        const sortedByDate = dates.sort((a, b) => a - b)
+        console.log(sortedByDate[0])
+        console.log(sortedByDate[sortedByDate.length-1])
+
+        delivered.dates = sortedByDate
+        delivered.start = sortedByDate[0]
+        delivered.end = sortedByDate[sortedByDate.length-1]
+
+        // if (!(!date - delivered.start === 0 || !date - delivered.end === 0)) {
+        //     if (date - delivered.start < 0) 
+        //         delivered.start = date            
+        //     else if (date - delivered.end > 0) 
+        //         delivered.end = date
+        // }
 
         delivered
             .save()
@@ -230,6 +241,10 @@ const removeItem = async (req, res) => {
         })        
 
         // FIX NEW START / END DATE
+        const index = delivered.dates.indexOf(req.body.date)
+        delivered.dates.splice(index, 1)
+        delivered.start = delivered.dates[0]
+        delivered.end = delivered.dates[delivered.dates.length-1]
 
         delivered
             .save()

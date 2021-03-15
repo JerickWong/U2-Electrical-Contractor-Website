@@ -10,7 +10,8 @@ const DeliveredSchema = new mongoose.Schema({
     rows: [RowSchema],
     project_name: String,
     start: Date,
-    end: Date
+    end: Date,
+    dates: [Date]
 })
 
 const Delivered = mongoose.model('delivered', DeliveredSchema)
