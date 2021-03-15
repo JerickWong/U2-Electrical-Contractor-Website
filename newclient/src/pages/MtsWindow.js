@@ -119,9 +119,10 @@ function MtsWindow(props) {
   const [confirmed, setConfirmed] = useState(false)
   const [isUnsaved, setUnsaved] = useState(false)
   const [suppliers, setSuppliers] = useState([])
-  const [units, setUnits] = useState({
-    list: [],
-    selected: null
+  const [units, setUnits] = useState([])
+  const [selected, setSelected] = useState({
+    pendingItems: [],
+    selectedItems: [[], [], [], [], []]
   })
   const [rows, setRows] = useState([{
     qty: '',
@@ -237,8 +238,9 @@ function MtsWindow(props) {
         items.map(item => tempUnits.push(item.unit))
       })
       tempUnits = [...new Set(tempUnits)]
-      setUnits({...units, list: tempUnits})
+      setUnits(tempUnits)
       setSuppliers(compiled)
+      selected.selectedItems = selected.selectedItems.map(() => compiled)
     })
     .catch(err => console.log(`no suppliers: ${err}`))
 
@@ -252,10 +254,6 @@ function MtsWindow(props) {
     }
   }
 
-  useEffect(() => {
-    console.log(units.list)
-    alert('yey')
-  }, [units])
   // FIRESTORE SHIT
   // FOR INITIAL STORING OF JSX ROWS, WILL BE SET TO ROWOBJECT LATER ON
   // const rows = []
@@ -366,8 +364,7 @@ function MtsWindow(props) {
   
 
   // ON CHANGE UPDATE TOTAL ROW PRICE 
-  function updateTotal (e, index) {     
-    const { name, value } = e.target
+  function updateTotal (e, index) {
     const currentRows = [...rows]
     
     if (currentRows[index].qty && currentRows[index].price) {
@@ -796,35 +793,18 @@ function MtsWindow(props) {
                           <Autocomplete
                             value={row.unit}                            
                             onChange={(event, newValue) => {
-                              if (typeof newValue === 'string') {
-                                // timeout to avoid instant validation of the dialog's form.
-                                setTimeout(() => {
-                                  alert('item to be added in price list')
-                                  // GET THE INDEX OR SOMETHING
-                                });
-                              } else if (newValue && newValue.inputValue) {
-                                alert('item to be added in price list')
-                                // GET THE INDEX OR SOMETHING
-                              } else {
-                                const newRows = [...rows]
-                                newRows[index]['unit'] = newValue
-                                setRows(newRows)                                
-                              }
-                            }}
-                            filterOptions={(options, params) => {
-                              const filtered = filter(options, params);
+                              // GET THE INDEX OR SOMETHING
+                              const newRows = [...rows]
+                              newRows[index]['unit'] = newValue
+                              setRows(newRows)                              
 
-                              if (params.inputValue !== '') {
-                                filtered.push({
-                                  inputValue: params.inputValue,
-                                  title: `Add "${params.inputValue}"`,
-                                });
-                              }
-
-                              return filtered;
-                            }}
+                              let tempItems = [...suppliers]  
+                              tempItems = tempItems.filter(item => item.unit === newValue)
+                              selected.selectedItems[index] = tempItems
+                              // will this work ^?
+                            }}                            
                             id="free-solo-dialog-demo"
-                            options={units.list}
+                            options={units}
                             getOptionLabel={(option) => {
                               // e.g value selected with enter, right from the input
                               if (typeof option === 'string') {
@@ -841,11 +821,66 @@ function MtsWindow(props) {
                             freeSolo
                             renderInput={(params) => (
                               <TextField className={classes.txt1} {...params}  />
-                              // <InputBase {...params} className={classes.txt} size="small" />
                             )}
                           />
                           </td>
-                        <td><InputBase className='description' name='description'size="small" value={row.description} onChange={(e) => handleRowChange(e, index)} multiline /></td>
+                        <td>
+                          <Autocomplete
+                            value={row.description}
+                            onChange={(event, newValue) => {
+                              if (typeof newValue === 'string') {
+                                // setValue({
+                                //   title: newValue,
+                                // });
+                              } else if (newValue && newValue.inputValue) {
+                                // Create a new value from the user input
+                                // setValue({
+                                //   title: newValue.inputValue,
+                                // });
+                              } else {
+                                // setValue(newValue);
+
+                                const newRows = [...rows]
+                                newRows[index]['description'] = newValue
+                                setRows(newRows)
+                                
+                              }
+                            }}
+                            filterOptions={(options, params) => {
+                              const filtered = filter(options, params);
+
+                              // Suggest the creation of a new value
+                              if (params.inputValue !== '') {
+                                filtered.push({
+                                  inputValue: params.inputValue,
+                                  product_name: `Add "${params.inputValue}"`,
+                                });
+                              }
+
+                              return filtered;
+                            }}
+                            selectOnFocus
+                            handleHomeEndKeys
+                            options={selected.selectedItems[index]}
+                            getOptionLabel={(option) => {
+                              // Value selected with enter, right from the input
+                              if (typeof option === 'string') {
+                                return option;
+                              }
+                              // Add "xxx" option created dynamically
+                              if (option.inputValue) {
+                                return option.inputValue;
+                              }
+                              // Regular option
+                              return option.product_name;
+                            }}
+                            renderOption={(option) => option.product_name}
+                            freeSolo
+                            renderInput={(params) => (
+                              <TextField {...params} multiline className={classes.txt4}/>
+                            )}
+                          />
+                          </td>
                         <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline /></td>
                         <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
