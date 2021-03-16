@@ -132,15 +132,17 @@ function AdminNavbar() {
     if (user == null) {
       alert('not logged in')
       return <Redirect to='/' />
-    }
+    } 
+    if (user.type === 'Employee')
+      return <Redirect to='/Mts' />
     console.log(user)
   }
 
   const fetchUser = async () => {
     try {
-      const data = (await users.getUser({ token: localStorage.getItem('token') })).data
+      const data = (await users.getUser({ token: localStorage.getItem('token') })).data.data
 
-      setUser(data.data.username)
+      setUser(data)
     } catch (error) {
       setUser(null)
       console.log(error)
@@ -173,7 +175,7 @@ function AdminNavbar() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: {user}</Typography>
+            <Typography className={classes.login}>Logged in as: {user.username || ''}</Typography>
             <Link to='/'>
               <Button onClick={handleLogout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
             </Link>            
