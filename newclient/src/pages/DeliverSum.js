@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
         color: white,
         width: 100,
         height: 35,
+        marginRight: 20
       },
     root: {
         flexGrow: 1,
@@ -237,6 +238,10 @@ function Price() {
 
     // }, [changeProject])
 
+    useEffect(() => {
+        console.log(`FILTERED: ${isFiltered}`)
+    }, [isFiltered])
+
     async function fetchData() {
         setLoading(true)
         try {    
@@ -249,6 +254,22 @@ function Price() {
         } catch (error) {
             alert('Something went wrong')
             setError(error)
+        }
+    }
+
+    const handleRowChange = (e, index) => {
+        const newRows = [...mts]
+        newRows[index]['estqty'] = e.target.value
+        setMts(newRows)
+    }
+
+    const handleSave = async () => {
+        try {
+            await api.addEstQty({ project_name: current_project, rows: mts })
+            alert('saved successfully')
+        } catch (error) {
+            console.log(error)
+            alert('error in saving')
         }
     }
 
@@ -283,6 +304,7 @@ function Price() {
             }
         } else {
             // get delivered
+            console.log('waley')
             setFiltered(false)
         }
         
@@ -383,6 +405,18 @@ function Price() {
                                         Filter
                                     </Button>
                                 </Grid>                                
+                                <Grid item xs={1}>
+                                    <Button 
+                                        variant="contained" 
+                                        size="small" 
+                                        onClick={handleSave}
+                                        className={classes.button1} 
+                                        startIcon={<Save />}
+                                        disabled={isFiltered}
+                                        >
+                                        Save
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </div>
                         {
@@ -422,14 +456,15 @@ function Price() {
                                         </thead>
                                         <tbody>                                
                                             {
-                                                mts.map(m => {
+                                                mts.map((m, index) => {
                                                     return (
                                                         <tr>
                                                             {
                                                                 isFiltered ?
-                                                                <td className={classes.txt2}>{m.estqty}</td>
+                                                                <td className={classes.txt2}>{m.estqty}
+                                                                </td>
                                                                 :
-                                                                <td className={classes.txt2}><InputBase className={classes.txt1} pattern="[0-9*]" type="number" value={m.estqty} />
+                                                                <td className={classes.txt2}><InputBase pattern="[0-9*]" type="number" value={m.estqty} onChange={(e) => handleRowChange(e, index)} />
                                                                     </td>
                                                             }
                                                             <td>{m.item}</td>

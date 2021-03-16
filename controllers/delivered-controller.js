@@ -229,9 +229,7 @@ const addEstQty = async (req, res) => {
         await delivered.save()
         return res.status(200).json({
             success: true,
-            id: mts._id,
-            data: mts,
-            message: 'MTS updated!',
+            message: 'Estimated Quantity updated!',
         })
     } catch (error) {
         console.log(error)
