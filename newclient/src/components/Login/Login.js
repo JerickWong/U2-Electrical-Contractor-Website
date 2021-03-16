@@ -19,7 +19,8 @@ export default class LoginBox extends Component {
     wrongCredentials: false,
     errorMessage: '',
     username: '',
-    password: ''
+    password: '',
+    type: ''
   }
   setRedirect = (result) => {
     this.setState({
@@ -30,7 +31,10 @@ export default class LoginBox extends Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      return <Redirect from='/' to='/Mts' />
+      if (this.state.type === 'Employee')
+        return <Redirect from='/' to='/Mts' />
+      else
+        return <Redirect from='/' to='/AdminMts' />
     }
   }
 
@@ -59,9 +63,10 @@ export default class LoginBox extends Component {
     // alert(username)
     // alert(password)
     try {
-      const token = await (await users.login({username, password})).data.token
-      localStorage.setItem('token', token)
+      const data = await (await users.login({username, password})).data
+      localStorage.setItem('token', data.token)
       
+      this.setState({ ...this.state, type: data.user.type})
       this.setRedirect(true)
       this.setState({ redirect: true })
     } catch (error) {
