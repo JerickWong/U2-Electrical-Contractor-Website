@@ -4,7 +4,6 @@ const createDelivered = (req, res) => {
     const body = req.body
 
     if (!body) {
-        console.log(`DITO ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a Delivered',
@@ -14,7 +13,6 @@ const createDelivered = (req, res) => {
     const delivered = new Delivered(body)
 
     if (!delivered) {
-        console.log(body)
         console.log('may mali')
         return res.status(400).json({ success: false, error: err })
     }
@@ -104,7 +102,6 @@ const updateDelivered = async (req, res) => {
     const body = req.body
 
     if (!body) {
-        console.log(`what ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a body to update',
@@ -115,9 +112,6 @@ const updateDelivered = async (req, res) => {
         const delivered = await Delivered.findOne({ project_name: body.project_name }).lean()
         const { rows } = req.body
 
-        console.log(delivered)
-        console.log(delivered.rows)
-        console.log(rows)
         delivered.rows.map((row, index) => {
             if (rows.filter(d => d.item === row.item).length>0) {
                 rows.map((d, index) => {
@@ -294,6 +288,4 @@ module.exports = {
     getAllDelivered,
     getDeliveredById,
     getDeliveredByProject,
-    addItem,
-    removeItem
 }

@@ -282,12 +282,9 @@ function AdminMts(props) {
             // new delivered summary, array
             const dates = await (await api.getDates({ project_name: current_project })).data.data
             const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
-            console.log(newDelivered)
-            alert(newDelivered)
 
             // if project already exists, append delivered object
             if (isExist) {
-                // await api.addItem({ project_name, rows: current_mts.rows, date: current_mts.date })
                 await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
                 
                 alert('added item')
@@ -299,8 +296,8 @@ function AdminMts(props) {
                 const delivered_rows = newDelivered.map(row => {
                     return { ...row, estqty: 0 }
                 })
-                const delivered = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
-                alert(delivered)
+                const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
+                alert(message)
             }
 
             alert('all goods')
@@ -313,15 +310,11 @@ function AdminMts(props) {
 
     const handleDelete = async (mts) => {
         try {
-            await api.deleteMTSById(mts._id)            
-            
-            // if (mts.status === "Confirmed")
-            //     await api.removeItem({ project_name: current_project, date: mts.date, rows: mts.rows })
+            await api.deleteMTSById(mts._id)
 
             const dates = await (await api.getDates({ project_name: current_project })).data.data
             const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
-            
-            // await api.addItem({ project_name, rows: current_mts.rows, date: current_mts.date })
+
             await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
             
             alert('successfully deleted')
