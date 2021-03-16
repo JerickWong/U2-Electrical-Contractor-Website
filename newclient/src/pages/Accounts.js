@@ -18,6 +18,7 @@ import Authenticate from '../components/Firestore/auth'
 import db from '../components/Firestore/firestore'
 import moment from 'moment'
 import users from '../api/users';
+import { Redirect } from 'react-router-dom';
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -115,10 +116,19 @@ function Accounts() {
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
     const [complete, setComplete] = useState(false)
+    const [redirect, setRedirect] = useState('Admin')
 
     const fetchUsers = async () => {
         try {
             let dataArray = (await users.getAllUsers()).data.data
+            const user = (await users.getUser({ token: localStorage.getItem('token') })).data.data
+            // console.log(user)
+            // alert(user.type === "Manager")
+
+            if (user.type === "Manager")
+                setRedirect('Manager')
+            else if (user.type === "Employee")
+                setRedirect('Employee')
             
             setAccounts(dataArray)
             setBackup(dataArray)
@@ -142,6 +152,13 @@ function Accounts() {
         else
             setComplete(true)
     }, [username, password])
+
+    const checkAdmin = () => {
+        if (redirect === "Manager")
+            return <Redirect to='/AdminMts' />
+        else if (redirect === "Employee")
+            return <Redirect to='/Mts' />
+    }
 
     const handleChange = (event) => {
         setRole(event.target.value)        
@@ -273,6 +290,7 @@ function Accounts() {
     }
     return (
         <div className="Accounts">
+            { checkAdmin() }
             <Container className="cont">
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
@@ -494,7 +512,7 @@ function Accounts() {
                         </Button> */}
                     </MuiThemeProvider>
                 </main>
-            </Container>
+            </Container>            
         </div >
     );
 }
