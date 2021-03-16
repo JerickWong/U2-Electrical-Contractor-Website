@@ -264,21 +264,7 @@ function AdminPrice() {
                     <div className={classes.toolbar} />
                     <MuiThemeProvider theme={theme}>
                         <div className={classes.root}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={4}>
-                                    <TextField
-                                        className={classes.txt}
-                                        size="normal"
-                                        placeholder="Search"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <Search />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
+                            <Grid container spacing={1}>                                
                                 <Grid item xs={4}>
                                     <FormControl>
                                         <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
@@ -293,6 +279,11 @@ function AdminPrice() {
                                         </Select>
                                     </FormControl>
                                 </Grid>
+                                <Grid item xs={4}>
+                                    <Button variant="contained" color="primary" className={classes.button3} startIcon={<GroupAdd />} onClick={handleClickOpen}>
+                                        Add Supplier
+                                    </Button>
+                                </Grid>
                                 <Grid item xs={1} />
                                 <Grid item xs={3}>
                                     <Badge color="secondary" className={classes.badge} badgeContent={1}>
@@ -300,9 +291,7 @@ function AdminPrice() {
                                     </Badge>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Button variant="contained" color="primary" className={classes.AddBtn2} startIcon={<GroupAdd />} onClick={handleClickOpen}>
-                                        Add Supplier
-                                    </Button>
+                                    
                                 </Grid>
                             </Grid>
                         </div>
