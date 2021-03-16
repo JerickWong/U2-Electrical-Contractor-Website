@@ -459,26 +459,6 @@ function MtsWindow(props) {
       
   }
 
-  async function removeFromDelivered() {
-    try {
-      // console.log(oldRows)
-      const mts = JSON.parse(localStorage.getItem('mts'))
-      const rows = mts.rows.map(row => {
-        return { item: row.description, total: row.qty }
-      })
-      const payload = {
-        project_name: mts.project_name,
-        rows
-      }
-      
-      const success = await (await api.removeItem(payload)).data.success
-      
-    } catch (error) {
-      console.log(error)
-      alert(error)
-    }
-  }  
-
   async function handleConfirm() {
 
     const clean_rows = rows.filter(row => {
@@ -543,6 +523,8 @@ function MtsWindow(props) {
             list_price: price
           })
         })
+        
+
       } catch (error) {
         alert('failed to add pending items')
       }
@@ -600,7 +582,19 @@ function MtsWindow(props) {
     // })
 
     closeConfirmDialog();
-    history.push('/Mts')
+
+    try {      
+      const type = await (await users.getUser({ token: localStorage.getItem('token') })).data.data.type
+  
+      if (type === "Admin" || type === "Manager")
+        history.push('/AdminMts')
+      else
+        history.push('/Mts')
+    } catch (error) {
+      console.log(error)
+      history.push('/Mts')
+    }
+    
   }
 
   function closeConfirmDialog() {
