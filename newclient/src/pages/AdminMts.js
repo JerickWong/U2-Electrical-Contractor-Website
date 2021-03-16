@@ -278,20 +278,28 @@ function AdminMts(props) {
 
             // delivered
             const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
-            
+
+            // new delivered summary, array
+            const dates = await (await api.getDates({ project_name: current_project })).data.data
+            const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+            console.log(newDelivered)
+            alert(newDelivered)
+
             // if project already exists, append delivered object
             if (isExist) {
-                await api.addItem({ project_name: current_project, rows: current_mts.rows, date: current_mts.date })
+                // await api.addItem({ project_name, rows: current_mts.rows, date: current_mts.date })
+                await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+                
                 alert('added item')
             }
 
             // create new delivered object
             else {
             
-                const delivered_rows = current_mts.rows.map(row => {
-                    return { estqty: 0, item: row.description, total: row.qty }
+                const delivered_rows = newDelivered.map(row => {
+                    return { ...row, estqty: 0 }
                 })
-                const delivered = await (await api.insertDelivered({ project_name: current_project, start: current_mts.date, end: current_mts.date, rows: delivered_rows })).data.message
+                const delivered = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
                 alert(delivered)
             }
 
@@ -305,11 +313,17 @@ function AdminMts(props) {
 
     const handleDelete = async (mts) => {
         try {
+            await api.deleteMTSById(mts._id)            
             
-            if (mts.status === "Confirmed")
-                await api.removeItem({ project_name: current_project, date: mts.date, rows: mts.rows })
+            // if (mts.status === "Confirmed")
+            //     await api.removeItem({ project_name: current_project, date: mts.date, rows: mts.rows })
+
+            const dates = await (await api.getDates({ project_name: current_project })).data.data
+            const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
             
-            await api.deleteMTSById(mts._id)
+            // await api.addItem({ project_name, rows: current_mts.rows, date: current_mts.date })
+            await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+            
             alert('successfully deleted')
         } catch (error) {
             console.log(error)

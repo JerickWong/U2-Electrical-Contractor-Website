@@ -411,7 +411,8 @@ function Price() {
     }
 
     useEffect(() => {
-        fetchMts()
+        if (current_project)
+            fetchMts()
     }, [current_project])
 
 

@@ -325,7 +325,7 @@ const getDeliveredSummary = async (req, res) => {
 }
 
 const getProjectDates = async (req, res) => {
-    await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
+    await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }, (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

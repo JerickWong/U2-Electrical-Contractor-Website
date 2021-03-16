@@ -4,6 +4,7 @@ const createDelivered = (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log(`DITO ${body}`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a Delivered',
@@ -13,6 +14,8 @@ const createDelivered = (req, res) => {
     const delivered = new Delivered(body)
 
     if (!delivered) {
+        console.log(body)
+        console.log('may mali')
         return res.status(400).json({ success: false, error: err })
     }
 
@@ -25,7 +28,8 @@ const createDelivered = (req, res) => {
                 message: 'Delivered created!',
             })
         })
-        .catch(error => {            
+        .catch(error => {        
+            console.log(error)    
             return res.status(400).json({
                 error,
                 message: 'Delivered not created!',
@@ -107,164 +111,59 @@ const updateDelivered = async (req, res) => {
         })
     }
     
-    Delivered.findOne({ project_name: body.project_name }, (err, delivered) => {
-        if (err) {
-            return res.status(404).json({
-                err,
-                message: 'Delivered not found!',
-            })
-        }
-
-        delivered.rows = body.rows
-        delivered.start = body.start
-        delivered.end = body.end
-
-        delivered
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: delivered._id,
-                    data: delivered,
-                    message: 'Delivered updated!',
-                })
-            })
-            .catch(error => {
-                console.log(error)
-                return res.status(404).json({
-                    error,
-                    message: 'Delivered not updated!',
-                })
-            })
-    })
-}
-
-const addItem = async (req, res) => {
-    // req.body = project_name, rows (item, total), date. Basically MTS nalang ipasa ko
-    await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-
-        if (!delivered) {
-            console.log(`ADDITEM ${err}`)
-            return res
-                .status(404)
-                .json({ success: false, error: `Delivered not found` })
-        }
-
+    try {
+        const delivered = await Delivered.findOne({ project_name: body.project_name }).lean()
         const { rows } = req.body
 
-        rows.map(row => {
-            if (delivered.rows.filter(d => d.item === row.description).length>0) {
-                delivered.rows.map((d, index) => {
-                    if (d.item === row.description) {
-                        d.total += row.qty
+        console.log(delivered)
+        console.log(delivered.rows)
+        console.log(rows)
+        delivered.rows.map((row, index) => {
+            if (rows.filter(d => d.item === row.item).length>0) {
+                rows.map((d, index) => {
+                    if (d.item === row.item) {
+                        row.total = d.total
                     }
                 })
             } else {
-                delivered.rows.push({
-                    estqty: 0,
-                    item: row.description,
-                    total: row.qty
-                })
+                delivered.rows.splice(index, 1)
             }
         })
 
-        const date = new Date(req.body.date)
-
-        const dates = delivered.dates
-        dates.push(date)
-
-        const sortedByDate = dates.sort((a, b) => a - b)
-        console.log(sortedByDate[0])
-        console.log(sortedByDate[sortedByDate.length-1])
-
-        delivered.dates = sortedByDate
-        delivered.start = sortedByDate[0]
-        delivered.end = sortedByDate[sortedByDate.length-1]
-
-        // if (!(!date - delivered.start === 0 || !date - delivered.end === 0)) {
-        //     if (date - delivered.start < 0) 
-        //         delivered.start = date            
-        //     else if (date - delivered.end > 0) 
-        //         delivered.end = date
-        // }
-
-        delivered
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: delivered._id,
-                    data: delivered,
-                    message: 'Delivered updated!',
-                })
-            })
-            .catch(error => {
-                console.log(`deliverednotupdated ${error}`)
-                return res.status(404).json({
-                    error,
-                    message: 'Delivered not updated!',
-                })
-            })
-
-    }).catch(err => console.log(err))
-}
-
-const removeItem = async (req, res) => {
-    await Delivered.findOne({ project_name: req.body.project_name }, (err, delivered) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-
-        if (!delivered) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Delivered not found` })
-        }
-
-        const { rows } = req.body
-
         rows.map(row => {
-            if (delivered.rows.filter(d => d.item === row.item).length>0) {
-                delivered.rows.map((d, index) => {
-                    if (d.item === row.item) {
-                        d.total -= row.total
+            if (delivered.rows.filter(d => d.item===row.item).length === 0)
+                delivered.rows.push({ estqty: 0, ...row })
+        })
 
-                        if (d.total === 0) {
-                            delivered.rows.splice(index, 1)
-                        }
-                    }
-                })
-            }
-        })        
+        delivered.start = body.start
+        delivered.end = body.end
 
-        // FIX NEW START / END DATE
-        const index = delivered.dates.indexOf(req.body.date)
-        delivered.dates.splice(index, 1)
-        delivered.start = delivered.dates[0]
-        delivered.end = delivered.dates[delivered.dates.length-1]
-
-        delivered
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: delivered._id,
-                    data: delivered,
-                    message: 'Delivered updated!',
-                })
+        try {
+            const newDelivered = await Delivered.findOne({ project_name: body.project_name })
+            newDelivered.overwrite(delivered)
+            await newDelivered.save()
+    
+            return res.status(200).json({
+                success: true,
+                id: delivered._id,
+                data: delivered,
+                message: 'Delivered updated!',
             })
-            .catch(error => {
-                console.log(error)
-                return res.status(404).json({
-                    error,
-                    message: 'Delivered not updated!',
-                })
+            
+        } catch (error) {
+            console.log(error)
+            return res.status(404).json({
+                error,
+                message: 'Delivered not updated!',
             })
-
-    }).catch(err => console.log(err))
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({
+            error,
+            message: 'Delivered not found!',
+        })
+    }
 }
 
 const deleteDelivered = async (req, res) => {
@@ -318,9 +217,71 @@ const getDeliveredByProject = async (req, res) => {
             return res.status(400).json({ success: false, error: err })
         }
         if (!delivered) {
+
+        //     const { newMTS } = req.body
+        //     const dates = []
+        //     const rows = []
+        //     newMTS.map(mts => {
+        //         dates.push(mts.date)
+        //         mts.rows.map(row => {
+        //             if (rows.filter(d => d.item === row.description).length>0) {
+        //                 rows.map((d, index) => {
+        //                     if (d.item === row.description) {
+        //                         d.total += row.qty
+        //                     }
+        //                 })
+        //             } else {
+        //                 rows.push({
+        //                     estqty: 0,
+        //                     item: row.description,
+        //                     total: row.qty
+        //                 })
+        //             }
+        //         })
+        //     })
+
+        //     const sortedByDate = dates.sort((a, b) => a - b)
+
+        //     const payload = {
+        //         dates: sortedByDate,
+        //         start: sortedByDate[0],
+        //         end: sortedByDate[sortedByDate.length-1],
+        //         rows: rows
+        //     }
+
+        //     const deliver = new Delivered(payload)
+
+        //     if (!deliver) {
+        //         console.log('may mali')
+        //         return res.status(400).json({ success: false, error: err })
+        //     }
+
+        //     delivered
+        //         .save()
+        //         .then(() => {
+        //             return res.status(201).json({
+        //                 success: true,
+        //                 id: delivered._id,
+        //                 message: 'Delivered created!',
+        //             })
+        //         })
+        //         .catch(error => {        
+        //             console.log(error)    
+        //             return res.status(400).json({
+        //                 error,
+        //                 message: 'Delivered not created!',
+        //             })
+        //         })
+
+
             return res
-                .status(404)
+                .status(204)
                 .json({ success: false, error: `Delivered not found` })
+        // } else {
+        //     // remove updated na wala nang items
+        //     const object = delivered.toObject()
+            
+        //     const clean = object.rows.filter(row => )
         }
         return res.status(200).json({ success: true, data: delivered })
     }).catch(err => console.log(err))

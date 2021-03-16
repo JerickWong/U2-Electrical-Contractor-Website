@@ -11,7 +11,6 @@ const DeliveredSchema = new mongoose.Schema({
     project_name: String,
     start: Date,
     end: Date,
-    dates: [Date]
 })
 
 const Delivered = mongoose.model('delivered', DeliveredSchema)
