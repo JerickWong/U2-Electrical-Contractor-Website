@@ -211,74 +211,32 @@ const getDeliveredByProject = async (req, res) => {
             return res.status(400).json({ success: false, error: err })
         }
         if (!delivered) {
-
-        //     const { newMTS } = req.body
-        //     const dates = []
-        //     const rows = []
-        //     newMTS.map(mts => {
-        //         dates.push(mts.date)
-        //         mts.rows.map(row => {
-        //             if (rows.filter(d => d.item === row.description).length>0) {
-        //                 rows.map((d, index) => {
-        //                     if (d.item === row.description) {
-        //                         d.total += row.qty
-        //                     }
-        //                 })
-        //             } else {
-        //                 rows.push({
-        //                     estqty: 0,
-        //                     item: row.description,
-        //                     total: row.qty
-        //                 })
-        //             }
-        //         })
-        //     })
-
-        //     const sortedByDate = dates.sort((a, b) => a - b)
-
-        //     const payload = {
-        //         dates: sortedByDate,
-        //         start: sortedByDate[0],
-        //         end: sortedByDate[sortedByDate.length-1],
-        //         rows: rows
-        //     }
-
-        //     const deliver = new Delivered(payload)
-
-        //     if (!deliver) {
-        //         console.log('may mali')
-        //         return res.status(400).json({ success: false, error: err })
-        //     }
-
-        //     delivered
-        //         .save()
-        //         .then(() => {
-        //             return res.status(201).json({
-        //                 success: true,
-        //                 id: delivered._id,
-        //                 message: 'Delivered created!',
-        //             })
-        //         })
-        //         .catch(error => {        
-        //             console.log(error)    
-        //             return res.status(400).json({
-        //                 error,
-        //                 message: 'Delivered not created!',
-        //             })
-        //         })
-
-
             return res
                 .status(204)
                 .json({ success: false, error: `Delivered not found` })
-        // } else {
-        //     // remove updated na wala nang items
-        //     const object = delivered.toObject()
-            
-        //     const clean = object.rows.filter(row => )
         }
         return res.status(200).json({ success: true, data: delivered })
     }).catch(err => console.log(err))
+}
+
+const addEstQty = async (req, res) => {
+    try {
+        const { project_name, rows } = req.body
+        
+        const delivered = await Delivered.findOne({ project_name: project_name })
+        delivered.rows = rows
+        
+        await delivered.save()
+        return res.status(200).json({
+            success: true,
+            id: mts._id,
+            data: mts,
+            message: 'MTS updated!',
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ success: false, error: `Adding failed` })
+    }
 }
 
 module.exports = {
@@ -288,4 +246,5 @@ module.exports = {
     getAllDelivered,
     getDeliveredById,
     getDeliveredByProject,
+    addEstQty
 }

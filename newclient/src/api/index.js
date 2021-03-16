@@ -22,6 +22,7 @@ export const updateDelivered = payload => api.put(`/Delivered/`, payload)
 export const deleteDeliveredById = id => api.delete(`/Delivered/${id}`)
 export const getDeliveredById = id => api.get(`/Delivered/${id}`)
 export const getDeliveredByProject = payload => api.post(`/Delivered/project`, payload)
+export const addEstQty = payload => api.post(`/add-est-qty`, payload)
 
 const apis = {
     insertMTS,
@@ -41,6 +42,7 @@ const apis = {
     deleteDeliveredById,
     getDeliveredById,
     getDeliveredByProject,
+    addEstQty
 }
 
 export default apis

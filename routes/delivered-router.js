@@ -9,5 +9,6 @@ router.delete('/Delivered/:id', DeliveredCntrl.deleteDelivered)
 router.get('/Delivered/:id', DeliveredCntrl.getDeliveredById)
 router.get('/All-Delivered', DeliveredCntrl.getAllDelivered)
 router.post('/Delivered/project', DeliveredCntrl.getDeliveredByProject)
+router.post('/add-est-qty', DeliveredCntrl.addEstQty)
 
 module.exports = router
