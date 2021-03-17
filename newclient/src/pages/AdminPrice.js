@@ -7,7 +7,7 @@ import {
 import {
     AddBox, ArrowDownward, Edit, Clear, Search, GroupAdd, QueryBuilder, AddShoppingCart,
     ChevronRight, DeleteOutline, FilterList, FirstPage, LastPage,
-    Remove, SaveAlt, ViewColumn, AccountCircle
+    Remove, SaveAlt, ViewColumn, AccountCircle, Delete
 } from '@material-ui/icons';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
 import { MaterialTable } from 'material-table';
@@ -257,6 +257,17 @@ function AdminPrice() {
         setItems([])
     }
 
+    const handleDelete = async () => {
+        try {
+            await suppliers.deleteSupplierById(category._id)
+            alert('supplier deleted')
+        } catch (error) {
+            console.log(error)
+            alert('error in deleting supplier')
+        }
+        fetchSuppliers();
+    }
+
     return (
         <div className="PriceList">
             <Container className="cont">
@@ -280,18 +291,23 @@ function AdminPrice() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Button variant="contained" color="primary" className={classes.button3} startIcon={<GroupAdd />} onClick={handleClickOpen}>
-                                        Add Supplier
-                                    </Button>
+                                    
                                 </Grid>
-                                <Grid item xs={1} />
+                                
                                 <Grid item xs={3}>
                                     <Badge color="secondary" className={classes.badge} badgeContent={1}>
                                         <Button variant="contained" color="primary" size="medium" startIcon={<QueryBuilder />} className={classes.pending}>Pending Items</Button>
                                     </Badge>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    
+                                <Button variant="contained" color="primary" className={classes.button3} startIcon={<GroupAdd />} onClick={handleClickOpen}>
+                                        Add Supplier
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button variant="contained" color="secondary" disable={!category} className={classes.button3} startIcon={<Delete />} onClick={handleDelete}>
+                                        Delete Supplier
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </div>
