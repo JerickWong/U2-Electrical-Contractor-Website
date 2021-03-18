@@ -43,6 +43,10 @@ function ConfirmationDialogRaw(props) {
     setValue(event.target.value);
   };
 
+  React.useEffect(() => {
+    alert(props.empty)
+  }, [props.empty])
+
   return (
     <Dialog
       disableBackdropClick
@@ -55,10 +59,14 @@ function ConfirmationDialogRaw(props) {
     >
       <DialogTitle id="confirmation-dialog-title">Warning!</DialogTitle>
       <DialogContent dividers>
-        <DialogContentText >
-            By proceeding, you are leaving out the following empty:
-            <br></br>
-            {props.empty.map(item => {
+        <DialogContentText >            
+
+            {props.message}
+            
+            {props.empty.map((item, index) => {
+              if (!index) 
+                return (<div>{item}<br/><br/></div>)
+              
               return(
                 <div>{item}<br /></div>
               )
@@ -127,6 +135,7 @@ export default function ConfirmationDialog(props) {
           onClose={handleClose}
           value={value}
           empty={props.empty} 
+          message={props.message}
           handle={props.confirm}
         />
     </div>

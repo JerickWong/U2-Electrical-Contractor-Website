@@ -420,7 +420,7 @@ function MtsWindow(props) {
   }
 
   function showConfirmationDialog() {
-    const empty = []
+    const empty = ['By proceeding, you are leaving out the following empty:']
 
     if (prepared_by === '')
       empty.push('Prepared By')
