@@ -20,6 +20,7 @@ import api from '../api';
 import users from '../api/users';
 import supplier from '../api/supplier';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const filter = createFilterOptions();
 const primary = '#8083FF';
@@ -29,6 +30,9 @@ const theme = createMuiTheme({
     primary: {
       main: '#8083FF',
     },
+    success : {
+      main: '#4caf50'
+    }
   },
 });
 const useStyles = makeStyles((theme) => ({
@@ -103,6 +107,10 @@ function MtsWindow(props) {
   
   // --------STATES-------- //
   const [isEdit, setIsEdit] = useState(true)
+  const [open, setOpen] = useState(false)
+  const [action, setAction] = useState('Add')
+  const [success, setSuccess] = useState(false)
+  const [isLoading, setLoading] = useState(true)
   const [confirmDialog, setConfirmationDialog] = useState('')
   const [prepared_by, setPreparedBy] = useState('')
   const [address, setAddress] = useState('')
@@ -195,6 +203,7 @@ function MtsWindow(props) {
         setReceivedBy(mts.received_by)
         setTotalAmount(mts.total_amount)
         setStatus(mts.status)
+        setAction('Edit')
 
         if (mts.status === "Confirmed")
           setConfirmed(true)
@@ -461,6 +470,8 @@ function MtsWindow(props) {
 
   async function handleConfirm() {
 
+    setOpen(true)
+
     const clean_rows = rows.filter(row => {
       if (row.description && row.qty)
         return row
@@ -488,9 +499,17 @@ function MtsWindow(props) {
         const _id = props.location.state.mts._id
         const response = await (await api.updateMTSById(_id, payload)).data        
 
-        alert(response.message)
+        // alert(response.message)
+        setTimeout(() => {
+          setLoading(false)
+          setSuccess(true)
+        }, 1000)
       } catch (error) {
-        alert(error)
+        // alert(error)
+        setTimeout(() => {
+          setLoading(false)
+          setSuccess(false)
+        }, 1000)
       }
     }
 
@@ -498,12 +517,19 @@ function MtsWindow(props) {
       try {
         const response = await (await api.insertMTS(payload)).data
 
-        alert(response.message)
+        setTimeout(() => {
+          setLoading(false)
+          setSuccess(true)
+        }, 1000)
       } catch (error) {
-        console.log(error)
-        alert('MTS Number already exists')
+        // alert(error)
+        setTimeout(() => {
+          setLoading(false)
+          setSuccess(false)
+        }, 1000)
       }
     }
+
     setUnsaved(false)
     if (selected.pendingItems.length > 0) {
       const pending = [...new Set(selected.pendingItems)]
@@ -581,19 +607,7 @@ function MtsWindow(props) {
             
     // })
 
-    closeConfirmDialog();
-
-    try {      
-      const type = await (await users.getUser({ token: localStorage.getItem('token') })).data.data.type
-  
-      if (type === "Admin" || type === "Manager")
-        history.push('/AdminMts')
-      else
-        history.push('/Mts')
-    } catch (error) {
-      console.log(error)
-      history.push('/Mts')
-    }
+    closeConfirmDialog();    
     
   }
 
@@ -631,6 +645,22 @@ function MtsWindow(props) {
     const newRows = [...rows]
     newRows[index][name] = value
     setRows(newRows)
+  }
+
+  const handleClose = async () => {
+    setOpen(false)
+
+    try {
+      const type = await (await users.getUser({ token: localStorage.getItem('token') })).data.data.type
+  
+      if (type === "Admin" || type === "Manager")
+        history.push('/AdminMts')
+      else
+        history.push('/Mts')
+    } catch (error) {
+      console.log(error)
+      history.push('/Mts')
+    }
   }
   
 
@@ -835,7 +865,7 @@ function MtsWindow(props) {
                                 selected.pendingItems.push(index) // needs new Set array
                               } else {
                                 const newRows = [...rows]
-                                newRows[index]['description'] = newValue.product_name
+                                newRows[index]['description'] = newValue.product_name || ''
                                 setRows(newRows)
 
                                 if (newValue) {
@@ -941,6 +971,14 @@ function MtsWindow(props) {
       <Prompt
         when={isUnsaved && !confirmed}
         message='You have unsaved changes, are you sure you want to leave?'
+      />
+
+      <SuccessDialog
+        open={open}
+        handleClose={handleClose}
+        success={success}
+        isLoading={isLoading}
+        action={action}
       />
     </div>
   );
