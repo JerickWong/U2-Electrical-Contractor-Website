@@ -225,29 +225,37 @@ function AdminPrice() {
                 } else {
                     if (category === null)
                         alert('No selected Supplier yet')
-                    else
-                        setItems(results.data)
+                    else {
+                        const rawItems = results.data.map(item => {
+                            const list_price = parseFloat(item.list_price.trim().replace(',', ''))
+                            console.log(list_price)
+                            const net_price = parseFloat(item.net_price.trim().replace(',', ''))
+                            const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
+                            return {...item, list_price, net_price, price_adjustment}
+                        })
+                        setItems(rawItems)
+                    }
                 }
             }
         })
         
     }
 
-    const uploadItems = async (items) => {
+    const uploadItems = async (rawItems) => {
 
-        items = items.map(item => {
+        rawItems = rawItems.map(item => {
             const list_price = parseFloat(item.list_price.trim().replace(',', ''))
             console.log(list_price)
             const net_price = parseFloat(item.net_price.trim().replace(',', ''))
             const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
             return {...item, list_price, net_price, price_adjustment}
         })
-        console.log(items)
+        console.log(rawItems)
 
         try {
 
             const payload = {...category}
-            payload.items = items
+            payload.items = uploadItems
             await suppliers.updateSupplierById(payload._id, payload)
             alert('uploaded')
             await fetchSuppliers();
