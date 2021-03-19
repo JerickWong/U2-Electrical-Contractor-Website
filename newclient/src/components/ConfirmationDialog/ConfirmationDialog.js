@@ -43,10 +43,6 @@ function ConfirmationDialogRaw(props) {
     setValue(event.target.value);
   };
 
-  React.useEffect(() => {
-    alert(props.empty)
-  }, [props.empty])
-
   return (
     <Dialog
       disableBackdropClick
@@ -62,7 +58,7 @@ function ConfirmationDialogRaw(props) {
         <DialogContentText >            
 
             {props.message}
-            
+
             {props.empty.map((item, index) => {
               if (!index) 
                 return (<div>{item}<br/><br/></div>)

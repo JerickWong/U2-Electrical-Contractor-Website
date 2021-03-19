@@ -109,7 +109,7 @@ function Price() {
             complete: (results, file) => {
                 alert('Parsing complete!')
 
-                if (category === '') {
+                if (category === null) {
                     alert('No selected Supplier yet')
                 } else {
                     const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)

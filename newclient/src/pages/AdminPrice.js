@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 function AdminPrice() {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState(null);
     const [categories, setCategories] = useState([]);
     const [name, setName] = useState('');
     const [items, setItems] = useState([])
