@@ -868,11 +868,11 @@ function MtsWindow(props) {
                                 alert(`${newValue.inputValue} will be added to pending items`)
                                 selected.pendingItems.push(index) // needs new Set array
                               } else {
-                                const newRows = [...rows]
-                                newRows[index]['description'] = newValue.product_name || ''
-                                setRows(newRows)
-
+                                
                                 if (newValue) {
+                                  const newRows = [...rows]
+                                  newRows[index]['description'] = newValue.product_name || ''
+                                  setRows(newRows)
 
                                   const { model_name, brand_name, remarks, net_price } = newValue
                                   if (net_price) {
