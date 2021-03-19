@@ -278,13 +278,13 @@ function AdminMts(props) {
             setStatus(value)
     };
     
-    const handleConfirm = async (mts) => {
+    const handleConfirm = async (m) => {
         setOpen(true)
         setLoading(true)
         setAction('Confirm')
         try {
-            mts.status = "Confirmed"
-            await api.updateMTSById(mts._id, mts)
+            m.status = "Confirmed"
+            await api.updateMTSById(m._id, m)
 
             // delivered
             const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
@@ -325,9 +325,9 @@ function AdminMts(props) {
         await getMTS();
     }
 
-    const handleDelete = async (mts) => {
+    const handleDelete = async () => {
         try {
-            await api.deleteMTSById(mts._id)
+            await api.deleteMTSById(current_mts._id)
 
             const dates = await (await api.getDates({ project_name: current_project })).data.data
             const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data

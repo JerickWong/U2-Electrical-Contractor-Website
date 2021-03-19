@@ -874,7 +874,10 @@ function MtsWindow(props) {
                                   newRows[index]['description'] = newValue.product_name || ''
                                   setRows(newRows)
 
-                                  const { model_name, brand_name, remarks, net_price } = newValue
+                                  const { model_name, brand_name, remarks, net_price, unit } = newValue
+                                  
+                                  row.unit = unit
+
                                   if (net_price) {
                                     row.price = net_price
                                     updateTotal(event, index)

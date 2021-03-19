@@ -316,6 +316,7 @@ function Price() {
 
     useEffect(() => {
         getMTS()
+        setFiltered(false)
     }, [current_project])
 
     const handleChange = (event) => {
