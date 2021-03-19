@@ -24,6 +24,7 @@ import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
 import {useDropzone} from 'react-dropzone';
 import suppliers from '../api/supplier';
+import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -122,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
 function AdminPrice() {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [openConfirm, setOpenConfirm] = useState(false);
     const [category, setCategory] = useState(null);
     const [categories, setCategories] = useState([]);
     const [name, setName] = useState('');
@@ -136,6 +138,7 @@ function AdminPrice() {
     };
     const handleClose = () => {
         setOpen(false);
+        setOpenConfirm(false);
     };
 
     const addSupplier = async () => {
@@ -304,7 +307,7 @@ function AdminPrice() {
                                     </Button>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Button variant="contained" color="secondary" disable={!category} className={classes.button3} startIcon={<Delete />} onClick={handleDelete}>
+                                    <Button variant="contained" color="secondary" disable={!category} className={classes.button3} startIcon={<Delete />} onClick={() => setOpenConfirm(true)}>
                                         Delete Supplier
                                     </Button>
                                 </Grid>
@@ -366,6 +369,8 @@ function AdminPrice() {
                     </MuiThemeProvider>
                 </main>
             </Container>
+            <ConfirmationDialog classes={classes} open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
+            confirm={handleDelete} handleClose={handleClose}/>
         </div>
     );
 }

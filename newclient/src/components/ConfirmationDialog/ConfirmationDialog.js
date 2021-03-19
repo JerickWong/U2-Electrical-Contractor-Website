@@ -43,6 +43,8 @@ function ConfirmationDialogRaw(props) {
     setValue(event.target.value);
   };
 
+  const empty = props.empty || []
+
   return (
     <Dialog
       disableBackdropClick
@@ -59,7 +61,7 @@ function ConfirmationDialogRaw(props) {
 
             {props.message}
 
-            {props.empty.map((item, index) => {
+            {empty.map((item, index) => {
               if (!index) 
                 return (<div>{item}<br/><br/></div>)
               
@@ -101,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ConfirmationDialog(props) {
-  const classes = useStyles();
+  const classes = props.classes
   const [value, setValue] = React.useState('Dione');
 
   return (
