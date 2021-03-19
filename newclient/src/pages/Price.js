@@ -223,7 +223,7 @@ function Price() {
                                 <Grid item xs={2} />
                                 <Grid item xs={5}>
                                     <FormControl>
-                                        <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
+                                        <InputLabel id="demo-simple-select-label" shrink={true}>Suppliers</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt1} defaultValue={categories[0]} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
                                             {
                                                 categories.map(cat => {

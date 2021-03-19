@@ -280,8 +280,8 @@ function AdminPrice() {
                             <Grid container spacing={1}>                                
                                 <Grid item xs={4}>
                                     <FormControl>
-                                        <InputLabel id="demo-simple-select-label">Suppliers</InputLabel>
-                                        <Select labelId="demo-simple-select-label" className={classes.txt1} defaultValue={categories[0]} value={category} onChange={handleChange} size="normal" id="demo-simple-select">
+                                        <InputLabel id="demo-simple-select-label" shrink={true}>Suppliers</InputLabel>
+                                        <Select labelId="demo-simple-select-label" className={classes.txt1} defaultValue={categories[0]} value={category} onChange={handleChange} size="normal" id="demo-simple-select" >
                                             {
                                                 categories.map(cat => {
                                                     return (
