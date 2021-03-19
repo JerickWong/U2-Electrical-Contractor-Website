@@ -860,7 +860,7 @@ function MtsWindow(props) {
                             handleHomeEndKeys
                             freeSolo
                             renderInput={(params) => (
-                              <TextField className={classes.txt1} {...params}  />
+                              <TextField className={classes.txt1} {...params} multiline />
                             )}
                           />
                           </td>
