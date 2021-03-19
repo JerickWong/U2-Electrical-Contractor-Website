@@ -842,7 +842,9 @@ function MtsWindow(props) {
                 {rows.map((row, index) => {
                   return (
                     <tr>
-                        <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt} name='qty'size="small" value={row.qty} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} 
+                            pattern="[0-9*]" type="number" readOnly={confirmed}/>
+                        </td>
                         <td>
                           <Autocomplete
                             value={row.unit}                            
@@ -860,7 +862,7 @@ function MtsWindow(props) {
                             handleHomeEndKeys
                             freeSolo
                             renderInput={(params) => (
-                              <TextField className={classes.txt1} {...params} multiline />
+                              <TextField className={classes.txt1} {...params} multiline InputProps={{readOnly: confirmed}}/>
                             )}
                           />
                           </td>
@@ -935,15 +937,15 @@ function MtsWindow(props) {
                             renderOption={(option) => option.product_name}
                             freeSolo
                             renderInput={(params) => (
-                              <TextField {...params} multiline className={classes.txt4}/>
+                              <TextField {...params} multiline className={classes.txt4} InputProps={{readOnly: confirmed}}/>
                             )}
                           />
                           </td>
-                        <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline /></td>
-                        <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline /></td>
-                        <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" /></td>
+                        <td><InputBase className={classes.txt1} name='brand' size="small" value={row.brand} onChange={(e) => handleRowChange(e, index)} multiline readOnly={confirmed} /></td>
+                        <td><InputBase className={classes.txt1} name='model' size="small" value={row.model} onChange={(e) => handleRowChange(e, index)} multiline readOnly={confirmed} /></td>
+                        <td><InputBase className={classes.txt1} name='price' size="small" value={row.price} onChange={(e) => {handleRowChange(e, index); updateTotal(e, index)}} pattern="[0-9*]" type="number" readOnly={confirmed}/></td>
                             <td name='total'>{row.total}</td>
-                        <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} onChange={(e) => handleRowChange(e, index)} multiline inputProps={{maxLength:100}} /></td>
+                        <td><InputBase name='remarks' className={classes.txt2} size="small" value={row.remarks} onChange={(e) => handleRowChange(e, index)} multiline inputProps={{maxLength:100}} readOnly={confirmed}/></td>
                         <td><FontAwesomeIcon onClick={(e) => deleteRow(e, index)} className="delete" icon={faTimes} /></td>
                     </tr>
                   )
