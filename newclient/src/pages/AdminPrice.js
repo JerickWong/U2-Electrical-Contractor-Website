@@ -369,7 +369,7 @@ function AdminPrice() {
                     </MuiThemeProvider>
                 </main>
             </Container>
-            <ConfirmationDialog classes={classes} open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
+            <ConfirmationDialog open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
             confirm={handleDelete} handleClose={handleClose}/>
         </div>
     );

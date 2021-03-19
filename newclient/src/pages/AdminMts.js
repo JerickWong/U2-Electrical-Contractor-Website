@@ -13,6 +13,7 @@ import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
 import api, { deleteMTSById } from '../api';
 import moment from 'moment';
+import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -39,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
 
 function AdminMts(props) {
     ////// STATES //////
-    const [current_project, setProject] = useState('');    
+    const [openConfirm, setOpenConfirm] = useState(false)
+    const [current_project, setProject] = useState('');
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [status, setStatus] = useState('All')
@@ -271,10 +273,10 @@ function AdminMts(props) {
             setStatus(value)
     };
     
-    const handleConfirm = async () => {
+    const handleConfirm = async (mts) => {
         try {
-            current_mts.status = "Confirmed"
-            await api.updateMTSById(current_mts._id, current_mts)
+            mts.status = "Confirmed"
+            await api.updateMTSById(mts._id, mts)
 
             // delivered
             const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
@@ -325,6 +327,10 @@ function AdminMts(props) {
         getMTS();
     }
 
+    const handleClose = () => {
+        setOpenConfirm(false)
+    }
+
     useEffect(() => {
         fetchData()
     }, [user])
@@ -334,10 +340,10 @@ function AdminMts(props) {
             getMTS()
     }, [current_project, status])
 
-    useEffect(() => {
-        if (current_mts)
-            handleConfirm()
-    }, [current_mts])
+    // useEffect(() => {
+    //     if (current_mts)
+    //         handleConfirm()
+    // }, [current_mts])    
 
     return (
         <div className="App">
@@ -434,9 +440,9 @@ function AdminMts(props) {
                                                     </Link>
                                                     {
                                                         m.status === "Confirmed" ? ""
-                                                            : <Button variant="outlined" onClick={() => { setCurrent(m); }}>Confirm</Button>
+                                                            : <Button variant="outlined" onClick={() => { handleConfirm(m) }}>Confirm</Button>
                                                     }
-                                                    <Button variant="outlined" color="secondary" onClick={() => { handleDelete(m) }}><DeleteIcon />
+                                                    <Button variant="outlined" color="secondary" onClick={() => { setCurrent(m); setOpenConfirm(true) }}><DeleteIcon />
                                                     Delete</Button>
                                                     </td>
                                                 </tr>
@@ -450,6 +456,8 @@ function AdminMts(props) {
                 }
                 
             </Container>
+            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete MTS #${current_mts.MTS_number}?`} 
+                confirm={handleDelete} handleClose={handleClose}/>
         </div>
     );
 }
