@@ -106,6 +106,8 @@ function MtsWindow(props) {
   // removed validity, invalid
   
   // --------STATES-------- //
+  const [openConfirm, setOpenConfirm] = useState(false)
+  const [empty, setEmpty] = useState([])
   const [isEdit, setIsEdit] = useState(true)
   const [open, setOpen] = useState(false)
   const [action, setAction] = useState('Add')
@@ -420,48 +422,50 @@ function MtsWindow(props) {
   }
 
   function showConfirmationDialog() {
-    const empty = ['By proceeding, you are leaving out the following empty:']
+    const temp = ['By proceeding, you are leaving out the following empty:']
 
     if (prepared_by === '')
-      empty.push('Prepared By')
+      temp.push('Prepared By')
     if (project_name === '')
-      empty.push('Project Name')
+      temp.push('Project Name')
     if (MTS_number === '')
-      empty.push('MTS Number')
+      temp.push('MTS Number')
     if (delivered_from === '')
-      empty.push('Delivered from')
+      temp.push('Delivered from')
     if (requested_by === '')
-      empty.push('Requested By')
+      temp.push('Requested By')
     if (approved_by === '')
-      empty.push('Approved By')
+      temp.push('Approved By')
     if (takenout_by === '')
-      empty.push('Taken out By')
+      temp.push('Taken out By')
     if (received_by === '')
-      empty.push('Received By')
+      temp.push('Received By')
     if (date === '')
-      empty.push('Date')    
+      temp.push('Date')    
     if (address === '')
-      empty.push('Address')
+      temp.push('Address')
 
     rows.map((row, index) => {
       const { qty, description, unit, brand, model, remarks } = row
 
       if (qty === '')
-        empty.push(`Quantity at row ${index+1}`)
+        temp.push(`Quantity at row ${index+1}`)
       if (unit === '')
-        empty.push(`Unit at row ${index+1}`)
+        temp.push(`Unit at row ${index+1}`)
       if (description === '')
-        empty.push(`Description at row ${index+1}`)
+        temp.push(`Description at row ${index+1}`)
       if (brand === '')
-        empty.push(`Brand at row ${index+1}`)
+        temp.push(`Brand at row ${index+1}`)
       if (model === '')
-        empty.push(`Model at row ${index+1}`)
+        temp.push(`Model at row ${index+1}`)
       if (remarks === '')
-        empty.push(`Remarks at row ${index+1}`)
+        temp.push(`Remarks at row ${index+1}`)
     })
 
-    if (empty.length !== 0) {
-      setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
+    if (temp.length !== 0) {
+      setEmpty(temp)
+      // setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
+      setOpenConfirm(true)
     } else {
       handleConfirm()
     }      
@@ -612,7 +616,7 @@ function MtsWindow(props) {
   }
 
   function closeConfirmDialog() {
-    setConfirmationDialog('')
+    setOpenConfirm(false)
   }
 
   // SAVING OF MTS TO DB
@@ -980,6 +984,8 @@ function MtsWindow(props) {
         isLoading={isLoading}
         action={action}
       />
+
+      <ConfirmationDialog empty={empty} confirm={handleConfirm} open={openConfirm} handleClose={closeConfirmDialog}/>
     </div>
   );
 }

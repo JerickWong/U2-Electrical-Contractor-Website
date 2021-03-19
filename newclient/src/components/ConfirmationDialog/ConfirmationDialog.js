@@ -102,21 +102,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ConfirmationDialog(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
   const [value, setValue] = React.useState('Dione');
-
-  const handleClickListItem = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (newValue) => {
-    setOpen(false);
-    props.closing();
-
-    if (newValue) {
-      setValue(newValue);
-    }
-  };
 
   return (
     <div className={classes.root}>      
@@ -127,8 +113,8 @@ export default function ConfirmationDialog(props) {
           }}
           id="ringtone-menu"
           keepMounted
-          open={open}
-          onClose={handleClose}
+          open={props.open}
+          onClose={props.handleClose}
           value={value}
           empty={props.empty} 
           message={props.message}
