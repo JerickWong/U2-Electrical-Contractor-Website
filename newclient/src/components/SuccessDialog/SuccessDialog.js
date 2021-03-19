@@ -70,7 +70,7 @@ class SuccessDialog extends Component {
                 maxWidth={'sm'}
                 onClose={this.props.handleClose}
               >
-                <DialogTitle id="alert-dialog-title" >{"Message"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title" >{this.props.success ? `${this.props.action} Successfully` : `${this.props.action} Failed`}</DialogTitle>
                   <DialogContent>
                     <DialogContentText id="alert-dialog-description" >
                     
@@ -86,7 +86,7 @@ class SuccessDialog extends Component {
                         </Fab>
                         {this.props.isLoading && <CircularProgress size={68} className={classes.fabProgress} />}
                       </div>
-                      {this.props.isLoading ? '' : this.props.success ? `${this.props.action} Successfully` : `${this.props.action} Failed`}
+                      {this.props.isLoading ? '' : this.props.success ? "Success" : this.props.message}
                     </div>
                     </DialogContentText>
                   </DialogContent>

@@ -106,6 +106,7 @@ function MtsWindow(props) {
   // removed validity, invalid
   
   // --------STATES-------- //
+  const [message, setMessage] = useState('')
   const [openConfirm, setOpenConfirm] = useState(false)
   const [empty, setEmpty] = useState([])
   const [isEdit, setIsEdit] = useState(true)
@@ -461,8 +462,8 @@ function MtsWindow(props) {
       if (remarks === '')
         temp.push(`Remarks at row ${index+1}`)
     })
-
-    if (temp.length !== 0) {
+    
+    if (temp.length > 1) {
       setEmpty(temp)
       // setConfirmationDialog( <ConfirmationDialog empty={empty} confirm={handleConfirm} closing={closeConfirmDialog}/> )
       setOpenConfirm(true)
@@ -513,6 +514,7 @@ function MtsWindow(props) {
         setTimeout(() => {
           setLoading(false)
           setSuccess(false)
+          setMessage('Failed for unknown reasons')
         }, 1000)
       }
     }
@@ -528,8 +530,10 @@ function MtsWindow(props) {
       } catch (error) {
         // alert(error)
         setTimeout(() => {
+          setMessage('MTS number already exists')
           setLoading(false)
           setSuccess(false)
+          alert(error.message)
         }, 1000)
       }
     }
@@ -986,6 +990,7 @@ function MtsWindow(props) {
         success={success}
         isLoading={isLoading}
         action={action}
+        message={message}
       />
 
       <ConfirmationDialog empty={empty} confirm={handleConfirm} open={openConfirm} handleClose={closeConfirmDialog}/>
