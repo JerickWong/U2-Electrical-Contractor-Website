@@ -11,9 +11,10 @@ import db from '../components/Firestore/firestore';
 import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
-import api, { deleteMTSById } from '../api';
+import api from '../api';
 import moment from 'moment';
 import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
+import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
 function AdminMts(props) {
     ////// STATES //////
     const [openConfirm, setOpenConfirm] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [action, setAction] = useState('')
     const [current_project, setProject] = useState('');
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
@@ -48,7 +53,7 @@ function AdminMts(props) {
     const [mts, setMts] = useState([])
     const [user, setUser] = useState(fetchUser())
     const [current_mts, setCurrent] = useState(null)
-    const [isLoading, setLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -226,7 +231,7 @@ function AdminMts(props) {
     }
 
     async function fetchData() {
-        setLoading(true)
+        setIsLoading(true)
         try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
@@ -238,7 +243,7 @@ function AdminMts(props) {
             alert(error)
             setError(error)
         }
-        // setLoading(false)
+        // setIsLoading(false)
     }    
 
     function renderError() {
@@ -249,7 +254,7 @@ function AdminMts(props) {
     }
 
     async function getMTS() {
-        setLoading(true)
+        setIsLoading(true)
         try {            
             const payload = {
                 project_name: current_project,
@@ -260,7 +265,7 @@ function AdminMts(props) {
         } catch (error) {
             setMts([])            
         }
-        setLoading(false)
+        setIsLoading(false)
     }
     
     const handleChange = (event) => {
@@ -274,6 +279,9 @@ function AdminMts(props) {
     };
     
     const handleConfirm = async (mts) => {
+        setOpen(true)
+        setLoading(true)
+        setAction('Confirm')
         try {
             mts.status = "Confirmed"
             await api.updateMTSById(mts._id, mts)
@@ -287,9 +295,11 @@ function AdminMts(props) {
 
             // if project already exists, append delivered object
             if (isExist) {
-                await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
-                
-                alert('added item')
+                try {
+                    await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+                } catch (error) {
+                    alert('delivered summary did not update')
+                }
             }
 
             // create new delivered object
@@ -302,12 +312,17 @@ function AdminMts(props) {
                 alert(message)
             }
 
-            alert('all goods')
+            setSuccess(true)
         } catch (error) {
             console.log(error)
+            setSuccess(false)
             alert('Something went wrong when confirming')
         }
-        getMTS();
+
+        setTimeout(() => {
+            setLoading(false)
+          }, 1000)
+        await getMTS();
     }
 
     const handleDelete = async (mts) => {
@@ -328,6 +343,7 @@ function AdminMts(props) {
     }
 
     const handleClose = () => {
+        setOpen(false)
         setOpenConfirm(false)
     }
 
@@ -456,8 +472,18 @@ function AdminMts(props) {
                 }
                 
             </Container>
-            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete MTS #${current_mts.MTS_number}?`} 
+
+            <SuccessDialog
+                open={open}
+                handleClose={handleClose}
+                success={success}
+                isLoading={loading}
+                action={action}
+            />
+
+            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`} 
                 confirm={handleDelete} handleClose={handleClose}/>
+            
         </div>
     );
 }
