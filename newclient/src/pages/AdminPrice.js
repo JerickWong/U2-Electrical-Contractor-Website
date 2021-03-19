@@ -255,16 +255,15 @@ function AdminPrice() {
         try {
 
             const payload = {...category}
-            payload.items = uploadItems
+            payload.items = rawItems
             await suppliers.updateSupplierById(payload._id, payload)
             alert('uploaded')
-            await fetchSuppliers();
-            setCategory(payload);
         } catch (error) {
             alert('error saving to database')
         }
 
         setItems([])
+        window.location.reload();
     }
 
     const handleDelete = async () => {
