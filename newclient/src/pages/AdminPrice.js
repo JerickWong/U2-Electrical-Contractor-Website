@@ -214,17 +214,16 @@ function AdminPrice() {
             complete: (results, file) => {
                 alert('Parsing complete!')
 
-                if (category === '') {
-                    alert('No selected Supplier yet')
+                // check if not open, meaning youre not adding a new supplier
+                if (!open) {
+                    const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
+                    if (final)
+                        uploadItems(results.data)
                 } else {
-                    // check if not open, meaning youre not adding a new supplier
-                    if (!open) {
-                        const final = window.confirm(`Are you sure you want to replace the price list for ${category.name}?`)
-                        if (final)
-                            uploadItems(results.data)
-                    } else {
+                    if (category === null)
+                        alert('No selected Supplier yet')
+                    else
                         setItems(results.data)
-                    }
                 }
             }
         })
@@ -312,7 +311,7 @@ function AdminPrice() {
                             </Grid>
                         </div>
                         <br></br>
-                        <PriceTable data={category.items} category={category}/>
+                        <PriceTable data={category ? category.items : []} category={category}/>
 
                             {/* ADD SUPPLIER */}
                         <Dialog fullWidth="true" maxWidth="sm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
