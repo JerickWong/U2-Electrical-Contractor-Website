@@ -454,10 +454,12 @@ function AdminMts(props) {
                                                     <Button variant="outlined" color="primary"><FontAwesomeIcon className="view" icon={faEye} />
                                                     View</Button>
                                                     </Link>
+                                                    {' '}
                                                     {
                                                         m.status === "Confirmed" ? ""
                                                             : <Button variant="outlined" onClick={() => { handleConfirm(m) }}>Confirm</Button>
                                                     }
+                                                    {' '}
                                                     <Button variant="outlined" color="secondary" onClick={() => { setCurrent(m); setOpenConfirm(true) }}><DeleteIcon />
                                                     Delete</Button>
                                                     </td>
