@@ -861,8 +861,9 @@ function MtsWindow(props) {
                             selectOnFocus
                             handleHomeEndKeys
                             freeSolo
+                            disabled={confirmed}
                             renderInput={(params) => (
-                              <TextField className={classes.txt1} {...params} multiline InputProps={{readOnly: confirmed}}/>
+                              <TextField className={classes.txt1} {...params} multiline/>
                             )}
                           />
                           </td>
@@ -936,8 +937,9 @@ function MtsWindow(props) {
                             getOptionSelected={(option, value) => option.product_name === value.product_name}
                             renderOption={(option) => option.product_name}
                             freeSolo
+                            disabled={confirmed}
                             renderInput={(params) => (
-                              <TextField {...params} multiline className={classes.txt4} InputProps={{readOnly: confirmed}}/>
+                              <TextField {...params} multiline className={classes.txt4}/>
                             )}
                           />
                           </td>
