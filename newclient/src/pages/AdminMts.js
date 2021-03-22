@@ -329,10 +329,16 @@ function AdminMts(props) {
         try {
             await api.deleteMTSById(current_mts._id)
 
-            const dates = await (await api.getDates({ project_name: current_project })).data.data
-            const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+            const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
 
-            await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+            if (isExist) {
+
+                const dates = await (await api.getDates({ project_name: current_project })).data.data
+                const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+    
+                await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+            }
+
             
             alert('successfully deleted')
         } catch (error) {
