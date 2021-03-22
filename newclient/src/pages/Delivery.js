@@ -402,10 +402,10 @@ function Price() {
         setLoading(true)
         try {
             const delivered = await (await api.getDelivered({ project_name: current_project})).data.data
-            console.log(delivered)
             setMts(delivered)
         } catch (error) {
             setError(error)
+            setMts([])
         }
         setLoading(false)
     }

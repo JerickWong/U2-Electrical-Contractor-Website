@@ -88,10 +88,12 @@ const updateMTS = async (req, res) => {
 const deleteMTS = async (req, res) => {
     await MTS.findOneAndDelete({ _id: req.params.id }, (err, mts) => {
         if (err) {
+            console.log(`error 400: ${err}`)
             return res.status(400).json({ success: false, error: err })
         }
 
-        if (!mts) {
+        if (!mts) {            
+            console.log(`error 404: ${mts}`)
             return res
                 .status(404)
                 .json({ success: false, error: `mts not found` })
@@ -180,7 +182,7 @@ const getMTSByProject = async (req, res) => {
 }
 
 const getDelivered = async (req, res) => {
-    await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }, (err, mts) => {
+    await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -190,6 +192,7 @@ const getDelivered = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
         }
+        console.log(mts.length)
 
         // delivered object
         const sortedByDate = mts.sort((a, b) => b.date - a.date)

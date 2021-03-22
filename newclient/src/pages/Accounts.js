@@ -242,7 +242,7 @@ function Accounts() {
             const message = await (await users.updateUser(editAccount._id , payload)).data.message
             alert(message)
         } catch (error) {
-            alert('error in editing user')
+            alert('Username exists already')
         }
         handleCloseEdit();
         fetchUsers();        
