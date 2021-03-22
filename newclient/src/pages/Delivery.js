@@ -74,6 +74,7 @@ function Price() {
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
+    const [backupMts, setBackup] = useState([])
     const [first, setFirst] = useState('')
     const [changeProject, setChangeProject] = useState(true)
     const [isLoading, setLoading] = useState(true)
@@ -398,14 +399,38 @@ function Price() {
         
     // }, [changeProject])
 
+    const handleSearch = (event) => {
+
+        let query = event.target.value
+        if (query !== '') {
+            query = query.toLowerCase()
+            const temp = [...backupMts]
+            const filtered = temp.map(obj => {
+                const newItems = obj.items.filter(item => {
+                    item = item.toLowerCase()
+                    if (item.includes(query))
+                        return item
+                })
+
+                return {...obj, items: newItems}
+            })
+            setMts(filtered)
+        } else {
+            setMts(backupMts)
+        }
+
+    }
+
     async function fetchMts() {
         setLoading(true)
         try {
             const delivered = await (await api.getDelivered({ project_name: current_project})).data.data
             setMts(delivered)
+            setBackup(delivered)
         } catch (error) {
             setError(error)
             setMts([])
+            setBackup([])
         }
         setLoading(false)
     }
@@ -487,6 +512,7 @@ function Price() {
                                                 </InputAdornment>
                                             ),
                                         }}
+                                        onChange={handleSearch}
                                     />
                                 </Grid>
                                 <Grid item xs={2}/>
@@ -552,22 +578,6 @@ function Price() {
                                                                 </tr>
                                                             )
                                                     })
-                                                    // if (index === 0)
-                                                    //     return (
-                                                    //         <tr>
-                                                    //             <td>{obj.date}</td>
-                                                    //             <td>{obj.items}</td>
-                                                    //             <td>{obj.qty}</td>
-                                                    //         </tr>
-                                                    //     )
-                                                    // else 
-                                                    //     return (
-                                                    //         <tr>
-                                                    //             <td>{}</td>
-                                                    //             <td>{obj.items}</td>
-                                                    //             <td>{obj.qty}</td>
-                                                    //         </tr>
-                                                    //     )
                                                 })
                                             }
                                         </tbody>                            
