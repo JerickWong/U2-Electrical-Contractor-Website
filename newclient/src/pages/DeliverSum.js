@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton, InputBase, CircularProgress } from '@material-ui/core';
-import { ArrowBackIos, Save, Clear, Search, DateRange } from '@material-ui/icons';
+import { ArrowBackIos, Save, Clear, Search, DateRange, SettingsBackupRestore } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
@@ -89,6 +89,7 @@ function Price() {
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
+    const [backupMts, setBackup] = useState([])
     const [to, setTo] = useState()
     const [from, setFrom] = useState()
     const [isLoading, setLoading] = useState(true)
@@ -273,6 +274,24 @@ function Price() {
         }
     }
 
+    const handleSearch = (event) => {
+
+        let query = event.target.value
+        if (query !== '') {
+            query = query.toLowerCase()
+            const temp = [...backupMts]
+            const filtered = temp.filter(obj => {
+                const item = obj.item.toLowerCase()
+                if (item.includes(query))
+                    return obj
+            })
+            setMts(filtered)
+        } else {
+            setMts(backupMts)
+        }
+
+    }
+
     async function getMTS() {
         setLoading(true)
         try {            
@@ -283,8 +302,10 @@ function Price() {
             setFrom(moment(delivered.start).format('YYYY-MM-DD'))
             setTo(moment(delivered.end).format('YYYY-MM-DD'))
             setMts(delivered.rows)
+            setBackup(delivered.rows)
         } catch (error) {
             setMts([])
+            setBackup([])
         }
         setLoading(false)
     }
@@ -367,6 +388,7 @@ function Price() {
                                                     </InputAdornment>
                                                 ),
                                             }}
+                                            onChange={handleSearch}
                                         />
                                     </FormControl>
                                 </Grid>
