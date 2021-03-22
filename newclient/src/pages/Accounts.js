@@ -254,12 +254,16 @@ function Accounts() {
 
         if (confirmed) {
 
-            try {
-                await (await users.deleteUser( account._id )).data.success
-                alert(`Deleted Successfully!`)
-            } catch (error) {
-                console.log(error)
-                alert('error in deleting user')
+            if (account.type === "Admin")
+                alert('Cannot delete Admin account')
+            else {
+                try {
+                    await (await users.deleteUser( account._id )).data.success
+                    alert(`Deleted Successfully!`)
+                } catch (error) {
+                    console.log(error)
+                    alert('error in deleting user')
+                }
             }
         }
 
