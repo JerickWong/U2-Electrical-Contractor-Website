@@ -180,8 +180,18 @@ function AdminPrice() {
         fetchSuppliers();
     }, [])
 
-    const downloadFile = () => {
-        const data = category.items.filter(c => {
+    const downloadFile = async () => {
+        let latest = {...category}
+        try {
+            latest = await (await suppliers.getSupplierById(category._id)).data.data
+            console.log(latest)
+            alert(latest)
+        } catch (error) {
+            console.log(error)
+            alert('downloaded file not the latest version')
+        }
+
+        const data = latest.items.filter(c => {
             delete c._id
             return delete c.tableData
         })
@@ -189,7 +199,7 @@ function AdminPrice() {
         const csv = Papa.unparse(data, {
             header: true
         })
-        const filename = `${category.name}.csv` || `export.csv`
+        const filename = `${latest.name}.csv` || `export.csv`
 
         if (csv === null)
             alert('empty')
