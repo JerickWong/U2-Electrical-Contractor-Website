@@ -11,6 +11,7 @@ import UserAlert from '../components/UserAlert/UserAlert'
 import '../styles/mts.css';
 import api from '../api';
 import moment from 'moment'
+import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const primary = '#8083FF';
 const gray = '#838387';
@@ -86,13 +87,16 @@ const useStyles = makeStyles((theme) => ({
 function Price() {
     const classes = useStyles();
     const [current_project, setProject] = useState('');
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
     const [backupMts, setBackup] = useState([])
     const [to, setTo] = useState()
     const [from, setFrom] = useState()
-    const [isLoading, setLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     const [isFiltered, setFiltered] = useState(false)
     // const [first, setFirst] = useState('')
     // const [date, setDate] = useState([])
@@ -244,7 +248,7 @@ function Price() {
     }, [isFiltered])
 
     async function fetchData() {
-        setLoading(true)
+        setIsLoading(true)
         try {    
             const projectnames = await (await api.getMTSProjects()).data.data
             
@@ -265,13 +269,26 @@ function Price() {
     }
 
     const handleSave = async () => {
+        setOpen(true)
+        setLoading(true)
         try {
             await api.addEstQty({ project_name: current_project, rows: mts })
-            alert('saved successfully')
+            setSuccess(true)
         } catch (error) {
             console.log(error)
-            alert('error in saving')
+            setSuccess(false)
         }
+        setTimeout(() => {
+            setLoading(false)
+          }, 1000)
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+        
+        setTimeout(() => {
+            setSuccess(false)
+        }, 1000)
     }
 
     const handleSearch = (event) => {
@@ -293,7 +310,7 @@ function Price() {
     }
 
     async function getMTS() {
-        setLoading(true)
+        setIsLoading(true)
         try {            
             
             // GET delivered
@@ -307,7 +324,7 @@ function Price() {
             setMts([])
             setBackup([])
         }
-        setLoading(false)
+        setIsLoading(false)
     }
 
     async function getMTSFiltered() {
@@ -505,6 +522,14 @@ function Price() {
                     </MuiThemeProvider>
                 </main>
             </Container>
+
+            <SuccessDialog
+                open={open}
+                handleClose={handleClose}
+                success={success}
+                isLoading={loading}
+                action={'Save'}
+            />
         </div>
     );
 }
