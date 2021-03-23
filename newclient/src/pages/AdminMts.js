@@ -326,6 +326,9 @@ function AdminMts(props) {
     }
 
     const handleDelete = async () => {
+        setOpen(true)
+        setLoading(true)
+        setAction('Delete')
         try {
             await api.deleteMTSById(current_mts._id)
 
@@ -340,17 +343,25 @@ function AdminMts(props) {
             }
 
             
-            alert('successfully deleted')
+            setSuccess(true)
         } catch (error) {
             console.log(error)
+            setSuccess(false)
             alert('error in deleting')
         }
+        setTimeout(() => {
+            setLoading(false)
+          }, 1000)
         getMTS();
     }
 
     const handleClose = () => {
         setOpen(false)
         setOpenConfirm(false)
+        
+        setTimeout(() => {
+            setSuccess(false)
+        }, 1000)
     }
 
     useEffect(() => {
