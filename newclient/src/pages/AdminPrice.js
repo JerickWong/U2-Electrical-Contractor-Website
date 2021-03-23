@@ -149,7 +149,7 @@ function AdminPrice() {
             }
             await suppliers.insertSupplier(payload)
             alert('successfully adding suppliers')
-            fetchSuppliers();
+            window.location.reload();
         } catch (error) {
             alert('error in adding supplier')
         }
@@ -184,8 +184,6 @@ function AdminPrice() {
         let latest = {...category}
         try {
             latest = await (await suppliers.getSupplierById(category._id)).data.data
-            console.log(latest)
-            alert(latest)
         } catch (error) {
             console.log(error)
             alert('downloaded file not the latest version')
@@ -284,7 +282,7 @@ function AdminPrice() {
             console.log(error)
             alert('error in deleting supplier')
         }
-        fetchSuppliers();
+        window.location.reload();
     }
 
     return (

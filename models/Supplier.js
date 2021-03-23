@@ -18,7 +18,10 @@ const itemSchema = new mongoose.Schema({
 })
 
 const SupplierSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        unique: true
+    },
     date_created: {
         type: Date,
         default: Date.now
