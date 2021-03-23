@@ -260,10 +260,16 @@ function AdminMts(props) {
                 project_name: current_project,
                 status: status
             }
-            const new_mts = await (await api.getMTSByProject(payload)).data.data
-            setMts(new_mts)
+            const raw = await (await api.getMTSByProject(payload)).data
+            
+            if (raw.success) {
+                const new_mts = raw.data
+                setMts(new_mts)
+            } else 
+                setMts([])
+
         } catch (error) {
-            setMts([])            
+            setMts([])
         }
         setIsLoading(false)
     }
@@ -309,7 +315,6 @@ function AdminMts(props) {
                     return { ...row, estqty: 0 }
                 })
                 const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
-                alert(message)
             }
 
             setSuccess(true)
@@ -331,18 +336,26 @@ function AdminMts(props) {
         setAction('Delete')
         try {
             await api.deleteMTSById(current_mts._id)
-
-            const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
-
-            if (isExist) {
-
-                const dates = await (await api.getDates({ project_name: current_project })).data.data
-                const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
-    
-                await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+            const payload = {
+                project_name: current_project,
+                status: "Confirmed"
             }
+            const isMts = await (await api.getMTSByProject(payload)).data.success
+            const delivered = await (await api.getDeliveredByProject({ project_name: current_project })).data
 
-            
+            if (delivered.success) {
+
+                if (isMts) {
+
+                    const dates = await (await api.getDates({ project_name: current_project })).data.data
+                    const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+        
+                    await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+                } else {
+                    await api.deleteDeliveredById(delivered.data._id)
+                }
+
+            }
             setSuccess(true)
         } catch (error) {
             console.log(error)

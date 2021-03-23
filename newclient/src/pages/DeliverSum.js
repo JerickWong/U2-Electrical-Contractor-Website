@@ -288,7 +288,7 @@ function Price() {
         
         setTimeout(() => {
             setSuccess(false)
-        }, 1000)
+        }, 100)
     }
 
     const handleSearch = (event) => {

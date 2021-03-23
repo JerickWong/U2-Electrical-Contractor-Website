@@ -170,7 +170,7 @@ const getMTSByProject = async (req, res) => {
             if (!mts.length) {
                 console.log('not found')
                 return res
-                    .status(404)
+                    .status(204)
                     .json({ success: false, error: `MTS not found` })
             }
             return res.status(200).json({ success: true, data: mts })
@@ -188,7 +188,7 @@ const getMTSByProject = async (req, res) => {
             if (!mts.length) {
                 console.log('not found')
                 return res
-                    .status(404)
+                    .status(204)
                     .json({ success: false, error: `MTS not found` })
             }
             return res.status(200).json({ success: true, data: mts })
