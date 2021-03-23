@@ -234,14 +234,17 @@ function AdminPrice() {
                     if (category === null)
                         alert('No selected Supplier yet')
                     else {
-                        const rawItems = results.data.map(item => {
-                            const list_price = parseFloat(item.list_price.trim().replace(',', ''))
-                            console.log(list_price)
-                            const net_price = parseFloat(item.net_price.trim().replace(',', ''))
-                            const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
-                            return {...item, list_price, net_price, price_adjustment}
+                        results.data.map(item => {
+                            item.unit = item.unit.trim()
+                            item.product_name = item.product_name.trim()
+                            item.brand_name = item.brand_name.trim()
+                            item.model_name = item.model_name.trim()
+                            item.remarks = item.remarks.trim()
+                            item.list_price = parseFloat(item.list_price.trim().replace(',', ''))
+                            item.net_price = parseFloat(item.net_price.trim().replace(',', ''))
+                            item.price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
                         })
-                        setItems(rawItems)
+                        setItems(results.data)
                     }
                 }
             }
@@ -251,14 +254,16 @@ function AdminPrice() {
 
     const uploadItems = async (rawItems) => {
 
-        rawItems = rawItems.map(item => {
-            const list_price = parseFloat(item.list_price.trim().replace(',', ''))
-            console.log(list_price)
-            const net_price = parseFloat(item.net_price.trim().replace(',', ''))
-            const price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
-            return {...item, list_price, net_price, price_adjustment}
+        rawItems.map(item => {
+            item.unit = item.unit.trim()
+            item.product_name = item.product_name.trim()
+            item.brand_name = item.brand_name.trim()
+            item.model_name = item.model_name.trim()
+            item.remarks = item.remarks.trim()
+            item.list_price = parseFloat(item.list_price.trim().replace(',', ''))
+            item.net_price = parseFloat(item.net_price.trim().replace(',', ''))
+            item.price_adjustment = parseFloat(item.price_adjustment.trim().replace(',', ''))
         })
-        console.log(rawItems)
 
         try {
 
