@@ -5,6 +5,7 @@ const keys = require('../db/index')
 
 const loginUser = async (req, res) => {
     if (!req.body.password) {
+        console.log('no password')
         return res.status(400).json({
             success: false,
             error: 'You must provide a password',
@@ -13,11 +14,15 @@ const loginUser = async (req, res) => {
     const { password, username } = req.body
 
     await User.findOne({ username }, async (err, user) => {
-        if (err)
+        if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
+        }
         
-        if (!user) 
+        if (!user) {
+            console.log(user)
             return res.status(404).json({ success: false, error: `User not found` })
+        }
         
         // Check password
         const isMatch = await bcrypt.compare(password, user.password);        
@@ -50,6 +55,7 @@ const loginUser = async (req, res) => {
             // console.log(token)
             // res.cookie('token', token);
         } else {
+            console.log('password not matched')
             return res
             .status(400)
             .json({ passwordincorrect: "Password incorrect" });
@@ -93,10 +99,12 @@ const registerUser = (req, res) => {
 const deleteUser = async (req, res) => {
     await User.findOneAndDelete({ _id: req.params.id }, (err, user) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!user) {
+            console.log('no user')
             return res
                 .status(404)
                 .json({ success: false, error: `user not found` })
@@ -109,6 +117,7 @@ const deleteUser = async (req, res) => {
 const getAllUser = async (req, res) => {
     await User.find({}, (err, users) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
         if (!users.length) {
@@ -147,6 +156,7 @@ const updateUser = async (req, res) => {
     const { password, username, type } = req.body
 
     if (!req.body) {
+        console.log(`no body`)
         return res.status(400).json({
             success: false,
             error: 'You must provide a body to update',
@@ -155,6 +165,7 @@ const updateUser = async (req, res) => {
 
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) {
+            console.log(err)
             return res.status(404).json({
                 err,
                 message: 'User not found!',
@@ -179,6 +190,7 @@ const updateUser = async (req, res) => {
                             })
                         })
                         .catch(error => {
+                            console.log(error)
                             return res.status(404).json({
                             error,
                             message: 'User not updated!',
@@ -199,6 +211,7 @@ const updateUser = async (req, res) => {
                 })
             })
             .catch(error => {
+                console.log(error)
                 return res.status(404).json({
                 error,
                 message: 'User not updated!',

@@ -4,7 +4,7 @@ const createSupplier = (req, res) => {
     const body = req.body
 
     if (!body) {
-        console.log(error)
+        console.log('no body')
         return res.status(400).json({
             success: false,
             error: 'You must provide a Supplier',
@@ -14,8 +14,8 @@ const createSupplier = (req, res) => {
     const supplier = new Supplier(body)
 
     if (!supplier) {
-        console.log(err)
-        return res.status(400).json({ success: false, error: err })
+        console.log('Something went wrong')
+        return res.status(400).json({ success: false, error: 'Something went wrong' })
     }
 
     supplier
@@ -40,6 +40,7 @@ const updateSupplier = async (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log('no body')
         return res.status(400).json({
             success: false,
             error: 'You must provide a body to update',
@@ -48,6 +49,7 @@ const updateSupplier = async (req, res) => {
 
     Supplier.findOne({ _id: req.params.id }, (err, supplier) => {
         if (err) {            
+            console.log('not found')
             return res.status(404).json({
                 err,
                 message: 'Supplier not found!',
@@ -80,10 +82,12 @@ const updateSupplier = async (req, res) => {
 const deleteSupplier = async (req, res) => {
     await Supplier.findOneAndDelete({ _id: req.params.id }, (err, supplier) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!supplier) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `Supplier not found` })
@@ -96,10 +100,12 @@ const deleteSupplier = async (req, res) => {
 const getSupplierById = async (req, res) => {
     await Supplier.findOne({ _id: req.params.id }, (err, supplier) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!supplier) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `Supplier not found` })
@@ -111,9 +117,11 @@ const getSupplierById = async (req, res) => {
 const getAllSupplier = async (req, res) => {
     await Supplier.find({}, (err, suppliers) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
         if (!suppliers.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `Supplier not found` })

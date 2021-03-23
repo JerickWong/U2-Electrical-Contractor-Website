@@ -5,6 +5,7 @@ const createMTS = (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log('no body')
         return res.status(400).json({
             success: false,
             error: 'You must provide a MTS',
@@ -14,7 +15,8 @@ const createMTS = (req, res) => {
     const mts = new MTS(body)
 
     if (!mts) {
-        return res.status(400).json({ success: false, error: err })
+        console.log('something went wrong')
+        return res.status(400).json({ success: false, error: `Something went wrong` })
     }
 
     mts
@@ -27,6 +29,7 @@ const createMTS = (req, res) => {
             })
         })
         .catch(error => {
+            console.log(error)
             return res.status(400).json({
                 error,
                 message: 'MTS not created!',
@@ -38,6 +41,7 @@ const updateMTS = async (req, res) => {
     const body = req.body
 
     if (!body) {
+        console.log('no body')
         return res.status(400).json({
             success: false,
             error: 'You must provide a body to update',
@@ -77,6 +81,7 @@ const updateMTS = async (req, res) => {
                 })
             })
             .catch(error => {
+                console.log(error)
                 return res.status(404).json({
                     error,
                     message: 'MTS not updated!',
@@ -106,10 +111,12 @@ const deleteMTS = async (req, res) => {
 const getMTSById = async (req, res) => {
     await MTS.findOne({ _id: req.params.id }, (err, mts) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -121,9 +128,11 @@ const getMTSById = async (req, res) => {
 const getAllMTS = async (req, res) => {
     await MTS.find({}, (err, mtss) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
         if (!mtss.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -135,10 +144,12 @@ const getAllMTS = async (req, res) => {
 const getMTSProjects = async (req, res) => {
     await MTS.distinct('project_name', (err, mts) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -152,10 +163,12 @@ const getMTSByProject = async (req, res) => {
 
         await MTS.find({ project_name: req.body.project_name }, (err, mts) => {
             if (err) {
+                console.log(err)
                 return res.status(400).json({ success: false, error: err })
             }
     
             if (!mts.length) {
+                console.log('not found')
                 return res
                     .status(404)
                     .json({ success: false, error: `MTS not found` })
@@ -168,10 +181,12 @@ const getMTSByProject = async (req, res) => {
 
         await MTS.find({ project_name: req.body.project_name, status: req.body.status }, (err, mts) => {
             if (err) {
+                console.log(err)
                 return res.status(400).json({ success: false, error: err })
             }
     
             if (!mts.length) {
+                console.log('not found')
                 return res
                     .status(404)
                     .json({ success: false, error: `MTS not found` })
@@ -184,15 +199,16 @@ const getMTSByProject = async (req, res) => {
 const getDelivered = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
         }
-        console.log(mts.length)
 
         // delivered object
         const sortedByDate = mts.sort((a, b) => b.date - a.date)
@@ -204,10 +220,8 @@ const getDelivered = async (req, res) => {
             items: firstItems,
             qty: firstQty
         }]
-        // console.log(sortedByDate[0].rows)
+        
         sortedByDate.map((mts, index) => {
-            // console.log(`mts: ${mts.rows}`)
-            // console.log(`index: ${index}`)
             if (index > 0) {
                 const date = moment(mts.date).format('YYYY-MM-DD')
                 // if the same date, += the qty                
@@ -219,7 +233,6 @@ const getDelivered = async (req, res) => {
 
                             rows.map(row => {
                                 // item already exists
-                                // console.log(row.description)
                                 if (items.filter(item => row.description===item).length>0) {
                                     items.map((item, index) => {
                                         if (row.description===item) {
@@ -229,9 +242,6 @@ const getDelivered = async (req, res) => {
                                 } 
                                 // new item
                                 else {
-                                    if (row.description && row.qty) {
-
-                                    }
                                     items.push(row.description)
                                     qty.push(row.qty)
                                 }
@@ -252,7 +262,6 @@ const getDelivered = async (req, res) => {
                 }
             }
         })
-        // console.log(deliveredObject)
         
         return res.status(200).json({ success: true, data: deliveredObject })
     })
@@ -261,10 +270,12 @@ const getDelivered = async (req, res) => {
 const getCost = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -289,13 +300,13 @@ const getCost = async (req, res) => {
 
 const getDeliveredSummary = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to }, status: "Confirmed" }).lean().exec( (err, mts) => {
-        console.log(req.body.from)
-        console.log(req.body.to)
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -330,10 +341,12 @@ const getDeliveredSummary = async (req, res) => {
 const getProjectDates = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }, (err, mts) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({ success: false, error: err })
         }
 
         if (!mts.length) {
+            console.log('not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
