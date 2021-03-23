@@ -233,19 +233,26 @@ function Accounts() {
     }
 
     const handleEditAccount = async () => {
-        try {
-            const payload = {
-                username: editUsername,
-                password: editPassword,
-                type: editRole
+
+        const { _id, type } = editAccount
+        if (type === "Admin" && type !== editRole) {
+            alert('Cannot change admin role')
+        } else {
+
+            try {
+                const payload = {
+                    username: editUsername,
+                    password: editPassword,
+                    type: editRole
+                }
+                const message = await (await users.updateUser(_id , payload)).data.message
+                alert(message)
+            } catch (error) {
+                alert('Username exists already')
             }
-            const message = await (await users.updateUser(editAccount._id , payload)).data.message
-            alert(message)
-        } catch (error) {
-            alert('Username exists already')
+            handleCloseEdit();
+            fetchUsers();        
         }
-        handleCloseEdit();
-        fetchUsers();        
     }
 
     const deleteAccount = async (account) => {
