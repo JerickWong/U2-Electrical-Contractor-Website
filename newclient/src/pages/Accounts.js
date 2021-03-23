@@ -19,6 +19,7 @@ import db from '../components/Firestore/firestore'
 import moment from 'moment'
 import users from '../api/users';
 import { Redirect } from 'react-router-dom';
+import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -103,6 +104,10 @@ const useStyles = makeStyles((theme) => ({
 
 function Accounts() {
     const classes = useStyles();
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [action, setAction] = useState('')
     const [role, setRole] = useState('All');
     const [newRole, setNewRole] = useState('Employee');
     const [username, setNewUsername] = useState('')
@@ -113,7 +118,7 @@ function Accounts() {
     const [editRole, setEditRole] = useState('');
     const [accounts, setAccounts] = useState([]);
     const [backupAccounts, setBackup] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
     const [edit, setEdit] = useState(false);
     const [complete, setComplete] = useState(false)
     const [redirect, setRedirect] = useState('Admin')
@@ -201,7 +206,10 @@ function Accounts() {
 
     }
     const createAccount = async () => {
-        handleClose()
+        setOpenAdd(false)
+        setOpen(true)
+        setLoading(true)
+        setAction('Create')
         // const email = document.querySelector('#new-email').value
         // const username = document.querySelector('#new-username').value
         // const password = document.querySelector('#new-password').value
@@ -223,21 +231,33 @@ function Accounts() {
         //     console.log (err)
         // })
         try {
-            const user = await (await users.register({ username, password, type: newRole })).data.data
-            console.log(user)
-            alert("user created")
+            await users.register({ username, password, type: newRole })
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(true)
+              }, 1000)
         } catch (error) {
-            alert('error in creating user, username already exists')
+            // if (error.message.includes('404')) {
+
+            // }
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(false)
+              }, 1000)
         }
-        fetchUsers();
+        await fetchUsers();
     }
 
     const handleEditAccount = async () => {
-
+        
         const { _id, type } = editAccount
         if (type === "Admin" && type !== editRole) {
             alert('Cannot change admin role')
         } else {
+            handleCloseEdit();
+            setOpen(true)
+            setLoading(true)
+            setAction('Edit')
 
             try {
                 const payload = {
@@ -246,12 +266,19 @@ function Accounts() {
                     type: editRole
                 }
                 const message = await (await users.updateUser(_id , payload)).data.message
-                alert(message)
+                setTimeout(() => {
+                    setLoading(false)
+                    setSuccess(true)
+                  }, 1000)
             } catch (error) {
-                alert('Username exists already')
+                setTimeout(() => {
+                    setLoading(false)
+                    setSuccess(false)
+                  }, 1000)
+                // alert('Username exists already')
             }
-            handleCloseEdit();
-            fetchUsers();        
+            
+            await fetchUsers();
         }
     }
 
@@ -264,12 +291,21 @@ function Accounts() {
             if (account.type === "Admin")
                 alert('Cannot delete Admin account')
             else {
+                setOpen(true)
+                setLoading(true)
+                setAction('Delete')
                 try {
                     await (await users.deleteUser( account._id )).data.success
-                    alert(`Deleted Successfully!`)
+                    setTimeout(() => {
+                        setLoading(false)
+                        setSuccess(true)
+                      }, 1000)
                 } catch (error) {
                     console.log(error)
-                    alert('error in deleting user')
+                    setTimeout(() => {
+                        setLoading(false)
+                        setSuccess(false)
+                      }, 1000)
                 }
             }
         }
@@ -288,6 +324,10 @@ function Accounts() {
     };
     const handleClose = () => {
         setOpen(false);
+
+        setTimeout(() => {
+            setSuccess(false)
+        }, 100)
     };
     // const handleClickEdit = (event) => {
     //     setEdit(true);
@@ -337,12 +377,12 @@ function Accounts() {
                                 </Grid>
                                 <Grid item xs={2} />
                                 <Grid item xs={3}>
-                                    <Button color="primary" className={classes.button1} onClick={handleClickOpen} variant="contained">
+                                    <Button color="primary" className={classes.button1} onClick={() => setOpenAdd(true)} variant="contained">
                                         Create Account
                                     </Button>
 
                                     {/* CREATE ACCOUNT */}
-                                    <Dialog fullWidth="true" maxWidth="sm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                    <Dialog fullWidth="true" maxWidth="sm" open={openAdd} onClose={() => setOpenAdd(false)} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">
                                             <h3>New Account</h3>
                                         </DialogTitle>
@@ -409,7 +449,7 @@ function Accounts() {
                                             </div>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleClose} variant="contained">
+                                            <Button onClick={() => setOpenAdd(false)} variant="contained">
                                                 Cancel
                                             </Button>
                                             <Button onClick={() => { complete ? createAccount() : alert('Please fill out all fields!')}} className={classes.create} variant="contained" color="primary">
@@ -523,7 +563,15 @@ function Accounts() {
                         </Button> */}
                     </MuiThemeProvider>
                 </main>
-            </Container>            
+            </Container>
+
+            <SuccessDialog
+                open={open}
+                handleClose={handleClose}
+                success={success}
+                isLoading={loading}
+                action={action}
+            />
         </div >
     );
 }
