@@ -25,6 +25,7 @@ import '../styles/mts.css';
 import {useDropzone} from 'react-dropzone';
 import suppliers from '../api/supplier';
 import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
+import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const primary = '#8083FF';
 const white = '#FFFFFF';
@@ -122,7 +123,11 @@ const useStyles = makeStyles((theme) => ({
 
 function AdminPrice() {
     const classes = useStyles();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [action, setAction] = useState('')
+    const [openAdd, setOpenAdd] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [category, setCategory] = useState(null);
     const [categories, setCategories] = useState([]);
@@ -138,22 +143,32 @@ function AdminPrice() {
     };
     const handleClose = () => {
         setOpen(false);
-        setOpenConfirm(false);
+        window.location.reload();
     };
 
     const addSupplier = async () => {
+        setOpen(true)
+        setLoading(true)
+        setAction('Add')
         try {
             const payload = {
                 name,
                 items
             }
             await suppliers.insertSupplier(payload)
-            alert('successfully adding suppliers')
-            window.location.reload();
+            setOpenAdd(false)
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(true)
+            }, 1000)
         } catch (error) {
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(false)
+            }, 1000)
             alert('error in adding supplier')
         }
-        handleClose();
+        
         setName('')
         setItems([])
     }
@@ -162,7 +177,9 @@ function AdminPrice() {
         useDropzone({ 
             accept: '.csv, text/csv', 
             onDropAccepted: files => parseCSV(files),
-            onDropRejected: () => alert('file type rejected') 
+            onDropRejected: () => {
+                alert('file type rejected')   
+            } 
         });    
 
     const fetchSuppliers = async () => {
@@ -224,6 +241,14 @@ function AdminPrice() {
             transformHeader: h => h.trim(),
             complete: (results, file) => {
                 alert('Parsing complete!')
+                // setOpen(true)
+                // setLoading(true)
+                // setSuccess(false)
+                // setAction('Parse')
+                // setTimeout(() => {
+                //     setLoading(false)
+                //     setSuccess(true)
+                // }, 1000)
 
                 // check if not open, meaning youre not adding a new supplier
                 if (!open) {
@@ -280,14 +305,23 @@ function AdminPrice() {
     }
 
     const handleDelete = async () => {
+        setOpen(true)
+        setLoading(true)
+        setAction('Delete')
         try {
             await suppliers.deleteSupplierById(category._id)
-            alert('supplier deleted')
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(true)
+            }, 1000)
         } catch (error) {
             console.log(error)
+            setTimeout(() => {
+                setLoading(false)
+                setSuccess(false)
+            }, 1000)
             alert('error in deleting supplier')
         }
-        window.location.reload();
     }
 
     return (
@@ -322,7 +356,7 @@ function AdminPrice() {
                                     </Badge>
                                 </Grid>
                                 <Grid item xs={4}>
-                                <Button variant="contained" color="primary" className={classes.button3} startIcon={<GroupAdd />} onClick={handleClickOpen}>
+                                <Button variant="contained" color="primary" className={classes.button3} startIcon={<GroupAdd />} onClick={() => setOpenAdd(true)}>
                                         Add Supplier
                                     </Button>
                                 </Grid>
@@ -337,7 +371,7 @@ function AdminPrice() {
                         <PriceTable data={category ? category.items : []} category={category}/>
 
                             {/* ADD SUPPLIER */}
-                        <Dialog fullWidth="true" maxWidth="sm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                        <Dialog fullWidth="true" maxWidth="sm" open={openAdd} onClose={() => setOpenAdd(false)} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">
                                 <h3>New Supplier</h3>
                             </DialogTitle>
@@ -360,7 +394,7 @@ function AdminPrice() {
                                 </div>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleClose} variant="contained" >
+                                <Button onClick={() => setOpenAdd(false)} variant="contained" >
                                     Cancel
                                 </Button>
                                 <Button variant="contained" color="primary" className={classes.button} {...getRootProps({className: 'dropzone'})}>
@@ -389,8 +423,20 @@ function AdminPrice() {
                     </MuiThemeProvider>
                 </main>
             </Container>
+
+            <SuccessDialog
+                open={open}
+                handleClose={handleClose}
+                success={success}
+                isLoading={loading}
+                action={action}
+            />
+
             <ConfirmationDialog open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
-            confirm={handleDelete} handleClose={handleClose}/>
+            confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
+
+            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to replace the price list for ${category.name}?`} 
+            confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
         </div>
     );
 }
