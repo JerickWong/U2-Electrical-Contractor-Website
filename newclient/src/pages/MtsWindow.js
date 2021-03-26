@@ -476,6 +476,7 @@ function MtsWindow(props) {
   async function handleConfirm() {
 
     setOpen(true)
+    setLoading(true)
 
     const clean_rows = rows.filter(row => {
       if (row.description && row.qty)
@@ -533,7 +534,7 @@ function MtsWindow(props) {
           setMessage('MTS number already exists')
           setLoading(false)
           setSuccess(false)
-          alert(error.message)
+          console.log(error.message)
         }, 1000)
       }
     }
@@ -658,17 +659,21 @@ function MtsWindow(props) {
   const handleClose = async () => {
     setOpen(false)
 
-    try {
-      const type = await (await users.getUser({ token: localStorage.getItem('token') })).data.data.type
-  
-      if (type === "Admin" || type === "Manager")
-        history.push('/AdminMts')
-      else
+    if (success) {
+
+      try {
+        const type = await (await users.getUser({ token: localStorage.getItem('token') })).data.data.type
+    
+        if (type === "Admin" || type === "Manager")
+          history.push('/AdminMts')
+        else
+          history.push('/Mts')
+      } catch (error) {
+        console.log(error)
         history.push('/Mts')
-    } catch (error) {
-      console.log(error)
-      history.push('/Mts')
+      }
     }
+
   }
   
 
@@ -872,7 +877,7 @@ function MtsWindow(props) {
                             value={row.description}
                             onChange={(event, newValue) => {                              
                               if (newValue && newValue.inputValue) {
-                                alert(`${newValue.inputValue} will be added to pending items`)
+                                alert(`${newValue.inputValue} and its row will be added to pending items. Do not change its row position.`)
                                 selected.pendingItems.push(index) // needs new Set array
                               } else {
                                 
