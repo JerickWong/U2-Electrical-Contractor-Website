@@ -185,6 +185,7 @@ function AdminPrice() {
     const fetchSuppliers = async () => {
         try {
             const temp = await (await suppliers.getAllSupplier()).data.data
+            temp.sort((a, b) => a.name.localeCompare(b.name))
             setCategories(temp)
             setCategory(temp[0])
         } catch (error) {
