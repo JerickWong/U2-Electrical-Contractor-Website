@@ -1,6 +1,6 @@
 import React, {forwardRef, useState, useEffect} from 'react';
 import MaterialTable, { MTable, MTableToolbar } from 'material-table';
-import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
+import Add from '@material-ui/icons/Add';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -39,7 +39,7 @@ import supplier from '../../api/supplier'
     }, [props.data])
 
     const tableIcons = {
-        Add: forwardRef((props, ref) => <AddShoppingCart {...props} ref={ref} />),
+        Add: forwardRef((props, ref) => <Add {...props} ref={ref} />),
         Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
         Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
         Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),

@@ -335,13 +335,17 @@ function AdminMts(props) {
         setLoading(true)
         setAction('Delete')
         try {
+            console.log(current_mts._id)
             await api.deleteMTSById(current_mts._id)
             const payload = {
                 project_name: current_project,
                 status: "Confirmed"
             }
+            console.log('deleted')
             const isMts = await (await api.getMTSByProject(payload)).data.success
+            console.log('ismts')
             const delivered = await (await api.getDeliveredByProject({ project_name: current_project })).data
+            console.log('delivered')
 
             if (delivered.success) {
 
@@ -351,8 +355,13 @@ function AdminMts(props) {
                     const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
         
                     await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+                    console.log('updated')
+
                 } else {
+                    console.log('here')
                     await api.deleteDeliveredById(delivered.data._id)
+                    console.log('deleted')
+
                 }
 
             }
@@ -370,7 +379,6 @@ function AdminMts(props) {
 
     const handleClose = () => {
         setOpen(false)
-        setOpenConfirm(false)
         
         setTimeout(() => {
             setSuccess(false)
@@ -514,7 +522,7 @@ function AdminMts(props) {
             />
 
             <ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`} 
-                confirm={handleDelete} handleClose={handleClose}/>
+                confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
             
         </div>
     );

@@ -175,7 +175,7 @@ function AdminNavbar() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: {user.username || ''}</Typography>
+            <Typography className={classes.login}>Logged in as: {user ? user.username : ''}</Typography>
             <Link to='/'>
               <Button onClick={handleLogout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
             </Link>            

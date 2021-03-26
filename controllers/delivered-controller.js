@@ -107,7 +107,7 @@ const deleteDelivered = async (req, res) => {
         }
 
         if (!delivered) {
-            console.log('not found')
+            console.log('delivered not found')
             return res
                 .status(404)
                 .json({ success: false, error: `Delivered not found` })
@@ -157,7 +157,7 @@ const getDeliveredByProject = async (req, res) => {
             return res.status(400).json({ success: false, error: err })
         }
         if (!delivered) {
-            console.log('not found')
+            console.log('delivered by project not found')
             return res
                 .status(204)
                 .json({ success: false, error: `Delivered not found` })

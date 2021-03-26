@@ -435,8 +435,8 @@ function AdminPrice() {
             <ConfirmationDialog open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
             confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
 
-            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to replace the price list for ${category.name}?`} 
-            confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
+            {/* <ConfirmationDialog open={openConfirm} message={`Are you sure you want to replace the price list for ${category.name}?`} 
+            confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/> */}
         </div>
     );
 }
