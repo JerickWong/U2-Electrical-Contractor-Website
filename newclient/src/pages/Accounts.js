@@ -19,6 +19,7 @@ import db from '../components/Firestore/firestore'
 import moment from 'moment'
 import users from '../api/users';
 import { Redirect } from 'react-router-dom';
+import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
 import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const primary = '#8083FF';
@@ -104,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Accounts() {
     const classes = useStyles();
+    const [openConfirm, setOpenConfirm] = useState(false)
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
@@ -112,6 +114,7 @@ function Accounts() {
     const [newRole, setNewRole] = useState('Employee');
     const [username, setNewUsername] = useState('')
     const [password, setNewPassword] = useState('')
+    const [deleteAccount, setDelete] = useState(null)
     const [editAccount, setAccount] = useState(null);
     const [editUsername, setUsername] = useState('');
     const [editPassword, setPassword] = useState('');
@@ -282,31 +285,26 @@ function Accounts() {
         }
     }
 
-    const deleteAccount = async (account) => {
+    const handleDelete = async () => {
 
-        const confirmed = window.confirm(`Are you sure you want to delete ${account.username}'s account?`)
-
-        if (confirmed) {
-
-            if (account.type === "Admin")
-                alert('Cannot delete Admin account')
-            else {
-                setOpen(true)
-                setLoading(true)
-                setAction('Delete')
-                try {
-                    await (await users.deleteUser( account._id )).data.success
-                    setTimeout(() => {
-                        setLoading(false)
-                        setSuccess(true)
-                      }, 1000)
-                } catch (error) {
-                    console.log(error)
-                    setTimeout(() => {
-                        setLoading(false)
-                        setSuccess(false)
-                      }, 1000)
-                }
+        if (deleteAccount.type === "Admin")
+            alert('Cannot delete Admin account')
+        else {
+            setOpen(true)
+            setLoading(true)
+            setAction('Delete')
+            try {
+                await (await users.deleteUser( deleteAccount._id )).data.success
+                setTimeout(() => {
+                    setLoading(false)
+                    setSuccess(true)
+                  }, 1000)
+            } catch (error) {
+                console.log(error)
+                setTimeout(() => {
+                    setLoading(false)
+                    setSuccess(false)
+                  }, 1000)
             }
         }
 
@@ -545,7 +543,7 @@ function Accounts() {
                                                 <td>{moment(account.date_created).format('MM-DD-YYYY')}</td>
                                                 <td>
                                                     <IconButton color="primary" onClick={() => {prepareEdit(account); setAccount(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserEdit} /></IconButton>
-                                                    <IconButton color="primary" onClick={() => {deleteAccount(account)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
+                                                    <IconButton color="primary" onClick={() => {setDelete(account); setOpenConfirm(true)}} ><FontAwesomeIcon className={classes.userFunc} icon={faUserMinus} /></IconButton>
                                                 </td>
                                             </tr>
                                         )
@@ -572,6 +570,9 @@ function Accounts() {
                 isLoading={loading}
                 action={action}
             />
+
+<ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete ${deleteAccount ? deleteAccount.username : ''}'s account?`} 
+                confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
         </div >
     );
 }
