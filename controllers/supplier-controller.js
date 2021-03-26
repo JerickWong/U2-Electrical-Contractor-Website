@@ -29,7 +29,7 @@ const createSupplier = (req, res) => {
         })
         .catch(error => {
             console.log(error)
-            return res.status(400).json({
+            return res.status(208).json({
                 error,
                 message: 'Supplier not created!',
             })

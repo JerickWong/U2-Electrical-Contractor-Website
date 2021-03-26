@@ -510,12 +510,13 @@ function MtsWindow(props) {
           setLoading(false)
           setSuccess(true)
         }, 1000)
+        setUnsaved(false)
       } catch (error) {
         // alert(error)
         setTimeout(() => {
           setLoading(false)
           setSuccess(false)
-          setMessage('Failed for unknown reasons')
+          setMessage('MTS number already exists')
         }, 1000)
       }
     }
@@ -539,7 +540,6 @@ function MtsWindow(props) {
       }
     }
 
-    setUnsaved(false)
     if (selected.pendingItems.length > 0) {
       const pending = [...new Set(selected.pendingItems)]
       const pendingRows = pending.map(index => clean_rows[index])
