@@ -127,6 +127,7 @@ function AdminPrice() {
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [action, setAction] = useState('')
+    const [message, setMessage] = useState('')
     const [openAdd, setOpenAdd] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [category, setCategory] = useState(null);
@@ -155,12 +156,22 @@ function AdminPrice() {
                 name,
                 items
             }
-            await suppliers.insertSupplier(payload)
+            const data = await (await suppliers.insertSupplier(payload))
             setOpenAdd(false)
-            setTimeout(() => {
-                setLoading(false)
-                setSuccess(true)
-            }, 1000)
+            if (data.status === 208) {
+                setTimeout(() => {
+                    setOpenAdd(false)
+                    setLoading(false)
+                    setSuccess(false)
+                    setMessage('Supplier Name already exists')
+                }, 1000)
+            } else {
+                setTimeout(() => {
+                    setOpenAdd(false)
+                    setLoading(false)
+                    setSuccess(true)
+                }, 1000)
+            }
         } catch (error) {
             setTimeout(() => {
                 setLoading(false)
@@ -431,6 +442,7 @@ function AdminPrice() {
                 success={success}
                 isLoading={loading}
                 action={action}
+                message={message}
             />
 
             <ConfirmationDialog open={openConfirm} message={'All of its items will also be deleted. Are you sure you want to delete?'} 
