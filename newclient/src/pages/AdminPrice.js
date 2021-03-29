@@ -132,6 +132,10 @@ function AdminPrice() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [category, setCategory] = useState(null);
     const [categories, setCategories] = useState([]);
+    const [pending, setPending] = useState({
+        name: "Pending Items",
+        items: []
+    })
     const [name, setName] = useState('');
     const [items, setItems] = useState([])
     const Papa = require('papaparse')
@@ -197,6 +201,10 @@ function AdminPrice() {
         try {
             const temp = await (await suppliers.getAllSupplier()).data.data
             temp.sort((a, b) => a.name.localeCompare(b.name))
+            temp.map(s => {
+                if (s.name === "Pending Items")
+                    setPending(s)
+            })
             setCategories(temp)
             setCategory(temp[0])
         } catch (error) {
@@ -363,8 +371,10 @@ function AdminPrice() {
                                 </Grid>
                                 
                                 <Grid item xs={3}>
-                                    <Badge color="secondary" className={classes.badge} badgeContent={1}>
-                                        <Button variant="contained" color="primary" size="medium" startIcon={<QueryBuilder />} className={classes.pending}>Pending Items</Button>
+                                    <Badge color="secondary" className={classes.badge} badgeContent={pending.items.length}>
+                                        <Button variant="contained" color="primary" size="medium" startIcon={<QueryBuilder />} className={classes.pending} onClick={() => setCategory(pending)}>
+                                            Pending Items
+                                        </Button>
                                     </Badge>
                                 </Grid>
                                 <Grid item xs={4}>
