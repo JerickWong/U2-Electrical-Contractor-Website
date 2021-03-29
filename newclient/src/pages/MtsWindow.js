@@ -131,9 +131,10 @@ function MtsWindow(props) {
   const [isUnsaved, setUnsaved] = useState(false)
   const [suppliers, setSuppliers] = useState([])
   const [units, setUnits] = useState([])
-  const [selected, setSelected] = useState({
-    pendingItems: [],
-    selectedItems: [[], [], [], [], []]
+  const [selectedItems, setSelected] = useState([[], [], [], [], []])
+  const [pendingItems, setPending] = useState({
+    pendingSupplier: null,
+    items: []
   })
   const [rows, setRows] = useState([{
     qty: '',
@@ -248,11 +249,15 @@ function MtsWindow(props) {
         const items = supp.items
         compiled = compiled.concat(items)
         items.map(item => tempUnits.push(item.unit))
+
+        if (supp.name === "Pending Items")
+          pendingItems.pendingSupplier = supp.name
       })
       tempUnits = [...new Set(tempUnits)]
       setUnits(tempUnits)
       setSuppliers(compiled)
-      selected.selectedItems = selected.selectedItems.map(() => compiled)
+      const temp = selectedItems.map(() => compiled)
+      setSelected(temp)
     })
     .catch(err => console.log(`no suppliers: ${err}`))
 
@@ -535,19 +540,19 @@ function MtsWindow(props) {
           setMessage('MTS number already exists')
           setLoading(false)
           setSuccess(false)
-          console.log(error.message)
         }, 1000)
       }
     }
 
-    if (selected.pendingItems.length > 0) {
-      const pending = [...new Set(selected.pendingItems)]
-      const pendingRows = pending.map(index => clean_rows[index])
+    
+    if (pendingItems.items.length > 0) {
+      const pending = [...new Set(pendingItems.items)]
+      const pendingRows = pending.map(index => rows[index])
       try {
-        const payload = []
+        const payload = {items: []}
         pendingRows.map(row => {
           const { unit, description, brand, model, remarks, price } = row
-          payload.push({
+          payload.items.push({
             unit,
             product_name: description,
             brand_name: brand,
@@ -559,8 +564,22 @@ function MtsWindow(props) {
           })
         })
         
+        payload.name = "Pending Items"
+        console.log(pendingItems.pendingSupplier)
+        alert(pendingItems.pendingSupplier)
+
+        const { pendingSupplier } = pendingItems
+
+        if (pendingSupplier === null) {
+          await supplier.insertSupplier(payload)
+          alert('success insert')
+        } else {
+          await supplier.updateSupplierById(pendingSupplier._id, payload)
+          alert('success update')
+        }
 
       } catch (error) {
+        console.log(error)
         alert('failed to add pending items')
       }
     }
@@ -854,13 +873,15 @@ function MtsWindow(props) {
                           <Autocomplete
                             value={row.unit}                            
                             onChange={(event, newValue) => {
+
                               const newRows = [...rows]
                               newRows[index]['unit'] = newValue
-                              setRows(newRows)                              
+                              setRows(newRows)
 
                               let tempItems = [...suppliers]  
                               tempItems = tempItems.filter(item => item.unit === newValue)
-                              selected.selectedItems[index] = tempItems
+                              selectedItems[index] = tempItems
+                              
                             }}
                             options={units}
                             selectOnFocus
@@ -868,7 +889,11 @@ function MtsWindow(props) {
                             freeSolo
                             disabled={confirmed}
                             renderInput={(params) => (
-                              <TextField className={classes.txt1} {...params} multiline/>
+                              <TextField className={classes.txt1} {...params} onChange={(event) => {
+                                const newRows = [...rows]
+                                newRows[index]['unit'] = event.target.value
+                                setRows(newRows)
+                              }} multiline/>
                             )}
                           />
                           </td>
@@ -878,12 +903,15 @@ function MtsWindow(props) {
                             onChange={(event, newValue) => {                              
                               if (newValue && newValue.inputValue) {
                                 alert(`${newValue.inputValue} and its row will be added to pending items. Do not change its row position.`)
-                                selected.pendingItems.push(index) // needs new Set array
+                                pendingItems.items.push(index) // needs new Set array
+                                const newRows = [...rows]
+                                newRows[index]['description'] = newValue.inputValue
+                                setRows(newRows)
                               } else {
                                 
                                 if (newValue) {
                                   const newRows = [...rows]
-                                  newRows[index]['description'] = newValue.product_name || ''
+                                  newRows[index]['description'] = newValue.product_name
                                   setRows(newRows)
 
                                   const { model_name, brand_name, remarks, net_price, unit } = newValue
@@ -925,7 +953,7 @@ function MtsWindow(props) {
                             }}
                             selectOnFocus
                             handleHomeEndKeys
-                            options={selected.selectedItems[index]}
+                            options={selectedItems[index]}
                             getOptionLabel={(option) => {                              
                               // Value selected with enter, right from the input
                               if (typeof option === 'string') {

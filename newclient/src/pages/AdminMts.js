@@ -365,6 +365,7 @@ function AdminMts(props) {
                 }
 
             }
+            console.log('success!')
             setSuccess(true)
         } catch (error) {
             console.log(error)
