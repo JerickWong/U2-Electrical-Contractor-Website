@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import clsx from 'clsx';
 import { makeStyles, Button, useTheme, Drawer, AppBar, Toolbar, List, CssBaseline, IconButton, Divider, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { Assignment, LocalOffer, NoteAdd, Menu, ChevronLeft, ChevronRight, ListAlt, TrendingUp, VerifiedUser, SupervisorAccount } from '@material-ui/icons';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
@@ -78,27 +79,30 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
+      width: theme.spacing(8) + 1,
     },
   },
   toolbar: {
-    display: 'flex',
+    display: 'inline-block',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
+  },  
   login: {
     marginLeft: 800,
-    color: lightIndigo
+    display:'inline-block',
+    color: white
+  },
+  username:{
+    marginLeft:5,
+    color:lightIndigo,
+    display:'inline-block'
   },
   logout: {
-    marginLeft: 75,
+    marginLeft:90,
+    display: 'inline-block',
     color: white,
   },
   listIcon: {
@@ -175,9 +179,11 @@ function AdminNavbar() {
               className={clsx(classes.menuButton, { [classes.hide]: open, })}>
               <Menu />
             </IconButton>
-            <Typography className={classes.login}>Logged in as: {user ? user.username : ''}</Typography>
+            <Typography className={classes.login}>Logged in as: </Typography>
+            <Typography className={classes.username}>{user ? user.username : ''}</Typography>
             <Link to='/'>
-              <Button onClick={handleLogout} className={classes.logout} startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}>Logout</Button>
+              
+              <Button className={classes.logout} endIcon={<ExitToAppIcon/>}> Logout </Button>
             </Link>            
           </Toolbar>
         </AppBar>

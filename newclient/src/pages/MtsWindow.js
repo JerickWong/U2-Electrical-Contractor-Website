@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-  },
+  },  
   back:{
     color: primary,
     marginBottom:10
@@ -987,8 +987,6 @@ function MtsWindow(props) {
                 })}
                 {/* {rowObject} */}
               </tbody>
-              
-
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
