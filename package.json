@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node server",
     "server": "nodemon server",
-	"client": "npm start --prefix newclient",
-	"dev": "concurrently \"npm run server\" \"npm run client\""
+    "client": "npm start --prefix newclient",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
