@@ -562,7 +562,7 @@ function MtsWindow(props) {
             price_adjustment: 0,
             list_price: price
           })
-        })
+        })  
         
         payload.name = "Pending Items"
         console.log(pendingItems.pendingSupplier)

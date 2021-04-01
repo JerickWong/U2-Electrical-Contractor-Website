@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   login: {
-    marginLeft: 1150,
+    marginLeft: 800,
     color: lightIndigo
   },
   logout:{
