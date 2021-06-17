@@ -1,5 +1,5 @@
 import React, {forwardRef, useState, useEffect} from 'react';
-import MaterialTable, { MTable, MTableToolbar } from 'material-table';
+import { MaterialTable, MTableToolbar } from 'material-table';
 import Add from '@material-ui/icons/Add';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -16,10 +16,9 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { Height } from '@material-ui/icons';
-import supplier from '../../api/supplier'
+import supplier from '../../api/supplier';
 
  export default function PriceTable (props) {
-    
     const [state, setState] = useState({
         columns: [
             { title: 'Unit', field: 'unit' },

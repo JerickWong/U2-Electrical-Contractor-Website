@@ -10,7 +10,7 @@ import '../../styles/login.css';
 import UserAlert from "../UserAlert/UserAlert";
 import Authentication from '../Firestore/auth'
 import users from '../../api/users'
-const avatar = require('../../assets/img/avatar.png');
+const avatar = require('../../img/avatar.png');
 
 
 export default class LoginBox extends Component {
