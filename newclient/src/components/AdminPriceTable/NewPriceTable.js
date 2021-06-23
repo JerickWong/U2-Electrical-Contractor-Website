@@ -20,7 +20,7 @@ import "../../styles/pricetable.css";
 import suppliers from '../../api/supplier';
 
 export default function NewPriceTable(props) {
-  const [category, setCategory] = useState(props.data);
+  const [category, setCategory] = useState({items: []});
   const [isEditing, setIsEditing] = useState([])
   const [edit, setEdit] = useState({
     unit: '',
@@ -70,6 +70,16 @@ export default function NewPriceTable(props) {
     let tempEditing = [...isEditing]
     tempEditing[index] = false
     setIsEditing(tempEditing)
+  }
+
+  async function deleteItem(index) {
+    category.items.splice(index, 1)
+    try {
+      await suppliers.updateSupplierById(category._id, category)
+      setCategory({...category})
+    } catch (error) {
+      alert(error)
+    }
   }
 
   return (
@@ -124,7 +134,7 @@ export default function NewPriceTable(props) {
                       <Clear />
                     </Button>
                     :
-                    <Button size="sm" variant="light" className="actionButton">
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => deleteItem(index)}>
                       <DeleteOutline />
                     </Button>
                   }
@@ -136,43 +146,6 @@ export default function NewPriceTable(props) {
           "No items to show"
         }
       </tbody>
-      
-{/* 
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form>
-            <Form.Control type="text" size="sm" />
-          </td>
-          <td>
-            <Form.Control type="text" size="sm" />
-          </Form>
-        </td>
-        <td>
-          <Button size="sm" variant="light" className="actionButton">
-            <DeleteOutline />
-          </Button>
-          <Button size="sm" variant="light" className="actionButton">
-            <Edit />
-          </Button>
-        </td> */}
-      
     </Table>
   );
 }
