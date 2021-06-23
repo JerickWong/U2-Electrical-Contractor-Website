@@ -35,6 +35,11 @@ export default function NewPriceTable(props) {
 
   useEffect(() => {
     setCategory(props.data);
+    const temp = []
+    props.data.items.map(() => {
+      temp.push(false)
+    })
+    setIsEditing(temp)
   }, [props.data]);
 
   function editItem(event, item, index) {
