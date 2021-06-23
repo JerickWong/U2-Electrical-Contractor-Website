@@ -309,7 +309,6 @@ function AdminPrice() {
       header: true,
       transformHeader: (h) => h.trim(),
       complete: (results, file) => {
-        alert("Parsing complete!");
         // setOpen(true)
         // setLoading(true)
         // setSuccess(false)
@@ -320,7 +319,7 @@ function AdminPrice() {
         // }, 1000)
 
         // check if not open, meaning youre not adding a new supplier
-        if (!open) {
+        if (!openAdd) {
           const final = window.confirm(
             `Are you sure you want to replace the price list for ${category.name}?`
           );
@@ -404,7 +403,7 @@ function AdminPrice() {
       payload.items.push(tobeAdded)
       await suppliers.updateSupplierById(category._id, payload)
       setOpenPending(false)
-      
+
       let index = categories.indexOf(category)
       categories[index] = payload
       setCategory(payload)
@@ -536,7 +535,7 @@ function AdminPrice() {
               fullWidth="true"
               maxWidth="sm"
               open={openAdd}
-              onClose={() => setOpenAdd(false)}
+              onClose={() => {setOpenAdd(false); setItems([]);}}
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
@@ -559,11 +558,14 @@ function AdminPrice() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
+                    <InputLabel className={classes.modalFields}>
+                      {items.length ? "Upload Complete!" : "No Uploaded File"}
+                    </InputLabel>
                   </FormGroup>
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setOpenAdd(false)} variant="contained">
+                <Button onClick={() => {setOpenAdd(false); setItems([]);}} variant="contained">
                   Cancel
                 </Button>
                 <Button

@@ -88,7 +88,7 @@ export default function NewPriceTable(props) {
   }
 
   return (
-    <Table bordered responsive className="priceTable" size="lg">
+    <Table bordered responsive striped hover className="priceTable" size="lg">
       <thead>
         <tr>
           <th width="100">Unit</th>
