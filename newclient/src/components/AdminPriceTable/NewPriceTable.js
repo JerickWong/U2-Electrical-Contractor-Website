@@ -77,14 +77,14 @@ export default function NewPriceTable(props) {
       <thead>
         <tr>
           <th width="100">Unit</th>
-          <th width="250">Product Name</th>
+          <th width="600">Product Name</th>
           <th width="230">Brand</th>
           <th width="230">Model</th>
           <th width="170">List Price</th>
           <th width="200">Price Adjustment</th>
           <th width="170">Net Price</th>
           <th width="220">Remarks</th>
-          <th width="250">Action</th>
+          <th width="400">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -102,7 +102,13 @@ export default function NewPriceTable(props) {
                 <td>{isEditing[index] ? <Form.Control onChange={e => setEdit({...edit, net_price: e.target.value})} type="text" size="sm" defaultValue={cat.net_price ? cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => setEdit({...edit, remarks: e.target.value})} type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>
-                {
+                  {
+                    category.name === "Pending Items" &&
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => updateItem(index)}>
+                      <Add />
+                    </Button>
+                  }
+                  {
                     isEditing[index] ? 
                     <Button size="sm" variant="light" className="actionButton" onClick={() => updateItem(index)}>
                       <Check />
