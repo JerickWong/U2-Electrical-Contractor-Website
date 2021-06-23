@@ -178,9 +178,7 @@ function AdminPrice() {
   const handleChange = (event) => {
     setCategory(event.target.value);
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+
   const handleClose = () => {
     setOpen(false);
     window.location.reload();
@@ -223,7 +221,20 @@ function AdminPrice() {
     setItems([]);
   };
 
-  
+  const editSupplier = async () => {
+    try {
+      const payload = { ...category };
+      payload.name = name;
+      await suppliers.updateSupplierById(payload._id, payload);
+      
+      const index = categories.indexOf(category)
+      categories[index] = payload
+      setCategory(payload)
+    } catch (error) {
+      alert("error saving to database");
+    }
+    setOpenEdit(false)
+  }
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: ".csv, text/csv",
@@ -459,7 +470,7 @@ function AdminPrice() {
                     color="primary"
                     className={classes.button3}
                     startIcon={<Edit />}
-                    onClick={() => setOpenEdit(true)}
+                    onClick={() => {setOpenEdit(true); setName(category.name)}}
                   >
                     Edit Supplier
                   </Button>
@@ -562,7 +573,7 @@ function AdminPrice() {
               <DialogContent dividers>
                 <div className="modalAcc">
                   <FormGroup>
-                    <InputLabel className={classes.modalFields}>
+                    <InputLabel className={classes.modalFields} onChange={e => setName(e.target.value)}>
                       Name
                     </InputLabel>
                     <Input
@@ -598,7 +609,7 @@ function AdminPrice() {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    name ? addSupplier() : alert("Enter a name");
+                    name ? editSupplier() : alert("Enter a name");
                   }}
                 >
                   Save Changes
