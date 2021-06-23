@@ -206,7 +206,7 @@ function Cost() {
         <div className="project">
           <Grid container spacing={2}>
             <Grid container item xs={6}>
-              <FormControl className={classes.formControl}>
+              <FormControl className={classes.formControl} fullWidth>
                 <InputLabel id="demo-simple-select-label">
                   Project Name
                 </InputLabel>
@@ -234,7 +234,7 @@ function Cost() {
               alignItems="center"
             >
               <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">View</InputLabel>
+                <InputLabel id="demo-simple-select-label" fullWidth>View</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   defaultValue="Daily"

@@ -61,9 +61,11 @@ Col{
 }
 
 .tbl1{
-  margin-left:50px;
   font-family:'Roboto', sans-serif;
   color:#767676;
+  align-items:center;
+  vertical-align: middle;
+  position: relative;
 }
 
 .excel{
