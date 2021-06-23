@@ -220,6 +220,8 @@ function AdminPrice() {
     setItems([]);
   };
 
+  
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: ".csv, text/csv",
     onDropAccepted: (files) => parseCSV(files),
@@ -410,7 +412,9 @@ function AdminPrice() {
                   </FormControl>
                 </Grid>
                 <Grid container item xs={4} />
-                <Grid container item
+                <Grid
+                  container
+                  item
                   xs={4}
                   direction="row"
                   justify="flex-end"
@@ -450,7 +454,7 @@ function AdminPrice() {
                     color="primary"
                     className={classes.button3}
                     startIcon={<Edit />}
-                    onClick={() => setOpenAdd(true)}
+                    onClick={handleClickOpen}
                   >
                     Edit Supplier
                   </Button>
@@ -532,6 +536,65 @@ function AdminPrice() {
                 </Button>
               </DialogActions>
             </Dialog>
+
+            {/* EDIT SUPPLIER*/}
+            <Dialog
+              fullWidth="true"
+              maxWidth="sm"
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                <h3>Edit Supplier</h3>
+              </DialogTitle>
+              <DialogContent dividers>
+                <div className="modalAcc">
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Name
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <AccountCircle color="primary" />
+                        </InputAdornment>
+                      }
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </FormGroup>
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpenAdd(false)} variant="contained">
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  {...getRootProps({ className: "dropzone" })}
+                >
+                  <input {...getInputProps()} />
+                  <FontAwesomeIcon className="excel" icon={faFileExcel} />
+                  Upload Excel
+                </Button>
+                <Button
+                  className={classes.create}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    name ? addSupplier() : alert("Enter a name");
+                  }}
+                >
+                  Save Changes
+                </Button>
+              </DialogActions>
+            </Dialog>
+
             <div className="tbl">
               <Grid container spacing={1}>
                 <Grid item xs={2}>
