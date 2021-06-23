@@ -273,7 +273,7 @@ function MtsWindow(props) {
           items.map((item) => tempUnits.push(item.unit));
 
           if (supp.name === "Pending Items")
-            pendingItems.pendingSupplier = supp.name;
+            pendingItems.pendingSupplier = supp;
         });
         tempUnits = [...new Set(tempUnits)];
         setUnits(tempUnits);
@@ -570,6 +570,8 @@ function MtsWindow(props) {
           await supplier.insertSupplier(payload);
           alert("success insert");
         } else {
+          // get supplier by name == Pending Items
+          payload.items = [...pendingSupplier.items, ...payload.items]
           await supplier.updateSupplierById(pendingSupplier._id, payload);
           alert("success update");
         }
