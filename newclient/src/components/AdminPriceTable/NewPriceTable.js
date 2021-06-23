@@ -106,7 +106,7 @@ useEffect(() => {
   }
 
   return (
-    <Table bordered responsive className="priceTable">
+    <Table bordered responsive className="priceTable" size="lg">
       <thead>
         <tr>
           <th width="100">Unit</th>
@@ -114,7 +114,7 @@ useEffect(() => {
           <th width="230">Brand</th>
           <th width="230">Model</th>
           <th width="170">List Price</th>
-          <th width="170">Price Adjustment</th>
+          <th width="200">Price Adjustment</th>
           <th width="170">Net Price</th>
           <th width="220">Remarks</th>
           <th width="250">Action</th>
@@ -126,21 +126,35 @@ useEffect(() => {
           category.items.map((cat, index) => {
             return (
               <tr key={cat._id}>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.unit}/> : cat.unit}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.product_name}/> : cat.product_name}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.brand_name}/> : cat.brand_name}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.model_name}/> : cat.model_name}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.price_adjustment}/> : cat.price_adjustment ? cat.price_adjustment : ''}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.remarks}/> : cat.remarks}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.unit ? cat.unit.slice() : ''}/> : cat.unit}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.product_name ? cat.product_name.slice() : ''}/> : cat.product_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.brand_name ? cat.brand_name.slice() : ''}/> : cat.brand_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.model_name ? cat.model_name.slice() : ''}/> : cat.model_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.list_price ? cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment.slice() : ''}/> : cat.price_adjustment ? cat.price_adjustment : ''}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.net_price ? cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>
-                  <Button size="sm" variant="light" className="actionButton" onClick={ event => editItem(event, cat, index)}>
-                    <Edit />
-                  </Button>
-                  <Button size="sm" variant="light" className="actionButton">
-                    <DeleteOutline />
-                  </Button>
+                {
+                    isEditing[index] ? 
+                    <Button size="sm" variant="light" className="actionButton">
+                      <Check />
+                    </Button>
+                    :
+                    <Button size="sm" variant="light" className="actionButton" onClick={ event => editItem(event, cat, index)}>
+                      <Edit />
+                    </Button>
+                  }
+                  {
+                    isEditing[index] ?
+                    <Button size="sm" variant="light" className="actionButton">
+                      <Clear />
+                    </Button>
+                    :
+                    <Button size="sm" variant="light" className="actionButton">
+                      <DeleteOutline />
+                    </Button>
+                  }
                 </td>
               </tr>
             )
