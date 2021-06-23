@@ -102,7 +102,12 @@ useEffect(() => {
     let tempEditing = [...isEditing]
     tempEditing[index] = true
     setIsEditing(tempEditing)
-    console.log(isEditing)
+  }
+
+  function cancelEdit(index) {
+    let tempEditing = [...isEditing]
+    tempEditing[index] = false
+    setIsEditing(tempEditing)
   }
 
   return (
@@ -147,7 +152,7 @@ useEffect(() => {
                   }
                   {
                     isEditing[index] ?
-                    <Button size="sm" variant="light" className="actionButton">
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => cancelEdit(index)}>
                       <Clear />
                     </Button>
                     :
