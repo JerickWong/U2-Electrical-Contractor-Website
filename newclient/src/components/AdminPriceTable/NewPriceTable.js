@@ -114,7 +114,7 @@ export default function NewPriceTable(props) {
                 <td>
                   {
                     category.name === "Pending Items" &&
-                    <Button size="sm" variant="light" className="actionButton" onClick={() => updateItem(index)}>
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => {props.setOpenPending(true); props.setPendingItem(cat)}}>
                       <Add />
                     </Button>
                   }
