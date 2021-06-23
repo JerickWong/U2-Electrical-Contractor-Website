@@ -17,6 +17,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { FormControl, Form, Col, Button, Container } from "react-bootstrap";
 import "../../styles/pricetable.css";
+import suppliers from '../../api/supplier';
 
 export default function NewPriceTable(props) {
   const [state, setState] = useState({
@@ -32,6 +33,28 @@ export default function NewPriceTable(props) {
     ],
     data: props.data,
   });
+  const [category, setCategory] = useState(null);
+  const [categories, setCategories] = useState(null);
+
+  const fetchSuppliers = async () => {
+    try {
+        let temp = await (await suppliers.getAllSupplier()).data.data
+        temp.sort((a, b) => a.name.localeCompare(b.name))
+        temp = temp.filter( s => {
+            if (s.name !== "Pending Items")
+                return s
+        })
+        setCategories(temp)
+        setCategory(temp[0])
+    } catch (error) {
+        console.log(error)
+        alert('error in getting suppliers')
+    }
+}
+
+useEffect(() => {
+    fetchSuppliers();
+}, [])
 
   useEffect(() => {
     setState({ ...state, data: props.data });
@@ -67,18 +90,50 @@ export default function NewPriceTable(props) {
 
   return (
     <Table size="sm" bordered className="priceTable">
-      <tr>
-        <th width="100">Unit</th>
-        <th width="250">Product Name</th>
-        <th width="230">Brand</th>
-        <th width="230">Model</th>
-        <th width="170">List Price</th>
-        <th width="170">Price Adjustment</th>
-        <th width="170">Net Price</th>
-        <th width="220">Remarks</th>
-        <th width="160">Actions</th>
-      </tr>
-      <tr>
+      <thead>
+        <tr>
+          <th width="100">Unit</th>
+          <th width="250">Product Name</th>
+          <th width="230">Brand</th>
+          <th width="230">Model</th>
+          <th width="170">List Price</th>
+          <th width="170">Price Adjustment</th>
+          <th width="170">Net Price</th>
+          <th width="220">Remarks</th>
+          <th width="160">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          category ?
+          category.items.map((cat, index) => {
+            return (
+              <tr key={cat._id}>
+                <td>{cat.unit}</td>
+                <td>{cat.product_name}</td>
+                <td>{cat.brand_name}</td>
+                <td>{cat.model_name}</td>
+                <td>{cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{cat.price_adjustment ? cat.price_adjustment : ''}</td>
+                <td>{cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{cat.remarks}</td>
+                <td>
+                  <Button size="sm" variant="light" className="actionButton">
+                    <DeleteOutline />
+                  </Button>
+                  <Button size="sm" variant="light" className="actionButton">
+                    <Edit />
+                  </Button>
+                </td>
+              </tr>
+            )
+          })
+          :
+          "No items to show"
+        }
+      </tbody>
+      
+{/* 
         <td>
           <Form.Control type="text" size="sm" />
         </td>
@@ -114,8 +169,8 @@ export default function NewPriceTable(props) {
           <Button size="sm" variant="light" className="actionButton">
             <Edit />
           </Button>
-        </td>
-      </tr>
+        </td> */}
+      
     </Table>
   );
 }
