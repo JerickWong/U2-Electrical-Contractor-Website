@@ -346,7 +346,7 @@ function Accounts() {
                     <MuiThemeProvider theme={theme}>
                         <div className={classes.root}>
                             <Grid container spacing={2}>
-                                <Grid item xs={3}>
+                                <Grid container item xs={3}>
                                     <FormControl>
                                         <InputLabel className={classes.label} id="demo-simple-select-label">Role</InputLabel>
                                         <Select labelId="demo-simple-select-label" className={classes.txt} defaultValue={'All'} value={role} onChange={handleChange} id="demo-simple-select">
@@ -356,8 +356,15 @@ function Accounts() {
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={1} />
-                                <Grid item xs={3}>
+                                <Grid cpntainer item xs={1} />
+                                <Grid 
+                                    container 
+                                    item 
+                                    xs={3}
+                                    direction="row"
+                                    justify="center"
+                                    alignItems="center"
+                                >
                                     <TextField
                                         className={classes.txt1}
                                         size="normal"
@@ -373,8 +380,15 @@ function Accounts() {
                                         onChange={handleSearch}
                                     />
                                 </Grid>
-                                <Grid item xs={2} />
-                                <Grid item xs={3}>
+                                <Grid container item xs={2} />
+                                <Grid 
+                                    container 
+                                    item 
+                                    xs={3}
+                                    direction="row"
+                                    justify="flex-end"
+                                    alignItems="center"
+                                >
                                     <Button color="primary" className={classes.button1} onClick={() => setOpenAdd(true)} variant="contained">
                                         Create Account
                                     </Button>
