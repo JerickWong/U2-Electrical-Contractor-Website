@@ -380,9 +380,9 @@ function AdminPrice() {
 
   return (
     <div className="PriceList">
-      <Container className="cont">
+      <Container  className="cont">
         <main className={classes.content}>
-          <div className={classes.toolbar} />
+          <div className={classes.toolbar}/>
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
               <Grid container spacing={1}>

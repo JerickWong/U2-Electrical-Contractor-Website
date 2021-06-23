@@ -66,56 +66,60 @@ export default function NewPriceTable(props) {
   };
 
   return (
-    <Table size="sm" bordered className="priceTable">
-      <tr>
-        <th width="100">Unit</th>
-        <th width="250">Product Name</th>
-        <th width="230">Brand</th>
-        <th width="230">Model</th>
-        <th width="170">List Price</th>
-        <th width="170">Price Adjustment</th>
-        <th width="170">Net Price</th>
-        <th width="220">Remarks</th>
-        <th width="160">Actions</th>
-      </tr>
-      <tr>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form.Control type="text" size="sm" />
-        </td>
-        <td>
-          <Form>
+    <Table bordered responsive className="priceTable">
+      <thead>
+        <tr>
+          <th width="100">Unit</th>
+          <th width="250">Product Name</th>
+          <th width="230">Brand</th>
+          <th width="230">Model</th>
+          <th width="170">List Price</th>
+          <th width="170">Price Adjustment</th>
+          <th width="170">Net Price</th>
+          <th width="220">Remarks</th>
+          <th width="160">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
             <Form.Control type="text" size="sm" />
-          </Form>
-        </td>
-        <td>
-          <Form>
+          </td>
+          <td>
             <Form.Control type="text" size="sm" />
-          </Form>
-        </td>
-        <td>
-          <Button size="sm" variant="light" className="actionButton">
-            <DeleteOutline />
-          </Button>
-          <Button size="sm" variant="light" className="actionButton">
-            <Edit />
-          </Button>
-        </td>
-      </tr>
+          </td>
+          <td>
+            <Form.Control type="text" size="sm" />
+          </td>
+          <td>
+            <Form.Control type="text" size="sm" />
+          </td>
+          <td>
+            <Form.Control type="text" size="sm" />
+          </td>
+          <td>
+            <Form.Control type="text" size="sm" />
+          </td>
+          <td>
+            <Form>
+              <Form.Control type="text" size="sm" />
+            </Form>
+          </td>
+          <td>
+            <Form>
+              <Form.Control type="text" size="sm" />
+            </Form>
+          </td>
+          <td>
+            <Button size="sm" variant="light" className="actionButton">
+              <DeleteOutline />
+            </Button> 
+            <Button size="sm" variant="light" className="actionButton">
+              <Edit />
+            </Button>
+          </td>
+        </tr>
+      </tbody>
     </Table>
   );
 }
