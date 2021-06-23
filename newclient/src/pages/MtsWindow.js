@@ -700,9 +700,9 @@ function MtsWindow(props) {
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
               <Grid container spacing={3}>
-                <Grid 
-                  container 
-                  item 
+                <Grid
+                  container
+                  item
                   xs={4}
                   direction="row"
                   justify="flex-start"
@@ -728,9 +728,9 @@ function MtsWindow(props) {
                     inputProps={{ maxLength: 50 }}
                   ></TextField>
                 </Grid>
-                <Grid 
-                  container 
-                  item 
+                <Grid
+                  container
+                  item
                   xs={4}
                   direction="row"
                   justify="center"
@@ -789,9 +789,9 @@ function MtsWindow(props) {
                     inputProps={{ maxLength: 6 }}
                   />
                 </Grid>
-                <Grid 
-                  container 
-                  item 
+                <Grid
+                  container
+                  item
                   direction="row"
                   justify="flex-start"
                   alignItems="center"
@@ -821,9 +821,9 @@ function MtsWindow(props) {
                     inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
-                <Grid 
-                  container 
-                  item 
+                <Grid
+                  container
+                  item
                   xs={4}
                   direction="row"
                   justify="center"
@@ -850,9 +850,9 @@ function MtsWindow(props) {
                     inputProps={{ maxLength: 50 }}
                   />
                 </Grid>
-                <Grid 
-                  container 
-                  item 
+                <Grid
+                  container
+                  item
                   xs={4}
                   direction="row"
                   justify="flex-end"
@@ -1110,7 +1110,14 @@ function MtsWindow(props) {
             </Table>
             <div className="tbl">
               <Grid container spacing={3}>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
                   <TextField
                     error={!requested_by}
                     value={requested_by}
@@ -1126,7 +1133,14 @@ function MtsWindow(props) {
                     inputProps={{ readOnly: confirmed, maxLength: 50 }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                >
                   <TextField
                     className={classes.txt4}
                     value={takenout_by}
@@ -1139,14 +1153,28 @@ function MtsWindow(props) {
                     inputProps={{ readOnly: confirmed, maxLength: 50 }}
                   ></TextField>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="flex-end"
+                  alignItems="center"
+                >
                   <Paper className={classes.paper}>
                     <Typography className={classes.total}>
                       Total Amount: {total_amount}
                     </Typography>
                   </Paper>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
                   <TextField
                     className={classes.txt4}
                     value={approved_by}
@@ -1159,7 +1187,14 @@ function MtsWindow(props) {
                     inputProps={{ readOnly: confirmed, maxLength: 50 }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                >
                   <TextField
                     className={classes.txt4}
                     value={received_by}
@@ -1172,7 +1207,14 @@ function MtsWindow(props) {
                     inputProps={{ readOnly: confirmed, maxLength: 50 }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={4}
+                  direction="row"
+                  justify="flex-end"
+                  alignItems="center"
+                >
                   <Button
                     variant="contained"
                     color="primary"

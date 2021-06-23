@@ -406,7 +406,7 @@ function AdminMts(props) {
                 <div className="project">
                     {renderError()}
                     <Grid container spacing={1}>
-                        <Grid item xs={6}>
+                        <Grid container item xs={6}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Name</InputLabel>
                                 <Select labelId="demo-simple-select-label" value={current_project} size="large" onChange={handleChange} name="selectProject">
@@ -420,8 +420,8 @@ function AdminMts(props) {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={1} />
-                        <Grid item xs={4}>
+                        <Grid container item xs={1} />
+                        <Grid container item xs={4}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="demo-simple-select-label">Project Status</InputLabel>
                                 <Select labelId="demo-simple-select-label" defaultValue={'All'} size="large" onChange={handleChange} id="selectStatus">
