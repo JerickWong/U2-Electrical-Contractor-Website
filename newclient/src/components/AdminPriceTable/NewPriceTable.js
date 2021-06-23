@@ -89,7 +89,7 @@ useEffect(() => {
   };
 
   return (
-    <Table bordered responsive className="priceTable">
+    <Table bordered responsive className="priceTable" size="lg">
       <thead>
         <tr>
           <th width="100">Unit</th>
@@ -97,10 +97,10 @@ useEffect(() => {
           <th width="230">Brand</th>
           <th width="230">Model</th>
           <th width="170">List Price</th>
-          <th width="170">Price Adjustment</th>
+          <th width="200">Price Adjustment</th>
           <th width="170">Net Price</th>
           <th width="220">Remarks</th>
-          <th width="160">Action</th>
+          <th width="300">Action</th>
         </tr>
       </thead>
       <tbody>
