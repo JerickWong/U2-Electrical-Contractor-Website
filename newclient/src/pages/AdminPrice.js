@@ -73,7 +73,6 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
-    flexWrap: "wrap",
   },
   button: {
     backgroundColor: primary,
@@ -82,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     width: 200,
   },
   pending: {
-    marginLeft: 80,
+    alignItems: "flex-end",
   },
   save: {
     width: 200,
@@ -231,14 +230,14 @@ function AdminPrice() {
 
   const fetchSuppliers = async () => {
     //try {
-      const temp = await (await suppliers.getAllSupplier()).data.data;
-      temp.sort((a, b) => a.name.localeCompare(b.name));
-      temp.map((s) => {
-        if (s.name === "Pending Items") setPending(s);
-      });
-      setCategories(temp);
-      setCategory(temp[0]);
-    //} 
+    const temp = await (await suppliers.getAllSupplier()).data.data;
+    temp.sort((a, b) => a.name.localeCompare(b.name));
+    temp.map((s) => {
+      if (s.name === "Pending Items") setPending(s);
+    });
+    setCategories(temp);
+    setCategory(temp[0]);
+    //}
     /*catch (error) {
       console.log(error);
       alert("error in getting suppliers");
@@ -380,13 +379,13 @@ function AdminPrice() {
 
   return (
     <div className="PriceList">
-      <Container  className="cont">
+      <Container fluid="lg" className="cont">
         <main className={classes.content}>
-          <div className={classes.toolbar}/>
+          <div className={classes.toolbar} />
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
               <Grid container spacing={1}>
-                <Grid item xs={4}>
+                <Grid container item xs={4}>
                   <FormControl>
                     <InputLabel id="demo-simple-select-label" shrink={true}>
                       Suppliers
@@ -410,8 +409,13 @@ function AdminPrice() {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={4}></Grid>
-                <Grid item xs={3}>
+                <Grid container item xs={4} />
+                <Grid container item
+                  xs={4}
+                  direction="row"
+                  justify="flex-end"
+                  alignItems="center"
+                >
                   <Badge
                     color="secondary"
                     className={classes.badge}
@@ -429,7 +433,7 @@ function AdminPrice() {
                     </Button>
                   </Badge>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid container item xs={2}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -440,7 +444,7 @@ function AdminPrice() {
                     Add Supplier
                   </Button>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid container item xs={3}>
                   <Button
                     variant="contained"
                     color="secondary"

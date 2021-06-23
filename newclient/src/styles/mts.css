@@ -49,6 +49,8 @@ Col{
 }
 .cont{
   top: 50%;
+  display: flex;
+  align-items:center;
   vertical-align: middle;
   position: relative;
 }
