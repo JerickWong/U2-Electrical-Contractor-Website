@@ -17,6 +17,7 @@ import {
   InputAdornment,
   InputBase,
   IconButton,
+  CircularProgress,
 } from "@material-ui/core";
 import {
   AddBox,
@@ -156,11 +157,13 @@ const useStyles = makeStyles((theme) => ({
 function AdminPrice() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [action, setAction] = useState("");
   const [message, setMessage] = useState("");
   const [openAdd, setOpenAdd] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false)
   const [openConfirm, setOpenConfirm] = useState(false);
   const [category, setCategory] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -231,7 +234,8 @@ function AdminPrice() {
   });
 
   const fetchSuppliers = async () => {
-    //try {
+    setIsLoading(true)
+    try {
     const temp = await (await suppliers.getAllSupplier()).data.data;
     temp.sort((a, b) => a.name.localeCompare(b.name));
     temp.map((s) => {
@@ -239,11 +243,12 @@ function AdminPrice() {
     });
     setCategories(temp);
     setCategory(temp[0]);
-    //}
-    /*catch (error) {
+    }
+    catch (error) {
       console.log(error);
       alert("error in getting suppliers");
-    }*/
+    }
+    setIsLoading(false)
   };
 
   useEffect(() => {
@@ -454,7 +459,7 @@ function AdminPrice() {
                     color="primary"
                     className={classes.button3}
                     startIcon={<Edit />}
-                    onClick={handleClickOpen}
+                    onClick={() => setOpenEdit(true)}
                   >
                     Edit Supplier
                   </Button>
@@ -475,10 +480,16 @@ function AdminPrice() {
             </div>
             <br></br>
             {/*<PriceTable data={category ? category.items : []} category={category}/>*/}
-            <NewPriceTable
-              data={category ? category.items : []}
-              category={category}
-            />
+            {
+              isLoading ?
+              <CircularProgress />
+              :
+
+              <NewPriceTable
+                data={category ? category : []}
+                category={category}
+              />
+            }
             {/* ADD SUPPLIER */}
             <Dialog
               fullWidth="true"
@@ -541,7 +552,7 @@ function AdminPrice() {
             <Dialog
               fullWidth="true"
               maxWidth="sm"
-              open={open}
+              open={openEdit}
               onClose={handleClose}
               aria-labelledby="form-dialog-title"
             >
@@ -569,7 +580,7 @@ function AdminPrice() {
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setOpenAdd(false)} variant="contained">
+                <Button onClick={() => setOpenEdit(false)} variant="contained">
                   Cancel
                 </Button>
                 <Button

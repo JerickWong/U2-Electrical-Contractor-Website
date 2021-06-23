@@ -20,21 +20,7 @@ import "../../styles/pricetable.css";
 import suppliers from '../../api/supplier';
 
 export default function NewPriceTable(props) {
-  const [state, setState] = useState({
-    columns: [
-      { title: "Unit", field: "unit" },
-      { title: "Product Name", field: "product_name" },
-      { title: "Brand", field: "brand_name" },
-      { title: "Model", field: "model_name" },
-      { title: "List Price", field: "list_price" },
-      { title: "Price Adjustment", field: "price_adjustment" },
-      { title: "Net Price", field: "net_price" },
-      { title: "Remarks", field: "remarks" },
-    ],
-    data: props.data,
-  });
-  const [category, setCategory] = useState(null);
-  const [categories, setCategories] = useState(null);
+  const [category, setCategory] = useState(props.data);
   const [isEditing, setIsEditing] = useState([])
   const [edit, setEdit] = useState({
     unit: '',
@@ -47,66 +33,9 @@ export default function NewPriceTable(props) {
     remarks: '',
   })
 
-  const fetchSuppliers = async () => {
-    try {
-        let temp = await (await suppliers.getAllSupplier()).data.data
-        let tempEditing = []
-        temp.sort((a, b) => a.name.localeCompare(b.name))
-        temp = temp.filter( s => {
-          if (s.name !== "Pending Items")
-              return s
-        })
-
-        if (temp[0]) {
-          temp[0].items.map(() => {
-            tempEditing.push(false)
-          })
-        }
-
-        setCategories(temp)
-        setCategory(temp[0])
-        setIsEditing(tempEditing)
-    } catch (error) {
-        console.log(error)
-        alert('error in getting suppliers')
-    }
-}
-
-useEffect(() => {
-    fetchSuppliers();
-}, [])
-
   useEffect(() => {
-    setState({ ...state, data: props.data });
+    setCategory(props.data);
   }, [props.data]);
-
-  const tableIcons = {
-    Add: forwardRef((props, ref) => <Add {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => (
-      <ChevronRight {...props} ref={ref} />
-    )),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => (
-      <ChevronLeft {...props} ref={ref} />
-    )),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => (
-      <ArrowDownward {...props} ref={ref} />
-    )),
-    ThirdStateCheck: forwardRef((props, ref) => (
-      <Remove {...props} ref={ref} />
-    )),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
-  };
 
   function editItem(event, item, index) {
     setEdit({
@@ -160,7 +89,7 @@ useEffect(() => {
       </thead>
       <tbody>
         {
-          category ?
+          category.items.length ?
           category.items.map((cat, index) => {
             return (
               <tr key={cat._id}>
