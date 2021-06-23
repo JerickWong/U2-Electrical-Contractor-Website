@@ -35,17 +35,27 @@ export default function NewPriceTable(props) {
   });
   const [category, setCategory] = useState(null);
   const [categories, setCategories] = useState(null);
+  const [isEditing, setIsEditing] = useState([])
 
   const fetchSuppliers = async () => {
     try {
         let temp = await (await suppliers.getAllSupplier()).data.data
+        let tempEditing = []
         temp.sort((a, b) => a.name.localeCompare(b.name))
         temp = temp.filter( s => {
-            if (s.name !== "Pending Items")
-                return s
+          if (s.name !== "Pending Items")
+              return s
         })
+
+        if (temp[0]) {
+          temp[0].items.map(() => {
+            tempEditing.push(false)
+          })
+        }
+
         setCategories(temp)
         setCategory(temp[0])
+        setIsEditing(tempEditing)
     } catch (error) {
         console.log(error)
         alert('error in getting suppliers')
@@ -88,6 +98,13 @@ useEffect(() => {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
   };
 
+  function editItem(event, item, index) {
+    let tempEditing = [...isEditing]
+    tempEditing[index] = true
+    setIsEditing(tempEditing)
+    console.log(isEditing)
+  }
+
   return (
     <Table bordered responsive className="priceTable">
       <thead>
@@ -100,13 +117,7 @@ useEffect(() => {
           <th width="170">Price Adjustment</th>
           <th width="170">Net Price</th>
           <th width="220">Remarks</th>
-          <th width="160">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-          <th width="160">Actions</th>
+          <th width="250">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -115,20 +126,20 @@ useEffect(() => {
           category.items.map((cat, index) => {
             return (
               <tr key={cat._id}>
-                <td>{cat.unit}</td>
-                <td>{cat.product_name}</td>
-                <td>{cat.brand_name}</td>
-                <td>{cat.model_name}</td>
-                <td>{cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{cat.price_adjustment ? cat.price_adjustment : ''}</td>
-                <td>{cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{cat.remarks}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.unit}/> : cat.unit}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.product_name}/> : cat.product_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.brand_name}/> : cat.brand_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.model_name}/> : cat.model_name}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.price_adjustment}/> : cat.price_adjustment ? cat.price_adjustment : ''}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control type="text" size="sm" value={cat.remarks}/> : cat.remarks}</td>
                 <td>
-                  <Button size="sm" variant="light" className="actionButton">
-                    <DeleteOutline />
+                  <Button size="sm" variant="light" className="actionButton" onClick={ event => editItem(event, cat, index)}>
+                    <Edit />
                   </Button>
                   <Button size="sm" variant="light" className="actionButton">
-                    <Edit />
+                    <DeleteOutline />
                   </Button>
                 </td>
               </tr>
