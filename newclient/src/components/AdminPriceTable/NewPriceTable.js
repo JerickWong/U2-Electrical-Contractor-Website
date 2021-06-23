@@ -15,8 +15,8 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
-import { Height } from "@material-ui/icons";
-import supplier from "../../api/supplier";
+import { FormControl, Form, Col, Button, Container } from "react-bootstrap";
+import "../../styles/pricetable.css";
 
 export default function NewPriceTable(props) {
   const [state, setState] = useState({
@@ -66,66 +66,56 @@ export default function NewPriceTable(props) {
   };
 
   return (
-    <Table
-      icons={tableIcons}
-      columns={state.columns}
-      data={state.data}
-      editable={{
-        onRowAdd: (newData) =>
-          new Promise((resolve) => {
-            try {
-              setTimeout(async () => {
-                const data = [...state.data];
-                data.push(newData);
-                setState({ ...state, data });
-
-                await supplier.updateSupplierById(props.category._id, {
-                  ...props.category,
-                  items: data,
-                });
-                resolve();
-              }, 600);
-            } catch (error) {
-              alert("error in adding");
-            }
-          }),
-        onRowUpdate: async (newData, oldData) =>
-          new Promise((resolve) => {
-            setTimeout(async () => {
-              try {
-                if (oldData) {
-                  const data = [...state.data];
-                  data[data.indexOf(oldData)] = newData;
-                  setState({ ...state, data });
-                  await supplier.updateSupplierById(props.category._id, {
-                    ...props.category,
-                    items: data,
-                  });
-                }
-                resolve();
-              } catch (error) {
-                alert("error in updating");
-              }
-            }, 600);
-          }),
-        onRowDelete: async (oldData) =>
-          new Promise((resolve) => {
-            setTimeout(async () => {
-              try {
-                const data = [...state.data];
-                data.splice(data.indexOf(oldData), 1);
-                setState({ ...state, data });
-                await supplier.updateSupplierById(props.category._id, {
-                  ...props.category,
-                  items: data,
-                });
-                resolve();
-              } catch (error) {
-                alert("error in deleting");
-              }
-            }, 600);
-          }),
-      }}
-    />
+    <Table size="sm" bordered className="priceTable">
+      <tr>
+        <th width="100">Unit</th>
+        <th width="250">Product Name</th>
+        <th width="230">Brand</th>
+        <th width="230">Model</th>
+        <th width="170">List Price</th>
+        <th width="170">Price Adjustment</th>
+        <th width="170">Net Price</th>
+        <th width="220">Remarks</th>
+        <th width="160">Actions</th>
+      </tr>
+      <tr>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form.Control type="text" size="sm" />
+        </td>
+        <td>
+          <Form>
+            <Form.Control type="text" size="sm" />
+          </Form>
+        </td>
+        <td>
+          <Form>
+            <Form.Control type="text" size="sm" />
+          </Form>
+        </td>
+        <td>
+          <Button size="sm" variant="light" className="actionButton">
+            <DeleteOutline />
+          </Button>
+          <Button size="sm" variant="light" className="actionButton">
+            <Edit />
+          </Button>
+        </td>
+      </tr>
+    </Table>
   );
 }
