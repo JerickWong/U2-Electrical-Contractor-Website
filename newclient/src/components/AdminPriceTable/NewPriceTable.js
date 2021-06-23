@@ -104,12 +104,6 @@ useEffect(() => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>
-          <th width="160">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
         {
           category ?
           category.items.map((cat, index) => {
