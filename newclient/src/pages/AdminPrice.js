@@ -444,6 +444,17 @@ function AdminPrice() {
                     Add Supplier
                   </Button>
                 </Grid>
+                <Grid container item xs={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button3}
+                    startIcon={<Edit />}
+                    onClick={() => setOpenAdd(true)}
+                  >
+                    Edit Supplier
+                  </Button>
+                </Grid>
                 <Grid container item xs={3}>
                   <Button
                     variant="contained"
