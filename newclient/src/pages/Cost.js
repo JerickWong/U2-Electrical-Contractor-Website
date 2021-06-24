@@ -183,11 +183,17 @@ function Cost() {
   async function getMTS() {
     setLoading(true);
     try {
-      const cost = await (
-        await api.getCost({ project_name: current_project })
-      ).data.data;
-      console.log(cost);
-      console.log(cost[0].balance);
+      let cost
+      if (view === "Daily") {
+        cost = await (
+          await api.getCost({ project_name: current_project })
+        ).data.data;
+      } else {
+        cost = await (
+          await api.getMonthlyCost({ project_name: current_project })
+        ).data.data;
+      }
+      
       setMts(cost);
     } catch (error) {
       setMts([]);
@@ -214,7 +220,7 @@ function Cost() {
 
   useEffect(() => {
     getMTS();
-  }, [current_project]);
+  }, [current_project, view]);
 
   return (
     <div className="App">
@@ -251,6 +257,7 @@ function Cost() {
                       labelId="demo-simple-select-label"
                       defaultValue="Daily"
                       value={view}
+                      onChange={e => setView(e.target.value)}
                       size="large"
                       name="selectView"
                     >
@@ -285,8 +292,10 @@ function Cost() {
               {mts.map((m) => {
                 return (
                   <tr>
-                    <td>{moment(m.date).format("MM-DD-YYYY")}</td>
-                    <td>{m.MTS_number}</td>
+                    <td>{view === "Daily" ? moment(m.date).format("MM-DD-YYYY") : 
+                    `${moment(m.start_date).format("MM-DD-YYYY")} - ${moment(m.end_date).format("MM-DD-YYYY")}`}</td>
+                    <td>{view === "Daily" ? m.MTS_number : 
+                    `${m.start_mts} - ${m.end_mts}`}</td>
                     <td>{m.total_amount}</td>
                     <td>{m.balance}</td>
                   </tr>

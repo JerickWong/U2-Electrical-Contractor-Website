@@ -351,7 +351,7 @@ const getMonthlyCost = async (req, res) => {
                     start_date: mtsdate,
                     start_mts: m.MTS_number,
                     end_mts: m.MTS_number,
-                    amount: m.total_amount,
+                    total_amount: m.total_amount,
                 })
 
                 month = mtsdate.getMonth();
