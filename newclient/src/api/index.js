@@ -13,6 +13,7 @@ export const getMTSByProject = payload => api.post(`/MTS/project`, payload)
 export const getMTSProjects = () => api.get(`/project-names`)
 export const getDelivered = payload => api.post(`/delivered-objects`, payload)
 export const getCost = payload => api.post(`/cost`, payload)
+export const getMonthlyCost = payload => api.post(`/monthly-cost`, payload)
 export const getDeliveredSummary = payload => api.post(`/delivered-summary`, payload)
 export const getDates = payload => api.post(`/project-dates`, payload)
 
@@ -34,6 +35,7 @@ const apis = {
     getMTSProjects,
     getDelivered,
     getCost,
+    getMonthlyCost,
     getDeliveredSummary,
     getDates,
     insertDelivered,

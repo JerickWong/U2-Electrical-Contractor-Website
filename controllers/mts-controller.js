@@ -104,6 +104,7 @@ const deleteMTS = async (req, res) => {
                 .json({ success: false, error: `mts not found` })
         }
 
+        console.log('successful delete')
         return res.status(200).json({ success: true, data: mts })
     }).catch(err => console.log(err))
 }
@@ -116,7 +117,7 @@ const getMTSById = async (req, res) => {
         }
 
         if (!mts) {
-            console.log('not found')
+            console.log('getmtsbyid not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -132,7 +133,7 @@ const getAllMTS = async (req, res) => {
             return res.status(400).json({ success: false, error: err })
         }
         if (!mtss.length) {
-            console.log('not found')
+            console.log('getallmts not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -149,7 +150,7 @@ const getMTSProjects = async (req, res) => {
         }
 
         if (!mts) {
-            console.log('not found')
+            console.log('getmtsprojects not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -168,7 +169,7 @@ const getMTSByProject = async (req, res) => {
             }
     
             if (!mts.length) {
-                console.log('not found')
+                console.log('getmtsbyproject not found')
                 return res
                     .status(204)
                     .json({ success: false, error: `MTS not found` })
@@ -186,7 +187,7 @@ const getMTSByProject = async (req, res) => {
             }
     
             if (!mts.length) {
-                console.log('not found')
+                console.log('getmtsbyproject not found')
                 return res
                     .status(204)
                     .json({ success: false, error: `MTS not found` })
@@ -204,7 +205,7 @@ const getDelivered = async (req, res) => {
         }
 
         if (!mts.length) {
-            console.log('not found')
+            console.log('getDelivered not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -275,7 +276,7 @@ const getCost = async (req, res) => {
         }
 
         if (!mts.length) {
-            console.log('not found')
+            console.log('getCost not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -298,6 +299,88 @@ const getCost = async (req, res) => {
     })
 }
 
+const getMonthlyCost = async (req, res) => {
+    await MTS.find({ project_name: req.body.project_name, status: "Confirmed" }).lean().exec( (err, mts) => {
+        if (err) {
+            console.log(err)
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!mts.length) {
+            console.log('getCost not found')
+            return res
+                .status(404)
+                .json({ success: false, error: `MTS not found` })
+        }
+        
+        const sortedByDate = mts.sort((a, b) => a.date - b.date)
+        
+        sortedByDate[0].balance = sortedByDate[0].total_amount
+                
+        sortedByDate.reduce((total, mts) => {
+            if (total.total_amount)
+                mts.balance = total.total_amount + mts.total_amount
+            else
+                mts.balance = total + mts.total_amount
+
+            return mts.balance
+        })
+
+        const finalDate = []
+        let month = new Date (sortedByDate[0].date).getMonth() -1
+        let year = new Date(sortedByDate[0].date).getFullYear()
+        let i = 0
+        sortedByDate.map((m, index) => {
+            const mtsdate = new Date(m.date)
+            if (month < mtsdate.getMonth() || year !== mtsdate.getFullYear()) {
+                // lagay start and end date, end date use index-1
+                // lagay start mts and end mts#
+                // lagay balance += from previous index
+                year = mtsdate.getFullYear()
+
+                if (index !== 0) {
+                    // lagay end date
+                    // lagay end mts#
+                    // lagay balance
+                    finalDate[i].end_date = sortedByDate[index-1].date
+                    finalDate[i].end_mts = sortedByDate[index-1].MTS_number
+                    finalDate[i].balance = sortedByDate[index-1].balance
+                    i++;
+                }
+
+                finalDate.push({
+                    start_date: mtsdate,
+                    start_mts: m.MTS_number,
+                    amount: m.total_amount,
+                })
+
+                month = mtsdate.getMonth();
+            }
+        })
+
+        const tempmts = sortedByDate[sortedByDate.length-1]
+        const tempmts2 = finalDate[finalDate.length-1]
+        const tempdate = new Date(tempmts.date)
+        const tempdate2 = new Date(tempmts2.start_date)
+        if (tempdate.getMonth() === tempdate2.getMonth()) {
+            tempmts2.end_date = tempdate
+            tempmts2.end_mts = tempmts.MTS_number
+            tempmts2.balance = tempmts.balance 
+        } else {
+            finalDate.push({
+                start_date: tempdate,
+                end_date: tempdate,
+                start_mts: tempmts.MTS_number,
+                end_mts: tempmts.MTS_number,
+                amount: tempmts.total_amount,
+                balance: tempmts.balance
+            })
+        }
+        
+        return res.status(200).json({ success: true, data: finalDate })
+    })
+}
+
 const getDeliveredSummary = async (req, res) => {
     await MTS.find({ project_name: req.body.project_name, date: { $gte: req.body.from, $lte: req.body.to }, status: "Confirmed" }).lean().exec( (err, mts) => {
         if (err) {
@@ -306,7 +389,7 @@ const getDeliveredSummary = async (req, res) => {
         }
 
         if (!mts.length) {
-            console.log('not found')
+            console.log('getDeliveredSummary not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -346,7 +429,7 @@ const getProjectDates = async (req, res) => {
         }
 
         if (!mts.length) {
-            console.log('not found')
+            console.log('getProjectDates not found')
             return res
                 .status(404)
                 .json({ success: false, error: `MTS not found` })
@@ -372,6 +455,7 @@ module.exports = {
     getMTSProjects,
     getDelivered,
     getCost,
+    getMonthlyCost,
     getDeliveredSummary,
     getProjectDates
 }
