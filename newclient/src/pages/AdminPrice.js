@@ -165,14 +165,17 @@ function AdminPrice() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false)
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openPending, setOpenPending] = useState(false);
   const [category, setCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [pending, setPending] = useState({
     name: "Pending Items",
     items: [],
   });
+  const [tobeAdded, setTobeAdded] = useState({})
   const [name, setName] = useState("");
   const [items, setItems] = useState([]);
+  
   const Papa = require("papaparse");
 
   const handleChange = (event) => {
@@ -306,7 +309,6 @@ function AdminPrice() {
       header: true,
       transformHeader: (h) => h.trim(),
       complete: (results, file) => {
-        alert("Parsing complete!");
         // setOpen(true)
         // setLoading(true)
         // setSuccess(false)
@@ -317,7 +319,7 @@ function AdminPrice() {
         // }, 1000)
 
         // check if not open, meaning youre not adding a new supplier
-        if (!open) {
+        if (!openAdd) {
           const final = window.confirm(
             `Are you sure you want to replace the price list for ${category.name}?`
           );
@@ -394,6 +396,31 @@ function AdminPrice() {
       alert("error in deleting supplier");
     }
   };
+
+  const addPendingItem = async() => {
+    try {
+      let payload = {...category}
+      payload.items.push(tobeAdded)
+      await suppliers.updateSupplierById(category._id, payload)
+      setOpenPending(false)
+
+      let index = categories.indexOf(category)
+      categories[index] = payload
+      setCategory(payload)
+
+      payload = {...pending}
+      index = pending.items.indexOf(tobeAdded)
+      payload.items.splice(index, 1)
+      await suppliers.updateSupplierById(pending._id, payload)
+
+      index = categories.indexOf(pending)
+      categories[index] = payload
+      setPending(payload)
+
+    } catch (error) {
+      alert(error)
+    }
+  }
 
   return (
     <div className="PriceList">
@@ -499,6 +526,8 @@ function AdminPrice() {
               <NewPriceTable
                 data={category ? category : []}
                 category={category}
+                setOpenPending={setOpenPending}
+                setPendingItem={setTobeAdded}
               />
             }
             {/* ADD SUPPLIER */}
@@ -506,7 +535,7 @@ function AdminPrice() {
               fullWidth="true"
               maxWidth="sm"
               open={openAdd}
-              onClose={() => setOpenAdd(false)}
+              onClose={() => {setOpenAdd(false); setItems([]);}}
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
@@ -529,11 +558,14 @@ function AdminPrice() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
+                    <InputLabel className={classes.modalFields}>
+                      {items.length ? "Upload Complete!" : "No Uploaded File"}
+                    </InputLabel>
                   </FormGroup>
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setOpenAdd(false)} variant="contained">
+                <Button onClick={() => {setOpenAdd(false); setItems([]);}} variant="contained">
                   Cancel
                 </Button>
                 <Button
@@ -559,12 +591,12 @@ function AdminPrice() {
               </DialogActions>
             </Dialog>
 
-            {/* EDIT SUPPLIER*/}
+            {/* EDIT SUPPLIER */}
             <Dialog
               fullWidth="true"
               maxWidth="sm"
               open={openEdit}
-              onClose={handleClose}
+              onClose={() => setOpenEdit(false)}
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
@@ -613,6 +645,157 @@ function AdminPrice() {
                   }}
                 >
                   Save Changes
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            {/* ADD PENDING ITEMS */}
+            <Dialog
+              fullWidth="true"
+              maxWidth="sm"
+              open={openPending}
+              onClose={() => setOpenPending(false)}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                <h3>Select which supplier to add this item</h3>
+              </DialogTitle>
+              <DialogContent dividers>
+                <div className="modalAcc">
+                  <FormControl>
+                    <InputLabel id="demo-simple-select-label" className={classes.modalFields} shrink={true}>
+                      Suppliers
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      className={classes.modalFields}
+                      defaultValue={categories[0]}
+                      value={category}
+                      onChange={handleChange}
+                      size="normal"
+                      id="demo-simple-select"
+                    >
+                      {categories.map((cat) => {
+                        return (
+                          <MenuItem key={cat._id} value={cat}>
+                            {cat.name}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                  <br/><br/><br/><br/>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Unit
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.unit}
+                      onChange={(e) => setTobeAdded({...tobeAdded, unit: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Product Name
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.product_name}
+                      onChange={(e) => setTobeAdded({...tobeAdded, product_name: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Brand
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.brand_name}
+                      onChange={(e) => setTobeAdded({...tobeAdded, brand_name: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Model
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.model_name}
+                      onChange={(e) => setTobeAdded({...tobeAdded, model_name: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      List Price
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.list_price}
+                      onChange={(e) => setTobeAdded({...tobeAdded, list_price: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Price Adjustment
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.price_adjustment}
+                      onChange={(e) => setTobeAdded({...tobeAdded, price_adjustment: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Net Price
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.net_price}
+                      onChange={(e) => setTobeAdded({...tobeAdded, net_price: e.target.value})}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Remarks
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      
+                      defaultValue={tobeAdded.remarks}
+                      onChange={(e) => setTobeAdded({...tobeAdded, remarks: e.target.value})}
+                    />
+                  </FormGroup>
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpenPending(false)} variant="contained">
+                  Cancel
+                </Button>
+                <Button
+                  className={classes.create}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    tobeAdded.unit && tobeAdded.product_name ? addPendingItem() : alert("Enter a name");
+                  }}
+                >
+                  Add This Item
                 </Button>
               </DialogActions>
             </Dialog>

@@ -35,6 +35,11 @@ export default function NewPriceTable(props) {
 
   useEffect(() => {
     setCategory(props.data);
+    const temp = []
+    props.data.items.map(() => {
+      temp.push(false)
+    })
+    setIsEditing(temp)
   }, [props.data]);
 
   function editItem(event, item, index) {
@@ -83,7 +88,7 @@ export default function NewPriceTable(props) {
   }
 
   return (
-    <Table bordered responsive className="priceTable" size="lg">
+    <Table bordered responsive striped hover className="priceTable" size="lg">
       <thead>
         <tr>
           <th width="100">Unit</th>
@@ -114,7 +119,7 @@ export default function NewPriceTable(props) {
                 <td>
                   {
                     category.name === "Pending Items" &&
-                    <Button size="sm" variant="light" className="actionButton" onClick={() => updateItem(index)}>
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => {props.setOpenPending(true); props.setPendingItem(cat)}}>
                       <Add />
                     </Button>
                   }
