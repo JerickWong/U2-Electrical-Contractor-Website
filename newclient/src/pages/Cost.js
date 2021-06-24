@@ -30,14 +30,6 @@ const useStyles = makeStyles((theme) => ({
     width: 290,
     marginLeft: 15,
   },
-  container: {
-    [theme.breakpoints.down("sm")]: {
-      maxWidth: "xs"
-    },
-    [theme.breakpoints.up("lg")]:{
-      maxWidth: "md"
-    }
-  },
   projectField: {
     direction: "row",
     justify: "flex-start",
