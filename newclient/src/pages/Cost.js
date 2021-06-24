@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { Save } from "@material-ui/icons";
 import {
   makeStyles,
@@ -8,6 +8,7 @@ import {
   TextField,
   InputLabel,
   Button,
+  Container,
   Grid,
   Select,
   FormControl,
@@ -20,15 +21,10 @@ import api from "../api";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    width: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
-  },
-  formControl: {
-    width: 300,
-    marginLeft: theme.spacing(7),
   },
   textField: {
     width: 290,
@@ -202,11 +198,18 @@ function Cost() {
 
   return (
     <div className="App">
-      <Container className="cont">
+      <Container className="cont" maxWidth='lg'>
         <div className="project">
           <Grid container spacing={2}>
-            <Grid container item xs={6}>
-              <FormControl className={classes.formControl} fullWidth>
+            <Grid
+              container
+              item
+              xl={6} lg={6} md={6} sm={12} xs={12}
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+            >
+              <FormControl className={classes.formControl}>
                 <InputLabel id="demo-simple-select-label">
                   Project Name
                 </InputLabel>
@@ -224,17 +227,18 @@ function Cost() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid container item xs={3} />
             <Grid
               container
               item
-              xs={3}
+              xl={6} lg={6} md={6} sm={12} xs={12}
               direction="row"
               justify="flex-end"
               alignItems="center"
             >
               <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label" fullWidth>View</InputLabel>
+                <InputLabel id="demo-simple-select-label">
+                  View
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   defaultValue="Daily"
