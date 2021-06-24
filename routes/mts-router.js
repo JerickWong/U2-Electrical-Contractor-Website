@@ -12,6 +12,7 @@ router.post('/MTS/project', MTSCntrl.getMTSByProject)
 router.get('/project-names', MTSCntrl.getMTSProjects)
 router.post('/delivered-objects', MTSCntrl.getDelivered)
 router.post('/cost', MTSCntrl.getCost)
+router.post('/monthly-cost', MTSCntrl.getMonthlyCost)
 router.post('/delivered-summary', MTSCntrl.getDeliveredSummary)
 router.post('/project-dates', MTSCntrl.getProjectDates)
 
