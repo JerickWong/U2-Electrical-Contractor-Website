@@ -169,7 +169,6 @@ function Navbars() {
       const data = (
         await users.getUser({ token: localStorage.getItem("token") })
       ).data;
-
       setUser(data.data.username);
     } catch (error) {
       setUser(null);
@@ -215,7 +214,7 @@ function Navbars() {
             >
               <Typography className={classes.login}>Logged in as:</Typography>
               <Typography className={classes.username}>
-                {user ? user.username : ""}
+                {user ? user : ""}
               </Typography>
               <Link to="/">
                 <Button
