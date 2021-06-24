@@ -30,6 +30,34 @@ const useStyles = makeStyles((theme) => ({
     width: 290,
     marginLeft: 15,
   },
+  container: {
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "xs"
+    },
+    [theme.breakpoints.up("lg")]:{
+      maxWidth: "md"
+    }
+  },
+  projectField: {
+    direction: "row",
+    justify: "flex-start",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      direction: "row",
+      justify: "flex-start",
+      alignItems: "center",
+    },
+  },
+  viewField: {
+    direction: "row",
+    justify: "flex-end",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      direction: "row",
+      justify: "flex-start",
+      alignItems: "center",
+    },
+  },
 }));
 
 const dbMTS = db.collection("MTS-Collection");
@@ -198,88 +226,84 @@ function Cost() {
 
   return (
     <div className="App">
-      <Container className="cont" maxWidth='lg'>
-        <div className="project">
-          <Grid container spacing={2}>
-            <Grid
-              container
-              item
-              xl={6} lg={6} md={6} sm={12} xs={12}
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-            >
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">
-                  Project Name
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  value={current_project}
-                  size="large"
-                  onChange={handleChange}
-                  name="selectProject"
-                >
-                  {/* {projects} */}
-                  {projects.map((project) => {
-                    return <MenuItem value={project}>{project}</MenuItem>;
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid
-              container
-              item
-              xl={6} lg={6} md={6} sm={12} xs={12}
-              direction="row"
-              justify="flex-end"
-              alignItems="center"
-            >
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">
-                  View
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  defaultValue="Daily"
-                  value={view}
-                  size="large"
-                  name="selectView"
-                >
-                  <MenuItem value="Daily">Daily</MenuItem>
-                  <MenuItem value="Monthly">Monthly</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            {/* <Grid item xs={2}>
+      <div className="cont">
+        <Container className={classes.container}>
+          <div className="project">
+            <Grid container spacing={2}>
+              <div className={classes.projectField}>
+                <Grid container item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">
+                      Project Name
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      value={current_project}
+                      size="large"
+                      onChange={handleChange}
+                      name="selectProject"
+                    >
+                      {/* {projects} */}
+                      {projects.map((project) => {
+                        return <MenuItem value={project}>{project}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </div>
+              <div className={classes.viewField}>
+                <Grid container item xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">View</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      defaultValue="Daily"
+                      value={view}
+                      size="large"
+                      name="selectView"
+                    >
+                      <MenuItem value="Daily">Daily</MenuItem>
+                      <MenuItem value="Monthly">Monthly</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </div>
+              {/* <Grid item xs={2}>
                             <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>
                         </Grid> */}
-          </Grid>
-        </div>
-        <Table className="tbl1" hover borderColor="#8f8f94" border="#8f8f94">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>MTS No.</th>
-              <th>Amount</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* {mts} */}
-            {mts.map((m) => {
-              return (
-                <tr>
-                  <td>{moment(m.date).format("MM-DD-YYYY")}</td>
-                  <td>{m.MTS_number}</td>
-                  <td>{m.total_amount}</td>
-                  <td>{m.balance}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Container>
+            </Grid>
+          </div>
+          <Table
+            className="tbl1"
+            hover
+            borderColor="#8f8f94"
+            border="#8f8f94"
+            responsive="md"
+          >
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>MTS No.</th>
+                <th>Amount</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* {mts} */}
+              {mts.map((m) => {
+                return (
+                  <tr>
+                    <td>{moment(m.date).format("MM-DD-YYYY")}</td>
+                    <td>{m.MTS_number}</td>
+                    <td>{m.total_amount}</td>
+                    <td>{m.balance}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </Container>
+      </div>
     </div>
   );
 }
