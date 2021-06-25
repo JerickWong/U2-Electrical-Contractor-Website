@@ -964,6 +964,9 @@ function MtsWindow(props) {
                         <Autocomplete
                           value={row.description}
                           onChange={(event, newValue) => {
+                            const newRows = [...rows];
+                            newRows[index]["description"] = newValue.inputValue;
+                            setRows(newRows);
                             if (newValue && newValue.inputValue) {
                               alert(
                                 `${newValue.inputValue} and its row will be added to pending items. Do not change its row position.`
@@ -993,18 +996,14 @@ function MtsWindow(props) {
                                 if (net_price) {
                                   row.price = net_price;
                                   updateTotal(event, index);
+                                }
                                   if (model_name) row.model = model_name;
                                   else row.model = "";
                                   if (brand_name) row.brand = brand_name;
                                   else row.brand = "";
                                   if (remarks) row.remarks = remarks;
                                   else row.remarks = "";
-                                }
-                              } else {
-                                const newRows = [...rows];
-                                newRows[index]["description"] = ""
-                                setRows(newRows);
-                              }
+                              } 
                             }
                           }}
                           filterOptions={(options, params) => {
@@ -1012,17 +1011,13 @@ function MtsWindow(props) {
 
                             // Suggest the creation of a new value
                             if (params.inputValue !== "") {
-                              const newRows = [...rows];
-                              newRows[index]["description"] = params.inputValue;
-                              setRows(newRows);
-                              
                               filtered.push({
                                 inputValue: params.inputValue,
                                 product_name: `Add "${params.inputValue}"`,
                               });
                             }
 
-
+                            console.log(filtered)
                             return filtered;
                           }}
                           selectOnFocus
