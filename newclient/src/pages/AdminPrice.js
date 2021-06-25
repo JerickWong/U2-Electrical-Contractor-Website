@@ -20,6 +20,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import {
+  Add,
   AddBox,
   ArrowDownward,
   Edit,
@@ -131,9 +132,6 @@ const useStyles = makeStyles((theme) => ({
     color: primary,
     fontSize: "small",
   },
-  button3: {
-    marginLeft: 5,
-  },
   modalIcons: {
     color: "primary",
     display: "flex",
@@ -152,6 +150,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     marginLeft: 30,
   },
+  button3:{ 
+    marginTop: 10
+  }
 }));
 
 function AdminPrice() {
@@ -163,7 +164,7 @@ function AdminPrice() {
   const [action, setAction] = useState("");
   const [message, setMessage] = useState("");
   const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPending, setOpenPending] = useState(false);
   const [category, setCategory] = useState(null);
@@ -172,10 +173,10 @@ function AdminPrice() {
     name: "Pending Items",
     items: [],
   });
-  const [tobeAdded, setTobeAdded] = useState({})
+  const [tobeAdded, setTobeAdded] = useState({});
   const [name, setName] = useState("");
   const [items, setItems] = useState([]);
-  
+
   const Papa = require("papaparse");
 
   const handleChange = (event) => {
@@ -229,15 +230,15 @@ function AdminPrice() {
       const payload = { ...category };
       payload.name = name;
       await suppliers.updateSupplierById(payload._id, payload);
-      
-      const index = categories.indexOf(category)
-      categories[index] = payload
-      setCategory(payload)
+
+      const index = categories.indexOf(category);
+      categories[index] = payload;
+      setCategory(payload);
     } catch (error) {
       alert("error saving to database");
     }
-    setOpenEdit(false)
-  }
+    setOpenEdit(false);
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: ".csv, text/csv",
@@ -248,21 +249,20 @@ function AdminPrice() {
   });
 
   const fetchSuppliers = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-    const temp = await (await suppliers.getAllSupplier()).data.data;
-    temp.sort((a, b) => a.name.localeCompare(b.name));
-    temp.map((s) => {
-      if (s.name === "Pending Items") setPending(s);
-    });
-    setCategories(temp);
-    setCategory(temp[0]);
-    }
-    catch (error) {
+      const temp = await (await suppliers.getAllSupplier()).data.data;
+      temp.sort((a, b) => a.name.localeCompare(b.name));
+      temp.map((s) => {
+        if (s.name === "Pending Items") setPending(s);
+      });
+      setCategories(temp);
+      setCategory(temp[0]);
+    } catch (error) {
       console.log(error);
       alert("error in getting suppliers");
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -397,30 +397,29 @@ function AdminPrice() {
     }
   };
 
-  const addPendingItem = async() => {
+  const addPendingItem = async () => {
     try {
-      let payload = {...category}
-      payload.items.push(tobeAdded)
-      await suppliers.updateSupplierById(category._id, payload)
-      setOpenPending(false)
+      let payload = { ...category };
+      payload.items.push(tobeAdded);
+      await suppliers.updateSupplierById(category._id, payload);
+      setOpenPending(false);
 
-      let index = categories.indexOf(category)
-      categories[index] = payload
-      setCategory(payload)
+      let index = categories.indexOf(category);
+      categories[index] = payload;
+      setCategory(payload);
 
-      payload = {...pending}
-      index = pending.items.indexOf(tobeAdded)
-      payload.items.splice(index, 1)
-      await suppliers.updateSupplierById(pending._id, payload)
+      payload = { ...pending };
+      index = pending.items.indexOf(tobeAdded);
+      payload.items.splice(index, 1);
+      await suppliers.updateSupplierById(pending._id, payload);
 
-      index = categories.indexOf(pending)
-      categories[index] = payload
-      setPending(payload)
-
+      index = categories.indexOf(pending);
+      categories[index] = payload;
+      setPending(payload);
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  }
+  };
 
   return (
     <div className="PriceList">
@@ -480,62 +479,87 @@ function AdminPrice() {
                     </Button>
                   </Badge>
                 </Grid>
-                <Grid container item xs={3}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button3}
-                    startIcon={<GroupAdd />}
-                    onClick={() => setOpenAdd(true)}
+                <Grid container spacing={2}>
+                  <Grid
+                    container
+                    item
+                    xs={8}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
                   >
-                    Add Supplier
-                  </Button>
-                </Grid>
-                <Grid container item xs={3}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button3}
-                    startIcon={<Edit />}
-                    onClick={() => {setOpenEdit(true); setName(category.name)}}
+                    <ButtonGroup variant="contained">
+                      <Button
+                        color="primary"
+                        className={classes.button3}
+                        startIcon={<GroupAdd />}
+                        onClick={() => setOpenAdd(true)}
+                      >
+                        Add Supplier
+                      </Button>
+                      <Button
+                        color="primary"
+                        className={classes.button3}
+                        startIcon={<Edit />}
+                        onClick={() => {
+                          setOpenEdit(true);
+                          setName(category.name);
+                        }}
+                      >
+                        Edit Supplier
+                      </Button>
+                      <Button
+                        color="secondary"
+                        disable={!category}
+                        className={classes.button3}
+                        startIcon={<Delete />}
+                        onClick={() => setOpenConfirm(true)}
+                      >
+                        Delete Supplier
+                      </Button>
+                    </ButtonGroup>
+                  </Grid>
+                  <Grid
+                    container
+                    item
+                    xs={4}
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="center"
                   >
-                    Edit Supplier
-                  </Button>
-                </Grid>
-                <Grid container item xs={3}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    disable={!category}
-                    className={classes.button3}
-                    startIcon={<Delete />}
-                    onClick={() => setOpenConfirm(true)}
-                  >
-                    Delete Supplier
-                  </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button3}
+                        startIcon={<Add />}
+                      >
+                        Add Item
+                      </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </div>
             <br></br>
             {/*<PriceTable data={category ? category.items : []} category={category}/>*/}
-            {
-              isLoading ?
+            {isLoading ? (
               <CircularProgress />
-              :
-
+            ) : (
               <NewPriceTable
                 data={category ? category : []}
                 category={category}
                 setOpenPending={setOpenPending}
                 setPendingItem={setTobeAdded}
               />
-            }
+            )}
             {/* ADD SUPPLIER */}
             <Dialog
               fullWidth="true"
               maxWidth="sm"
               open={openAdd}
-              onClose={() => {setOpenAdd(false); setItems([]);}}
+              onClose={() => {
+                setOpenAdd(false);
+                setItems([]);
+              }}
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
@@ -565,7 +589,13 @@ function AdminPrice() {
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => {setOpenAdd(false); setItems([]);}} variant="contained">
+                <Button
+                  onClick={() => {
+                    setOpenAdd(false);
+                    setItems([]);
+                  }}
+                  variant="contained"
+                >
                   Cancel
                 </Button>
                 <Button
@@ -605,7 +635,10 @@ function AdminPrice() {
               <DialogContent dividers>
                 <div className="modalAcc">
                   <FormGroup>
-                    <InputLabel className={classes.modalFields} onChange={e => setName(e.target.value)}>
+                    <InputLabel
+                      className={classes.modalFields}
+                      onChange={(e) => setName(e.target.value)}
+                    >
                       Name
                     </InputLabel>
                     <Input
@@ -663,7 +696,11 @@ function AdminPrice() {
               <DialogContent dividers>
                 <div className="modalAcc">
                   <FormControl>
-                    <InputLabel id="demo-simple-select-label" className={classes.modalFields} shrink={true}>
+                    <InputLabel
+                      id="demo-simple-select-label"
+                      className={classes.modalFields}
+                      shrink={true}
+                    >
                       Suppliers
                     </InputLabel>
                     <Select
@@ -684,7 +721,10 @@ function AdminPrice() {
                       })}
                     </Select>
                   </FormControl>
-                  <br/><br/><br/><br/>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
                   <FormGroup>
                     <InputLabel className={classes.modalFields}>
                       Unit
@@ -692,9 +732,10 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.unit}
-                      onChange={(e) => setTobeAdded({...tobeAdded, unit: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({ ...tobeAdded, unit: e.target.value })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -704,9 +745,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.product_name}
-                      onChange={(e) => setTobeAdded({...tobeAdded, product_name: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          product_name: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -716,9 +761,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.brand_name}
-                      onChange={(e) => setTobeAdded({...tobeAdded, brand_name: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          brand_name: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -728,9 +777,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.model_name}
-                      onChange={(e) => setTobeAdded({...tobeAdded, model_name: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          model_name: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -740,9 +793,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.list_price}
-                      onChange={(e) => setTobeAdded({...tobeAdded, list_price: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          list_price: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -752,9 +809,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.price_adjustment}
-                      onChange={(e) => setTobeAdded({...tobeAdded, price_adjustment: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          price_adjustment: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -764,9 +825,13 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.net_price}
-                      onChange={(e) => setTobeAdded({...tobeAdded, net_price: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({
+                          ...tobeAdded,
+                          net_price: e.target.value,
+                        })
+                      }
                     />
                   </FormGroup>
                   <FormGroup>
@@ -776,15 +841,19 @@ function AdminPrice() {
                     <Input
                       className={classes.modalFields}
                       variant="outlined"
-                      
                       defaultValue={tobeAdded.remarks}
-                      onChange={(e) => setTobeAdded({...tobeAdded, remarks: e.target.value})}
+                      onChange={(e) =>
+                        setTobeAdded({ ...tobeAdded, remarks: e.target.value })
+                      }
                     />
                   </FormGroup>
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setOpenPending(false)} variant="contained">
+                <Button
+                  onClick={() => setOpenPending(false)}
+                  variant="contained"
+                >
                   Cancel
                 </Button>
                 <Button
@@ -792,7 +861,9 @@ function AdminPrice() {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    tobeAdded.unit && tobeAdded.product_name ? addPendingItem() : alert("Enter a name");
+                    tobeAdded.unit && tobeAdded.product_name
+                      ? addPendingItem()
+                      : alert("Enter a name");
                   }}
                 >
                   Add This Item
