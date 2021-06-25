@@ -10,6 +10,7 @@ import {
   Toolbar,
   List,
   Grid,
+  Container,
   CssBaseline,
   IconButton,
   Divider,
@@ -124,16 +125,19 @@ const useStyles = makeStyles((theme) => ({
     color: white,
   },
   username: {
-    marginLeft:5,
+    marginLeft: 10,
     color: lightIndigo,
   },
   logout: {
-    marginLeft:10,
+    marginLeft: 15,
     color: white,
   },
   listIcon: {
     color: light,
   },
+  navbarContainer:{
+    marginLeft: 270
+  }
 }));
 
 function AdminNavbar() {
@@ -210,6 +214,7 @@ function AdminNavbar() {
             >
               <Menu />
             </IconButton>
+            <Container className={classes.navbarContainer} maxWidth="md">
               <Grid
                 container
                 direction="row"
@@ -231,7 +236,8 @@ function AdminNavbar() {
                     Logout{" "}
                   </Button>
                 </Link>
-            </Grid>
+              </Grid>
+            </Container>
           </Toolbar>
         </AppBar>
         <Drawer

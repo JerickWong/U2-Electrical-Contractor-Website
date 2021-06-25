@@ -32,23 +32,17 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 15,
   },
   projectField: {
-    direction: "row",
-    justify: "flex-start",
-    alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.between("lg", "xl")]:{
       direction: "row",
-      justify: "flex-start",
-      alignItems: "center",
-    },
+      justify:"flex-start",
+      
+    }
   },
   viewField: {
-    direction: "row",
-    justify: "flex-end",
-    alignItems: "center",
     [theme.breakpoints.down("sm")]: {
-      direction: "row",
-      justify: "flex-start",
-      alignItems: "center",
+      //direction: "row",
+      //justify: "flex-start",
+      //alignItems: "center",
     },
   },
 }));

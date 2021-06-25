@@ -480,7 +480,7 @@ function AdminPrice() {
                     </Button>
                   </Badge>
                 </Grid>
-                <Grid container item xs={4}>
+                <Grid container item xs={3}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -491,7 +491,7 @@ function AdminPrice() {
                     Add Supplier
                   </Button>
                 </Grid>
-                <Grid container item xs={4}>
+                <Grid container item xs={3}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -502,7 +502,7 @@ function AdminPrice() {
                     Edit Supplier
                   </Button>
                 </Grid>
-                <Grid container item xs={4}>
+                <Grid container item xs={3}>
                   <Button
                     variant="contained"
                     color="secondary"
