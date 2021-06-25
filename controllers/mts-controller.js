@@ -343,7 +343,6 @@ const getMonthlyCost = async (req, res) => {
                     // lagay end mts#
                     // lagay balance
                     finalDate[i].end_date = sortedByDate[index-1].date
-                    finalDate[i].end_mts = sortedByDate[index-1].MTS_number
                     finalDate[i].balance = sortedByDate[index-1].balance
                     i++;
                 }
@@ -351,10 +350,18 @@ const getMonthlyCost = async (req, res) => {
                 finalDate.push({
                     start_date: mtsdate,
                     start_mts: m.MTS_number,
-                    amount: m.total_amount,
+                    end_mts: m.MTS_number,
+                    total_amount: m.total_amount,
                 })
 
                 month = mtsdate.getMonth();
+            } else {
+                finalDate[i].total_amount += m.total_amount
+
+                if (m.MTS_number < finalDate[i].start_mts)
+                    finalDate[i].start_mts = m.MTS_number
+                else if (m.MTS_number > finalDate[i].end_mts)
+                    finalDate[i].end_mts = m.MTS_number
             }
         })
 
@@ -372,7 +379,7 @@ const getMonthlyCost = async (req, res) => {
                 end_date: tempdate,
                 start_mts: tempmts.MTS_number,
                 end_mts: tempmts.MTS_number,
-                amount: tempmts.total_amount,
+                total_amount: tempmts.total_amount,
                 balance: tempmts.balance
             })
         }
