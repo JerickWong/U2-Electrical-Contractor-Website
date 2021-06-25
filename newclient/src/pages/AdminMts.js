@@ -12,7 +12,7 @@ import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
 import api from '../api';
-import suppliers from '../api/supplier';
+import supplier from '../api/supplier';
 import moment from 'moment';
 import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
 import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
@@ -57,9 +57,12 @@ function AdminMts(props) {
     const [isLoading, setIsLoading] = useState(true)
     const [message, setMessage] = useState('')
     const [empty, setEmpty] = useState([])
+    const [suppliers, setSuppliers] = useState([])
+    const [pending, setPending] = useState(null)
+    const [pendingItems, setPendingItems] = useState([])
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
-    const classes = useStyles();    
+    const classes = useStyles();
     // let temprows = []
 
     // useEffect(() => {
@@ -237,9 +240,13 @@ function AdminMts(props) {
         setIsLoading(true)
         try {    
             const projectnames = await (await api.getMTSProjects()).data.data
+            const allSuppliers = await (await supplier.getAllSupplier()).data.data
+            const tempPending = allSuppliers.find( supplier => supplier.name === "Pending Items")
             
             setProjects(projectnames)
             setProject(projectnames[0])
+            setSuppliers(allSuppliers)
+            setPending(tempPending)
             
             setError('')
         } catch (error) {
@@ -287,12 +294,22 @@ function AdminMts(props) {
             setStatus(value)
     };
 
-    const handleConfirm = async (m) => {
+    const handleConfirm = async () => {
+        setLoading(true)
         setOpen(true)
         setAction('Confirm')
+
+        // add pending items
+        if (pendingItems.length > 0) {
+            const payload = {...pending}
+            payload.items = [...pending.items, ...pendingItems]
+            await supplier.updateSupplierById(pending._id, payload)
+            setPendingItems([])
+        }
         
-        m.status = "Confirmed"
-        await api.updateMTSById(m._id, m)
+        // confirm mts
+        current_mts.status = "Confirmed"
+        await api.updateMTSById(current_mts._id, current_mts)
 
         // delivered
         const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
@@ -319,7 +336,12 @@ function AdminMts(props) {
             const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
         }
 
+        setTimeout(() => {
+            setLoading(false)
+          }, 1000)
+        
         setSuccess(true)
+        await getMTS();
     }
     
     const checkItems = async (m) => {
@@ -327,11 +349,11 @@ function AdminMts(props) {
         setOpen(true)
         // check items if in price list or
         try {
-            const allSuppliers = await (await suppliers.getAllSupplier()).data.data
-            const pendingItems = []
-
+            
+            const tempPendingItems = []
+            
             m.rows.map( row => {
-                const found = allSuppliers.find( supplier => supplier.items.find( item => {
+                const found = suppliers.find( supplier => supplier.items.find( item => {
                     return item.unit.trim() === row.unit.trim() &&
                             item.product_name.trim() === row.description.trim() &&
                             item.brand_name.trim() === row.brand.trim() &&
@@ -340,35 +362,36 @@ function AdminMts(props) {
                 }))
 
 
-                if (!found)
-                    pendingItems.push(row)
+                if (!found) {
+                    tempPendingItems.push({
+                        ...row, 
+                        product_name: row.description,
+                        brand_name: row.brand,
+                        model_name: row.model
+                    })
+                }
             })
                 
-            if (pendingItems.length === 0) {
-                await handleConfirm(m)
+            if (tempPendingItems.length === 0) {
+                await handleConfirm()
             } else {
                 // if not found at least 
                 setOpen(false)
                 setMessage('')
                 const temp = ["By proceeding, the following will be added to the Pending Items:"]
-                pendingItems.map( item => {
+                tempPendingItems.map( item => {
                     console.log(item)
-                    temp.push(`${item.description} ${item.brand} ${item.model}`)
+                    temp.push(`${item.unit} ${item.description} ${item.brand} ${item.model}`)
                 })
                 setEmpty(temp)
+                setPendingItems(tempPendingItems)
                 setOpenConfirm(true)
             }
         } catch (error) {
             console.log(error)
             setSuccess(false)
             alert('Something went wrong when confirming')
-        } 
-
-        setTimeout(() => {
-            setLoading(false)
-          }, 1000)
-        
-        await getMTS();
+        }
     }
 
     const handleDelete = async () => {
@@ -437,7 +460,7 @@ function AdminMts(props) {
     }, [current_project, status])
 
     useEffect(() => {
-        if (current_mts) {
+        if (action === "Delete") {
             setMessage(`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`)
         }
     }, [current_mts])    
@@ -538,7 +561,7 @@ function AdminMts(props) {
                                                     {' '}
                                                     {
                                                         m.status === "Confirmed" ? ""
-                                                            : <Button variant="outlined" onClick={() => { checkItems(m) }}>Confirm</Button>
+                                                            : <Button variant="outlined" onClick={() => { setCurrent(m); checkItems(m) }}>Confirm</Button>
                                                     }
                                                     {' '}
                                                     <Button variant="outlined" color="secondary" onClick={() => { setAction('Delete'); setEmpty([]); setCurrent(m); setOpenConfirm(true); }}><DeleteIcon />

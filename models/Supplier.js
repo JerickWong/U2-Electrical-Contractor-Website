@@ -11,9 +11,18 @@ const itemSchema = new mongoose.Schema({
     },
     brand_name: String,
     model_name: String,
-    list_price: Number,
-    price_adjustment: Number,
-    net_price: Number,
+    list_price: {
+        type: Number,
+        default: 0
+    },
+    price_adjustment: {
+        type: Number,
+        default: 0
+    },
+    net_price: {
+        type: Number,
+        default: 0
+    },
     remarks: String,
 })
 
