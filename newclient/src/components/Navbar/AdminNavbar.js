@@ -128,6 +128,7 @@ const useStyles = makeStyles((theme) => ({
     color: lightIndigo,
   },
   logout: {
+    marginLeft:10,
     color: white,
   },
   listIcon: {
