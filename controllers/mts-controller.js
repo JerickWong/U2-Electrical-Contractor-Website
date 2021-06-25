@@ -371,6 +371,7 @@ const getMonthlyCost = async (req, res) => {
             tempmts2.end_date = tempdate
             tempmts2.end_mts = tempmts.MTS_number
             tempmts2.balance = tempmts.balance 
+            tempmts2.total_amount += tempmts.total_amount
         } else {
             finalDate.push({
                 start_date: tempdate,
