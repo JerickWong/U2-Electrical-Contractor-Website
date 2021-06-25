@@ -331,7 +331,14 @@ function AdminMts(props) {
             const pendingItems = []
 
             m.rows.map( row => {
-                const found = allSuppliers.find( supplier => supplier.items.find( item => item.product_name.trim() === row.description.trim()))
+                const found = allSuppliers.find( supplier => supplier.items.find( item => {
+                    return item.unit.trim() === row.unit.trim() &&
+                            item.product_name.trim() === row.description.trim() &&
+                            item.brand_name.trim() === row.brand.trim() &&
+                            item.model_name.trim() === row.model.trim()
+
+                }))
+
 
                 if (!found)
                     pendingItems.push(row)
@@ -346,7 +353,7 @@ function AdminMts(props) {
                 const temp = ["By proceeding, the following will be added to the Pending Items:"]
                 pendingItems.map( item => {
                     console.log(item)
-                    temp.push(item.description)
+                    temp.push(`${item.description} ${item.brand} ${item.model}`)
                 })
                 setEmpty(temp)
                 setOpenConfirm(true)
