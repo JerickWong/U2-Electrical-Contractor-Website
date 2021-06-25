@@ -1000,6 +1000,10 @@ function MtsWindow(props) {
                                   if (remarks) row.remarks = remarks;
                                   else row.remarks = "";
                                 }
+                              } else {
+                                const newRows = [...rows];
+                                newRows[index]["description"] = ""
+                                setRows(newRows);
                               }
                             }
                           }}
@@ -1008,11 +1012,16 @@ function MtsWindow(props) {
 
                             // Suggest the creation of a new value
                             if (params.inputValue !== "") {
+                              const newRows = [...rows];
+                              newRows[index]["description"] = params.inputValue;
+                              setRows(newRows);
+                              
                               filtered.push({
                                 inputValue: params.inputValue,
                                 product_name: `Add "${params.inputValue}"`,
                               });
                             }
+
 
                             return filtered;
                           }}
