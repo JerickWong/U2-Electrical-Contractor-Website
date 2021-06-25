@@ -118,7 +118,7 @@ export default function NewPriceTable(props) {
                 <td>{isEditing[index] ? <Form.Control onChange={e => setEdit({...edit, remarks: e.target.value})} type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>
                   {
-                    category.name === "Pending Items" &&
+                    category.name === "Pending Items" && !isEditing[index] &&
                     <Button size="sm" variant="light" className="actionButton" onClick={() => {props.setOpenPending(true); props.setPendingItem(cat)}}>
                       <Add />
                     </Button>
