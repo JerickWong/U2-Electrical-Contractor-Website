@@ -12,6 +12,7 @@ import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
 import api from '../api';
+import suppliers from '../api/supplier';
 import moment from 'moment';
 import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDialog'
 import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
@@ -54,6 +55,8 @@ function AdminMts(props) {
     const [user, setUser] = useState(fetchUser())
     const [current_mts, setCurrent] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [message, setMessage] = useState('')
+    const [empty, setEmpty] = useState([])
     // const [first, setFirst] = useState('')
     // const [changeProject, setChangeProject] = useState(true)
     const classes = useStyles();    
@@ -283,50 +286,88 @@ function AdminMts(props) {
         else
             setStatus(value)
     };
-    
+
     const handleConfirm = async (m) => {
         setOpen(true)
-        setLoading(true)
         setAction('Confirm')
+        
+        m.status = "Confirmed"
+        await api.updateMTSById(m._id, m)
+
+        // delivered
+        const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
+
+        // new delivered summary, array
+        const dates = await (await api.getDates({ project_name: current_project })).data.data
+        const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+
+        // if project already exists, append delivered object
+        if (isExist) {
+            try {
+                await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
+            } catch (e) {
+                alert('delivered summary did not update')
+            }
+        }
+
+        // create new delivered object
+        else {
+        
+            const delivered_rows = newDelivered.map(row => {
+                return { ...row, estqty: 0 }
+            })
+            const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
+        }
+
+        setSuccess(true)
+    }
+    
+    const checkItems = async (m) => {
+        setLoading(true)
+        setOpen(true)
+        // check items if in price list or
         try {
-            m.status = "Confirmed"
-            await api.updateMTSById(m._id, m)
+            const allSuppliers = await (await suppliers.getAllSupplier()).data.data
+            const pendingItems = []
 
-            // delivered
-            const isExist = await (await api.getDeliveredByProject({ project_name: current_project })).data.success
+            m.rows.map( row => {
+                const found = allSuppliers.find( supplier => supplier.items.find( item => {
+                    return item.unit.trim() === row.unit.trim() &&
+                            item.product_name.trim() === row.description.trim() &&
+                            item.brand_name.trim() === row.brand.trim() &&
+                            item.model_name.trim() === row.model.trim()
 
-            // new delivered summary, array
-            const dates = await (await api.getDates({ project_name: current_project })).data.data
-            const newDelivered = await (await api.getDeliveredSummary({ project_name: current_project, from: dates.start, to: dates.end })).data.data
+                }))
 
-            // if project already exists, append delivered object
-            if (isExist) {
-                try {
-                    await api.updateDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: newDelivered })
-                } catch (error) {
-                    alert('delivered summary did not update')
-                }
-            }
 
-            // create new delivered object
-            else {
-            
-                const delivered_rows = newDelivered.map(row => {
-                    return { ...row, estqty: 0 }
+                if (!found)
+                    pendingItems.push(row)
+            })
+                
+            if (pendingItems.length === 0) {
+                await handleConfirm(m)
+            } else {
+                // if not found at least 
+                setOpen(false)
+                setMessage('')
+                const temp = ["By proceeding, the following will be added to the Pending Items:"]
+                pendingItems.map( item => {
+                    console.log(item)
+                    temp.push(`${item.description} ${item.brand} ${item.model}`)
                 })
-                const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
+                setEmpty(temp)
+                setOpenConfirm(true)
             }
-
-            setSuccess(true)
         } catch (error) {
             console.log(error)
             setSuccess(false)
             alert('Something went wrong when confirming')
-        }
+        } 
 
         setTimeout(() => {
             setLoading(false)
           }, 1000)
+        
         await getMTS();
     }
 
@@ -395,10 +436,11 @@ function AdminMts(props) {
             getMTS()
     }, [current_project, status])
 
-    // useEffect(() => {
-    //     if (current_mts)
-    //         handleConfirm()
-    // }, [current_mts])    
+    useEffect(() => {
+        if (current_mts) {
+            setMessage(`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`)
+        }
+    }, [current_mts])    
 
     return (
         <div className="App">
@@ -496,10 +538,10 @@ function AdminMts(props) {
                                                     {' '}
                                                     {
                                                         m.status === "Confirmed" ? ""
-                                                            : <Button variant="outlined" onClick={() => { handleConfirm(m) }}>Confirm</Button>
+                                                            : <Button variant="outlined" onClick={() => { checkItems(m) }}>Confirm</Button>
                                                     }
                                                     {' '}
-                                                    <Button variant="outlined" color="secondary" onClick={() => { setCurrent(m); setOpenConfirm(true) }}><DeleteIcon />
+                                                    <Button variant="outlined" color="secondary" onClick={() => { setAction('Delete'); setEmpty([]); setCurrent(m); setOpenConfirm(true); }}><DeleteIcon />
                                                     Delete</Button>
                                                     </td>
                                                 </tr>
@@ -522,8 +564,12 @@ function AdminMts(props) {
                 action={action}
             />
 
-            <ConfirmationDialog open={openConfirm} message={`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`} 
-                confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/>
+            <ConfirmationDialog 
+                open={openConfirm} 
+                message={message} 
+                confirm={action === "Delete" ? handleDelete : handleConfirm} handleClose={() => setOpenConfirm(false)}
+                empty={empty}
+            />
             
         </div>
     );

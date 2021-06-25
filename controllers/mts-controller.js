@@ -336,7 +336,6 @@ const getMonthlyCost = async (req, res) => {
                 // lagay start and end date, end date use index-1
                 // lagay start mts and end mts#
                 // lagay balance += from previous index
-                year = mtsdate.getFullYear()
 
                 if (index !== 0) {
                     // lagay end date
@@ -355,6 +354,7 @@ const getMonthlyCost = async (req, res) => {
                 })
 
                 month = mtsdate.getMonth();
+                year = mtsdate.getFullYear();
             } else {
                 finalDate[i].total_amount += m.total_amount
 
@@ -371,8 +371,12 @@ const getMonthlyCost = async (req, res) => {
         const tempdate2 = new Date(tempmts2.start_date)
         if (tempdate.getMonth() === tempdate2.getMonth()) {
             tempmts2.end_date = tempdate
-            tempmts2.end_mts = tempmts.MTS_number
             tempmts2.balance = tempmts.balance 
+
+            if (tempmts2.end_mts < tempmts.MTS_number)
+                tempmts2.end_mts = tempmts.MTS_number
+            else if (tempmts2.start_mts > tempmts.MTS_number)
+                tempmts2.start_mts = tempmts.MTS_number
         } else {
             finalDate.push({
                 start_date: tempdate,
