@@ -372,7 +372,6 @@ const getMonthlyCost = async (req, res) => {
         if (tempdate.getMonth() === tempdate2.getMonth()) {
             tempmts2.end_date = tempdate
             tempmts2.balance = tempmts.balance 
-            tempmts2.total_amount += tempmts.total_amount
 
             if (tempmts2.end_mts < tempmts.MTS_number)
                 tempmts2.end_mts = tempmts.MTS_number
