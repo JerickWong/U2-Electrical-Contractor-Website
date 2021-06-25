@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     flexGrow: 1,
+    marginTop:30
   },
   txt: {
     width: 230,
@@ -346,13 +347,13 @@ function Accounts() {
   return (
     <div className="Accounts">
       {checkAdmin()}
-    {/*style:{{marginLeft:200}}*/}
+      {/*style:{{marginLeft:200}}*/}
       <Container className="cont">
         <div className={classes.toolbar} />
         <MuiThemeProvider theme={theme}>
           <div className={classes.root}>
             <Grid container spacing={2}>
-              <Grid container item xs={3}>
+              <Grid container item xs={12} sm={12} md={3} lg={3} xl={3}>
                 <FormControl>
                   <InputLabel
                     className={classes.label}
@@ -367,6 +368,7 @@ function Accounts() {
                     value={role}
                     onChange={handleChange}
                     id="demo-simple-select"
+                    InputProps={{ maxLength: 50 }}
                   >
                     <MenuItem value={"All"}>All</MenuItem>
                     <MenuItem value={"Employee"}>Employee</MenuItem>
@@ -374,11 +376,15 @@ function Accounts() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid cpntainer item xs={1} />
+              <Grid container item xs={1} />
               <Grid
                 container
                 item
-                xs={3}
+                xs={12}
+                sm={12}
+                md={3}
+                lg={3}
+                xl={3}
                 direction="row"
                 justify="center"
                 alignItems="center"
@@ -394,15 +400,21 @@ function Accounts() {
                         <Search />
                       </InputAdornment>
                     ),
+                    maxLength: 50,
                   }}
                   onChange={handleSearch}
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid container item xs={2} />
               <Grid
                 container
                 item
-                xs={3}
+                xs={12}
+                sm={12}
+                md={3}
+                lg={3}
+                xl={3}
                 direction="row"
                 justify="flex-end"
                 alignItems="center"
@@ -412,6 +424,7 @@ function Accounts() {
                   className={classes.button1}
                   onClick={() => setOpenAdd(true)}
                   variant="contained"
+                  InputProps={{ maxLength: 50 }}
                 >
                   Create Account
                 </Button>

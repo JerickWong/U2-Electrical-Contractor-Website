@@ -877,7 +877,7 @@ function MtsWindow(props) {
                     required
                   />
                 </Grid>
-                <Grid container item xs={4}>
+                <Grid container item xs={5}>
                   <Button
                     variant="contained"
                     size="large"
@@ -888,7 +888,7 @@ function MtsWindow(props) {
                     Add Row
                   </Button>
                 </Grid>
-                <Grid item xs={8} />
+                <Grid item xs={7} />
               </Grid>
             </div>
 
