@@ -316,15 +316,18 @@ function AdminNavbar() {
                 />
               </ListItem>
             </Link>
-            <Link to="/Accounts">
-              <ListItem button key="Accounts">
-                <ListItemIcon className={classes.listIcon}>
-                  <SupervisorAccount />
-                </ListItemIcon>
-                <ListItemText className={classes.listIcon} primary="Accounts" />
-              </ListItem>
-            </Link>
-          </List>
+            {
+              user.type === "Admin" &&
+              <Link to="/Accounts">
+                <ListItem button key="Accounts">
+                  <ListItemIcon className={classes.listIcon}>
+                    <SupervisorAccount />
+                  </ListItemIcon>
+                  <ListItemText className={classes.listIcon} primary="Accounts" />
+                </ListItem>
+              </Link>
+            }
+            </List>
         </Drawer>
       </MuiThemeProvider>
     </div>
