@@ -182,6 +182,7 @@ function Accounts() {
 
   const handleChange = (event) => {
     setRole(event.target.value);
+    document.getElementById('search').value = ""
   };
   const handleNewRole = (event) => {
     setNewRole(event.target.value);
@@ -402,6 +403,7 @@ function Accounts() {
                     ),
                     maxLength: 50,
                   }}
+                  id="search"
                   onChange={handleSearch}
                   inputProps={{ maxLength: 50 }}
                 />

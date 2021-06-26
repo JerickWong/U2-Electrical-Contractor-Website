@@ -76,6 +76,7 @@ function Price() {
     const handleChange = (event) => {
         setCategory(event.target.value);
         setBackup(event.target.value);
+        document.getElementById('search').value = ""
     };    
 
     const {getRootProps, getInputProps} = 
@@ -225,6 +226,7 @@ function Price() {
                                             ),
                                         }}
                                         onChange={handleSearch}
+                                        id="search"
                                     />
                                 </Grid>
                                 <Grid item xs={2} />

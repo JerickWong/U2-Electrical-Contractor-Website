@@ -358,11 +358,8 @@ function Price() {
     }, [current_project])
 
     const handleChange = (event) => {
-        console.log(event.target.value)
-
-        console.log(event.target.name)
-
         setProject(event.target.value);
+        document.getElementById('search').value = ""
     };
     return (
         <div className="PriceList">
@@ -406,6 +403,7 @@ function Price() {
                                                 ),
                                             }}
                                             onChange={handleSearch}
+                                            id="search"
                                         />
                                     </FormControl>
                                 </Grid>

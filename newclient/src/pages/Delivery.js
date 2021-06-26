@@ -468,11 +468,8 @@ function Price() {
     }
 
     const handleChange = (event) => {
-        console.log(event.target.value)
-
-        console.log(event.target.name)
-        
         setProject(event.target.value);
+        document.getElementById('search').value = ""
     };
 
 
@@ -512,6 +509,7 @@ function Price() {
                                                 </InputAdornment>
                                             ),
                                         }}
+                                        id="search"
                                         onChange={handleSearch}
                                     />
                                 </Grid>
