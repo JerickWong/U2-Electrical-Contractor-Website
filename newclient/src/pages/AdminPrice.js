@@ -185,7 +185,6 @@ function AdminPrice() {
 
   const handleClose = () => {
     setOpen(false);
-    window.location.reload();
   };
 
   const addSupplier = async () => {
@@ -197,7 +196,7 @@ function AdminPrice() {
         name,
         items,
       };
-      const data = await await suppliers.insertSupplier(payload);
+      const data = await suppliers.insertSupplier(payload);
       setOpenAdd(false);
       if (data.status === 208) {
         setTimeout(() => {
@@ -212,6 +211,10 @@ function AdminPrice() {
           setLoading(false);
           setSuccess(true);
         }, 1000);
+        payload._id = data.data.id
+        setCategory(payload)
+        categories.push(payload)
+        categories[categories.length-1] = payload;
       }
     } catch (error) {
       setTimeout(() => {
@@ -369,12 +372,14 @@ function AdminPrice() {
       payload.items = rawItems;
       await suppliers.updateSupplierById(payload._id, payload);
       alert("uploaded");
+      setCategory(payload)
+      const index = categories.indexOf(category);
+      categories[index] = payload;
     } catch (error) {
       alert("error saving to database");
     }
 
     setItems([]);
-    window.location.reload();
   };
 
   const handleDelete = async () => {
@@ -387,6 +392,7 @@ function AdminPrice() {
         setLoading(false);
         setSuccess(true);
       }, 1000);
+      await fetchSuppliers();
     } catch (error) {
       console.log(error);
       setTimeout(() => {
