@@ -402,6 +402,7 @@ function AdminMts(props) {
         setAction('Delete')
         try {
             console.log(current_mts._id)
+            console.log(current_mts)
             await api.deleteMTSById(current_mts._id)
             const payload = {
                 project_name: current_project,
@@ -437,6 +438,10 @@ function AdminMts(props) {
             console.log(error)
             setSuccess(false)
             alert('error in deleting')
+            if (error.includes("404"))
+                setMessage("MTS could not be found")
+            else
+                setMessage("Unknown error")
         }
         setTimeout(() => {
             setLoading(false)
@@ -590,6 +595,7 @@ function AdminMts(props) {
                 success={success}
                 isLoading={loading}
                 action={action}
+                message={message}
             />
 
             <ConfirmationDialog 

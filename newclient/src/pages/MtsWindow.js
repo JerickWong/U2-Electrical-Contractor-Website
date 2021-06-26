@@ -68,6 +68,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0.3),
     width: 260,
   },
+  backButton: {
+    margin: theme.spacing(0),
+    width: 50,
+    color: primary,
+    marginBottom: 10
+  },
   button: {
     backgroundColor: primary,
     margin: theme.spacing(0),
@@ -689,7 +695,9 @@ function MtsWindow(props) {
       <Container className="cont">
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {/* {backToMTS} */}
+          {props.location.state ? <Button size="small" onClick={() => window.history.back()} className={classes.backButton} startIcon={<ArrowBackIos />}>Back</Button>
+                            :
+                            ""}
           <UserAlert
             severity="info"
             message={
