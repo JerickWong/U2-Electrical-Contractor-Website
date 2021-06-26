@@ -308,6 +308,7 @@ function AdminMts(props) {
         }
         
         // confirm mts
+        console.log(current_mts)
         current_mts.status = "Confirmed"
         await api.updateMTSById(current_mts._id, current_mts)
 
@@ -344,15 +345,16 @@ function AdminMts(props) {
         await getMTS();
     }
     
-    const checkItems = async (m) => {
+    const checkItems = async () => {
         setLoading(true)
         setOpen(true)
         // check items if in price list or
         try {
             
             const tempPendingItems = []
+            console.log(current_mts)
             
-            m.rows.map( row => {
+            current_mts.rows.map( row => {
                 const found = suppliers.find( supplier => supplier.items.find( item => {
                     return item.unit.trim() === row.unit.trim() &&
                             item.product_name.trim() === row.description.trim() &&
@@ -462,6 +464,9 @@ function AdminMts(props) {
     useEffect(() => {
         if (action === "Delete") {
             setMessage(`Are you sure you want to delete MTS #${current_mts ? current_mts.MTS_number : ''}?`)
+        } else {
+            if (current_mts)
+                checkItems()
         }
     }, [current_mts])    
 
@@ -561,7 +566,7 @@ function AdminMts(props) {
                                                     {' '}
                                                     {
                                                         m.status === "Confirmed" ? ""
-                                                            : <Button variant="outlined" onClick={() => { setCurrent(m); checkItems(m) }}>Confirm</Button>
+                                                            : <Button variant="outlined" onClick={() => { setCurrent(m) }}>Confirm</Button>
                                                     }
                                                     {' '}
                                                     <Button variant="outlined" color="secondary" onClick={() => { setAction('Delete'); setEmpty([]); setCurrent(m); setOpenConfirm(true); }}><DeleteIcon />
