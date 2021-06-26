@@ -288,15 +288,6 @@ function AdminNavbar() {
                 />
               </ListItem>
             </Link>
-            <ListItem button key="Activity Log">
-              <ListItemIcon className={classes.listIcon}>
-                <ListAlt />
-              </ListItemIcon>
-              <ListItemText
-                className={classes.listIcon}
-                primary="Activity Log"
-              />
-            </ListItem>
             <Link to="/Cost">
               <ListItem button key="Cost">
                 <ListItemIcon className={classes.listIcon}>
