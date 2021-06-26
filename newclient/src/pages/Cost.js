@@ -321,7 +321,7 @@ function Cost() {
                         return (
                           <tr>
                             <td>{view === "Daily" ? moment(m.date).format("MM-DD-YYYY") : 
-                            `${moment(m.start_date).format("MM-DD-YYYY")} - ${moment(m.end_date).format("MM-DD-YYYY")}`}</td>
+                            `${moment(m.start_date).format("MM-DD-YYYY")} to ${moment(m.end_date).format("MM-DD-YYYY")}`}</td>
                             <td>{view === "Daily" ? m.MTS_number : 
                             `${m.start_mts} - ${m.end_mts}`}</td>
                             <td>{m.total_amount}</td>
