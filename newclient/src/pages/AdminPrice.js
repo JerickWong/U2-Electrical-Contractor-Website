@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Table } from "react-bootstrap";
 import {
   Button,
@@ -165,10 +165,13 @@ function AdminPrice() {
   const [message, setMessage] = useState("");
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPending, setOpenPending] = useState(false);
   const [category, setCategory] = useState(null);
+  const [backupCategory, setBackupCategory] = useState(null);
   const [categories, setCategories] = useState([]);
+  const endRef = useRef(null)
   const [pending, setPending] = useState({
     name: "Pending Items",
     items: [],
@@ -180,12 +183,24 @@ function AdminPrice() {
   const Papa = require("papaparse");
 
   const handleChange = (event) => {
+    if (isAdding)
+      category.items.pop()
+    setIsAdding(false)
     setCategory(event.target.value);
+    setBackupCategory(event.target.value);
   };
 
   const handleClose = () => {
     setOpen(false);
+  
+    setTimeout(() => {
+      setSuccess(false)
+    }, 2000)
   };
+
+  const scrollToBottom = () => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   const addSupplier = async () => {
     setOpen(true);
@@ -213,6 +228,7 @@ function AdminPrice() {
         }, 1000);
         payload._id = data.data.id
         setCategory(payload)
+        setBackupCategory(payload)
         categories.push(payload)
         categories[categories.length-1] = payload;
       }
@@ -237,6 +253,7 @@ function AdminPrice() {
       const index = categories.indexOf(category);
       categories[index] = payload;
       setCategory(payload);
+      setBackupCategory(payload);
     } catch (error) {
       alert("error saving to database");
     }
@@ -261,6 +278,7 @@ function AdminPrice() {
       });
       setCategories(temp);
       setCategory(temp[0]);
+      setBackupCategory(temp[0]);
     } catch (error) {
       console.log(error);
       alert("error in getting suppliers");
@@ -373,6 +391,7 @@ function AdminPrice() {
       await suppliers.updateSupplierById(payload._id, payload);
       alert("uploaded");
       setCategory(payload)
+      setBackupCategory(payload)
       const index = categories.indexOf(category);
       categories[index] = payload;
     } catch (error) {
@@ -413,6 +432,7 @@ function AdminPrice() {
       let index = categories.indexOf(category);
       categories[index] = payload;
       setCategory(payload);
+      setBackupCategory(payload);
 
       payload = { ...pending };
       index = pending.items.indexOf(tobeAdded);
@@ -426,6 +446,23 @@ function AdminPrice() {
       alert(error);
     }
   };
+
+  const newItem = () => {
+    setIsAdding(true)
+    const temp = {...category}
+    temp.items.push({
+      unit: '',
+      product_name: '',
+      brand_name: '',
+      model_name: '',
+      list_price: '',
+      price_adjustment: '',
+      net_price: '',
+      remarks: '',
+    })
+    setCategory(temp)
+    scrollToBottom()
+  }
 
   return (
     <div className="PriceList">
@@ -444,7 +481,7 @@ function AdminPrice() {
                       labelId="demo-simple-select-label"
                       className={classes.txt1}
                       defaultValue={categories[0]}
-                      value={category}
+                      value={backupCategory}
                       onChange={handleChange}
                       size="normal"
                       id="demo-simple-select"
@@ -538,6 +575,7 @@ function AdminPrice() {
                         color="primary"
                         className={classes.button3}
                         startIcon={<Add />}
+                        onClick={newItem}
                       >
                         Add Item
                       </Button>
@@ -555,6 +593,8 @@ function AdminPrice() {
                 category={category}
                 setOpenPending={setOpenPending}
                 setPendingItem={setTobeAdded}
+                isAdding={isAdding}
+                setIsAdding={setIsAdding}
               />
             )}
             {/* ADD SUPPLIER */}
@@ -928,6 +968,7 @@ function AdminPrice() {
 
       {/* <ConfirmationDialog open={openConfirm} message={`Are you sure you want to replace the price list for ${category.name}?`} 
             confirm={handleDelete} handleClose={() => setOpenConfirm(false)}/> */}
+      <div ref={endRef} />
     </div>
   );
 }

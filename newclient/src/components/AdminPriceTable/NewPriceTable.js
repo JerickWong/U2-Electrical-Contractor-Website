@@ -39,8 +39,11 @@ export default function NewPriceTable(props) {
     props.data.items.map(() => {
       temp.push(false)
     })
+    if (props.isAdding)
+      temp[temp.length-1] = true
     setIsEditing(temp)
-  }, [props.data]);
+
+  }, [props.data, props.isAdding]);
 
   function editItem(event, item, index) {
     setEdit({
