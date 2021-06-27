@@ -62,19 +62,38 @@ export default function NewPriceTable(props) {
   }
 
   async function updateItem(index) {
-    category.items[index] = edit
+    if (props.isAdding && index === category.items.length-1) 
+      addItem()
+    else {
+      category.items[index] = edit
 
-    try {
-      await suppliers.updateSupplierById(category._id, category)
-      let tempEditing = [...isEditing]
-      tempEditing[index] = false
-      setIsEditing(tempEditing)
-    } catch (error) {
-      alert(error)
+      if (props.isAdding) {
+        category.items.pop()
+        props.setIsAdding(false)
+      }
+  
+      try {
+        await suppliers.updateSupplierById(category._id, category)
+        let tempEditing = [...isEditing]
+        tempEditing[index] = false
+        setIsEditing(tempEditing)
+      } catch (error) {
+        alert("UNIT and PRODUCT NAME are required.")
+      }
     }
   }
 
+  async function addItem() {
+    
+  }
+
   function cancelEdit(index) {
+    if (props.isAdding) {
+      if (index === isEditing.length-1) {
+        props.setIsAdding(false)
+        category.items.pop()
+      }
+    }
     let tempEditing = [...isEditing]
     tempEditing[index] = false
     setIsEditing(tempEditing)
@@ -128,7 +147,7 @@ export default function NewPriceTable(props) {
                   }
                   {
                     isEditing[index] ? 
-                    <Button size="sm" variant="light" className="actionButton" onClick={() => updateItem(index)}>
+                    <Button size="sm" variant="light" className="actionButton" onClick={() => {updateItem(index)}}>
                       <Check />
                     </Button>
                     :
