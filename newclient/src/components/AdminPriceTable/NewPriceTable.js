@@ -22,16 +22,7 @@ import suppliers from '../../api/supplier';
 export default function NewPriceTable(props) {
   const [category, setCategory] = useState({items: []});
   const [isEditing, setIsEditing] = useState([])
-  const [edit, setEdit] = useState({
-    unit: '',
-    product_name: '',
-    brand_name: '',
-    model_name: '',
-    list_price: '',
-    price_adjustment: '',
-    net_price: '',
-    remarks: '',
-  })
+  const [edit, setEdit] = useState([])
 
   useEffect(() => {
     const temp = []
@@ -130,9 +121,9 @@ export default function NewPriceTable(props) {
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].product_name = e.target.value} type="text" size="sm" defaultValue={cat.product_name ? cat.product_name.slice() : ''}/> : cat.product_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].brand_name = e.target.value} type="text" size="sm" defaultValue={cat.brand_name ? cat.brand_name.slice() : ''}/> : cat.brand_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].model_name = e.target.value} type="text" size="sm" defaultValue={cat.model_name ? cat.model_name.slice() : ''}/> : cat.model_name}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].list_price = e.target.value} type="text" size="sm" defaultValue={cat.list_price ? cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].price_adjustment = e.target.value} type="text" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment.slice() : ''}/> : cat.price_adjustment ? cat.price_adjustment : ''}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].net_price = e.target.value} type="text" size="sm" defaultValue={cat.net_price ? cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].list_price = e.target.value} type="number" size="sm" defaultValue={cat.list_price ? cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].price_adjustment = e.target.value} type="number" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment.slice() : ''}/> : cat.price_adjustment ? cat.price_adjustment : ''}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].net_price = e.target.value} type="number" size="sm" defaultValue={cat.net_price ? cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].remarks = e.target.value} type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>
                   {
