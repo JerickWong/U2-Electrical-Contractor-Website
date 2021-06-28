@@ -471,7 +471,7 @@ function AdminPrice() {
   const applyPrice = async () => {
     try {
       // selectedItems.map(index => {
-      //   category.items[]
+      //   category.items[index]
       // })
     } catch (error) {
       alert(error)
