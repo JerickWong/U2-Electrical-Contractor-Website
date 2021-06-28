@@ -61,6 +61,9 @@ export default function NewPriceTable(props) {
 
     try {
       await suppliers.updateSupplierById(category._id, category)
+      let tempEditing = [...isEditing]
+      tempEditing[index] = false
+      setIsEditing(tempEditing)
       setCategory({...category})
       if (props.isAdding) {
         props.setIsAdding(false)
@@ -145,7 +148,7 @@ export default function NewPriceTable(props) {
         row.firstChild.firstChild.firstChild.checked = false
         row.style.backgroundColor = ""
       }
-      props.setSelected([...props.selectedItems])
+      props.setSelected([])
       setRows([])
     }
     
