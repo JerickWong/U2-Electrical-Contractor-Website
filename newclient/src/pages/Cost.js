@@ -32,11 +32,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 15,
   },
   projectField: {
-    [theme.breakpoints.between("lg", "xl")]:{
+    [theme.breakpoints.between("lg", "xl")]: {
       direction: "row",
-      justify:"flex-start",
-      
-    }
+      justify: "flex-start",
+    },
   },
   viewField: {
     [theme.breakpoints.down("sm")]: {
@@ -178,7 +177,7 @@ function Cost() {
   async function getMTS() {
     setLoading(true);
     try {
-      let cost
+      let cost;
       if (view === "Daily") {
         cost = await (
           await api.getCost({ project_name: current_project })
@@ -188,7 +187,7 @@ function Cost() {
           await api.getMonthlyCost({ project_name: current_project })
         ).data.data;
       }
-      
+
       setMts(cost);
     } catch (error) {
       setMts([]);
@@ -220,11 +219,18 @@ function Cost() {
   return (
     <div className="App">
       <div className="cont">
-        <Container className={classes.container}>
+        <Container className={classes.container} maxWidth="lg">
           <div className="project">
             <Grid container spacing={2}>
               <div className={classes.projectField}>
-                <Grid container item xl={6} lg={6} md={6} sm={12} xs={12}>
+                <Grid
+                  container
+                  item
+                  xl={6}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
                   <FormControl className={classes.formControl}>
                     <InputLabel id="demo-simple-select-label">
                       Project Name
@@ -252,7 +258,7 @@ function Cost() {
                       labelId="demo-simple-select-label"
                       defaultValue="Daily"
                       value={view}
-                      onChange={e => setView(e.target.value)}
+                      onChange={(e) => setView(e.target.value)}
                       size="large"
                       name="selectView"
                     >
@@ -267,74 +273,69 @@ function Cost() {
                         </Grid> */}
             </Grid>
           </div>
-          {
-            isLoading ?
-            <div style={{textAlign: 'center'}}>
-                <CircularProgress size={100} />
+          {isLoading ? (
+            <div style={{ textAlign: "center" }}>
+              <CircularProgress size={100} />
             </div>
-            
-            :
-            (
-              !mts.length ? 
-              (
-                <Container>
-                  <Table
-                    className="tbl1"
-                    hover
-                    borderColor="#8f8f94"
-                    border="#8f8f94"
-                    responsive="md"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>MTS No.</th>
-                        <th>Amount</th>
-                        <th>Balance</th>
-                      </tr>
-                    </thead>
-                  </Table>
-                  <div style={{textAlign: 'center'}}>This list is empty.</div>
-                </Container>
-              )
-              :
-              (
-                <Table
-                  className="tbl1"
-                  hover
-                  borderColor="#8f8f94"
-                  border="#8f8f94"
-                  responsive="md"
-                >
-                  <thead>
+          ) : !mts.length ? (
+            <Container>
+              <Table
+                className="tbl1"
+                hover
+                borderColor="#8f8f94"
+                border="#8f8f94"
+              >
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>MTS No.</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+              </Table>
+              <div style={{ textAlign: "center" }}>This list is empty.</div>
+            </Container>
+          ) : (
+            <Table
+              className="tbl1"
+              hover
+              borderColor="#8f8f94"
+              border="#8f8f94"
+            >
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>MTS No.</th>
+                  <th>Amount</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* {mts} */}
+                {mts.map((m) => {
+                  return (
                     <tr>
-                      <th>Date</th>
-                      <th>MTS No.</th>
-                      <th>Amount</th>
-                      <th>Balance</th>
+                      <td>
+                        {view === "Daily"
+                          ? moment(m.date).format("MM-DD-YYYY")
+                          : `${moment(m.start_date).format(
+                              "MM-DD-YYYY"
+                            )} to ${moment(m.end_date).format("MM-DD-YYYY")}`}
+                      </td>
+                      <td>
+                        {view === "Daily"
+                          ? m.MTS_number
+                          : `${m.start_mts} - ${m.end_mts}`}
+                      </td>
+                      <td>{m.total_amount}</td>
+                      <td>{m.balance}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {/* {mts} */}
-                    {
-                      mts.map((m) => {
-                        return (
-                          <tr>
-                            <td>{view === "Daily" ? moment(m.date).format("MM-DD-YYYY") : 
-                            `${moment(m.start_date).format("MM-DD-YYYY")} to ${moment(m.end_date).format("MM-DD-YYYY")}`}</td>
-                            <td>{view === "Daily" ? m.MTS_number : 
-                            `${m.start_mts} - ${m.end_mts}`}</td>
-                            <td>{m.total_amount}</td>
-                            <td>{m.balance}</td>
-                          </tr>
-                        );
-                      })
-                    }
-                  </tbody>
-                </Table>
-              )
-            )
-          }
+                  );
+                })}
+              </tbody>
+            </Table>
+          )}
         </Container>
       </div>
     </div>

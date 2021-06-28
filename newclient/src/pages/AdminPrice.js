@@ -78,9 +78,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     backgroundColor: primary,
-    margin: theme.spacing(0),
     color: white,
-    width: 200,
+    width: 150,
   },
   pending: {
     alignItems: "flex-end",
@@ -150,9 +149,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     marginLeft: 30,
   },
-  button3:{ 
-    marginTop: 10
-  }
 }));
 
 function AdminPrice() {
@@ -171,7 +167,7 @@ function AdminPrice() {
   const [category, setCategory] = useState(null);
   const [backupCategory, setBackupCategory] = useState(null);
   const [categories, setCategories] = useState([]);
-  const endRef = useRef(null)
+  const endRef = useRef(null);
   const [pending, setPending] = useState({
     name: "Pending Items",
     items: [],
@@ -183,24 +179,23 @@ function AdminPrice() {
   const Papa = require("papaparse");
 
   const handleChange = (event) => {
-    if (isAdding)
-      category.items.pop()
-    setIsAdding(false)
+    if (isAdding) category.items.pop();
+    setIsAdding(false);
     setCategory(event.target.value);
     setBackupCategory(event.target.value);
   };
 
   const handleClose = () => {
     setOpen(false);
-  
+
     setTimeout(() => {
-      setSuccess(false)
-    }, 2000)
+      setSuccess(false);
+    }, 2000);
   };
 
   const scrollToBottom = () => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const addSupplier = async () => {
     setOpen(true);
@@ -226,11 +221,11 @@ function AdminPrice() {
           setLoading(false);
           setSuccess(true);
         }, 1000);
-        payload._id = data.data.id
-        setCategory(payload)
-        setBackupCategory(payload)
-        categories.push(payload)
-        categories[categories.length-1] = payload;
+        payload._id = data.data.id;
+        setCategory(payload);
+        setBackupCategory(payload);
+        categories.push(payload);
+        categories[categories.length - 1] = payload;
       }
     } catch (error) {
       setTimeout(() => {
@@ -270,19 +265,19 @@ function AdminPrice() {
 
   const fetchSuppliers = async () => {
     setIsLoading(true);
-    try {
-      const temp = await (await suppliers.getAllSupplier()).data.data;
-      temp.sort((a, b) => a.name.localeCompare(b.name));
-      temp.map((s) => {
-        if (s.name === "Pending Items") setPending(s);
-      });
-      setCategories(temp);
-      setCategory(temp[0]);
-      setBackupCategory(temp[0]);
-    } catch (error) {
-      console.log(error);
-      alert("error in getting suppliers");
-    }
+    //try {
+    const temp = await (await suppliers.getAllSupplier()).data.data;
+    temp.sort((a, b) => a.name.localeCompare(b.name));
+    temp.map((s) => {
+      if (s.name === "Pending Items") setPending(s);
+    });
+    setCategories(temp);
+    setCategory(temp[0]);
+    setBackupCategory(temp[0]);
+    //} catch (error) {
+    //  console.log(error);
+    //  alert("error in getting suppliers");
+    //}
     setIsLoading(false);
   };
 
@@ -390,8 +385,8 @@ function AdminPrice() {
       payload.items = rawItems;
       await suppliers.updateSupplierById(payload._id, payload);
       alert("uploaded");
-      setCategory(payload)
-      setBackupCategory(payload)
+      setCategory(payload);
+      setBackupCategory(payload);
       const index = categories.indexOf(category);
       categories[index] = payload;
     } catch (error) {
@@ -448,21 +443,21 @@ function AdminPrice() {
   };
 
   const newItem = () => {
-    setIsAdding(true)
-    const temp = {...category}
+    setIsAdding(true);
+    const temp = { ...category };
     temp.items.push({
-      unit: '',
-      product_name: '',
-      brand_name: '',
-      model_name: '',
-      list_price: '',
-      price_adjustment: '',
-      net_price: '',
-      remarks: '',
-    })
-    setCategory(temp)
-    scrollToBottom()
-  }
+      unit: "",
+      product_name: "",
+      brand_name: "",
+      model_name: "",
+      list_price: "",
+      price_adjustment: "",
+      net_price: "",
+      remarks: "",
+    });
+    setCategory(temp);
+    scrollToBottom();
+  };
 
   return (
     <div className="PriceList">
@@ -526,7 +521,7 @@ function AdminPrice() {
                   <Grid
                     container
                     item
-                    xs={8}
+                    xs={6}
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
@@ -567,18 +562,17 @@ function AdminPrice() {
                     item
                     xs={4}
                     direction="row"
-                    justify="flex-end"
                     alignItems="center"
                   >
                     <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button3}
-                        startIcon={<Add />}
-                        onClick={newItem}
-                      >
-                        Add Item
-                      </Button>
+                      variant="contained"
+                      color="primary"
+                      className={classes.button3}
+                      startIcon={<Add />}
+                      onClick={newItem}
+                    >
+                      Add Item
+                    </Button>
                   </Grid>
                 </Grid>
               </Grid>
@@ -919,28 +913,28 @@ function AdminPrice() {
 
             <div className="tbl">
               <Grid container spacing={1}>
-                <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    {...getRootProps({ className: "dropzone" })}
-                  >
-                    <input {...getInputProps()} />
-                    <FontAwesomeIcon className="excel" icon={faFileExcel} />
-                    Upload Excel
-                  </Button>
-                </Grid>
-                <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button3}
-                    startIcon={<GetAppIcon />}
-                    onClick={downloadFile}
-                  >
-                    Download
-                  </Button>
+                <Grid item xs={4}>
+                  <ButtonGroup variant="contained">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button3}
+                      {...getRootProps({ className: "dropzone" })}
+                    >
+                      <input {...getInputProps()} />
+                      <FontAwesomeIcon className="excel" icon={faFileExcel} />
+                      Upload Excel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button3}
+                      startIcon={<GetAppIcon />}
+                      onClick={downloadFile}
+                    >
+                      Download
+                    </Button>
+                  </ButtonGroup>
                 </Grid>
               </Grid>
             </div>

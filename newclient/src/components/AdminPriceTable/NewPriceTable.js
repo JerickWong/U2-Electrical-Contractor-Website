@@ -105,7 +105,7 @@ export default function NewPriceTable(props) {
           <th width="230">Brand</th>
           <th width="230">Model</th>
           <th width="170">List Price</th>
-          <th width="200">Price Adjustment</th>
+          <th width="250">Price Adjustment</th>
           <th width="170">Net Price</th>
           <th width="220">Remarks</th>
           <th width="400">Action</th>
