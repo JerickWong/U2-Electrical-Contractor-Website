@@ -50,29 +50,27 @@ export default function NewPriceTable(props) {
   }
 
   async function updateItem(index) {
-    if (props.isAdding && index === category.items.length-1) 
-      addItem()
-    else {
-      category.items[index] = edit[index]
-
-      if (props.isAdding) {
-        category.items.pop()
-        props.setIsAdding(false)
-      }
-  
-      try {
-        await suppliers.updateSupplierById(category._id, category)
-        let tempEditing = [...isEditing]
-        tempEditing[index] = false
-        setIsEditing(tempEditing)
-      } catch (error) {
-        alert("UNIT and PRODUCT NAME are required.")
-      }
-    }
-  }
-
-  async function addItem() {
+    category.items[index] = edit[index]
     
+    if (!category.items[index].list_price)
+      category.items[index].list_price = 0
+    if (!category.items[index].net_price)
+      category.items[index].net_price = 0
+    if (!category.items[index].price_adjustment)
+      category.items[index].price_adjustment = 0
+
+    if (props.isAdding) {
+      props.setIsAdding(false)
+      if (index !== category.items.length-1)
+        category.items.pop()
+    }
+
+    try {
+      await suppliers.updateSupplierById(category._id, category)
+      setCategory({...category})
+    } catch (error) {
+      alert("UNIT and PRODUCT NAME are required.")
+    }
   }
 
   function cancelEdit(index) {
