@@ -70,10 +70,9 @@ class SuccessDialog extends Component {
                 maxWidth={'sm'}
                 onClose={this.props.handleClose}
               >
-                <DialogTitle id="alert-dialog-title" >{this.props.isLoading ? 'Loading' : this.props.success ? `${this.props.action} Successful` : `${this.props.action} Failed`}</DialogTitle>
+                <DialogTitle id="alert-dialog-title" >{this.props.isLoading ? 'Loading' : this.props.success ? `${this.props.action} Successful!` : `${this.props.action} Failed`}</DialogTitle>
                   <DialogContent dividers>
                     <DialogContentText id="alert-dialog-description" >
-                    
                     <div className={classes.root}>
                       <div className={classes.wrapper}>
                         <Fab

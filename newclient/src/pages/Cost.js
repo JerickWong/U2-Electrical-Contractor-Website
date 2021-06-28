@@ -22,7 +22,7 @@ import api from "../api";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    width: 300,
+    width: 230,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -30,19 +30,6 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: 290,
     marginLeft: 15,
-  },
-  projectField: {
-    [theme.breakpoints.between("lg", "xl")]: {
-      direction: "row",
-      justify: "flex-start",
-    },
-  },
-  viewField: {
-    [theme.breakpoints.down("sm")]: {
-      //direction: "row",
-      //justify: "flex-start",
-      //alignItems: "center",
-    },
   },
 }));
 
@@ -222,52 +209,55 @@ function Cost() {
         <Container className={classes.container} maxWidth="lg">
           <div className="project">
             <Grid container spacing={2}>
-              <div className={classes.projectField}>
-                <Grid
-                  container
-                  item
-                  xl={6}
-                  direction="row"
-                  justify="flex-start"
-                  alignItems="center"
-                >
-                  <FormControl className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-label">
-                      Project Name
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      value={current_project}
-                      size="large"
-                      onChange={handleChange}
-                      name="selectProject"
-                    >
-                      {/* {projects} */}
-                      {projects.map((project) => {
-                        return <MenuItem value={project}>{project}</MenuItem>;
-                      })}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </div>
-              <div className={classes.viewField}>
-                <Grid container item xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-label">View</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      defaultValue="Daily"
-                      value={view}
-                      onChange={(e) => setView(e.target.value)}
-                      size="large"
-                      name="selectView"
-                    >
-                      <MenuItem value="Daily">Daily</MenuItem>
-                      <MenuItem value="Monthly">Monthly</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </div>
+              <Grid
+                container
+                item
+                xs={6}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+              >
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-label">
+                    Project Name
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    value={current_project}
+                    size="large"
+                    onChange={handleChange}
+                    name="selectProject"
+                  >
+                    {/* {projects} */}
+                    {projects.map((project) => {
+                      return <MenuItem value={project}>{project}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid
+                container
+                item
+                xs={6}
+                direction="row"
+                justify="flex-end"
+                alignItems="center"
+              >
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-label">View</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    defaultValue="Daily"
+                    value={view}
+                    onChange={(e) => setView(e.target.value)}
+                    size="large"
+                    name="selectView"
+                  >
+                    <MenuItem value="Daily">Daily</MenuItem>
+                    <MenuItem value="Monthly">Monthly</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
               {/* <Grid item xs={2}>
                             <Button variant="contained" color="primary" size="large" className={classes.button} startIcon={<Save />}> SAVE </Button>
                         </Grid> */}
@@ -278,7 +268,7 @@ function Cost() {
               <CircularProgress size={100} />
             </div>
           ) : !mts.length ? (
-            <Container>
+            <div>
               <Table
                 className="tbl1"
                 hover
@@ -295,7 +285,7 @@ function Cost() {
                 </thead>
               </Table>
               <div style={{ textAlign: "center" }}>This list is empty.</div>
-            </Container>
+            </div>
           ) : (
             <Table
               className="tbl1"
