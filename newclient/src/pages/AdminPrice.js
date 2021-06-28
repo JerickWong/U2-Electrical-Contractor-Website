@@ -619,6 +619,18 @@ function AdminPrice() {
                       >
                         Apply Price Adjustment
                       </Button>
+                      {
+                        category.name === "Pending Items" &&
+                        <Button
+                          color="default"
+                          disable={!category}
+                          className={classes.button3}
+                          startIcon={<Add />}
+                          onClick={removeItems}
+                        >
+                          Add Items
+                        </Button>
+                      }
                       <Button
                         color="secondary"
                         disable={!category}

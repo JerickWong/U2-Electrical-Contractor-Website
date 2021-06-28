@@ -1,21 +1,11 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import Add from "@material-ui/icons/Add";
-import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
 import Clear from "@material-ui/icons/Clear";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
-import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
-import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
-import { FormControl, Form, Col, Button, Container } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import "../../styles/pricetable.css";
 import suppliers from '../../api/supplier';
 
@@ -39,6 +29,8 @@ export default function NewPriceTable(props) {
 
     setIsEditing(temp)
     setEdit(tempEdit)
+    setRows([])
+    props.setSelected([])
     removeSelects()
     setCategory(props.data);
   }, [props.data, props.isAdding]);
@@ -155,7 +147,7 @@ export default function NewPriceTable(props) {
   }
 
   function removeSelects() {
-    if (selectedRows[0]) {
+    if (selectedRows[0] && !props.isAdding) {
       console.log(selectedRows[0])
       console.log(selectedRows[0].parentNode)
       console.log(selectedRows[0].parentNode.previousSibling)
@@ -186,7 +178,7 @@ export default function NewPriceTable(props) {
           category.items.length ?
           category.items.map((cat, index) => {
             return (
-              <tr key={cat._id}>
+              <tr key={cat._id} style={{backgroundColor: props.isAdding && ''}}>
                 <td>{!props.isAdding && <Form.Check type={'checkbox'} onClick={e => selectRow(e, index)} />}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].unit = e.target.value} type="text" size="sm" defaultValue={cat.unit ? cat.unit.slice() : ''}/> : cat.unit}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].product_name = e.target.value} type="text" size="sm" defaultValue={cat.product_name ? cat.product_name.slice() : ''}/> : cat.product_name}</td>
