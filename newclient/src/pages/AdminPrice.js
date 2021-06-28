@@ -447,19 +447,21 @@ function AdminPrice() {
   };
 
   const newItem = () => {
-    setIsAdding(true);
-    const temp = { ...category };
-    temp.items.push({
-      unit: "",
-      product_name: "",
-      brand_name: "",
-      model_name: "",
-      list_price: "",
-      price_adjustment: "",
-      net_price: "",
-      remarks: "",
-    });
-    setCategory(temp);
+    if (!isAdding) {
+      setIsAdding(true);
+      const temp = { ...category };
+      temp.items.push({
+        unit: "",
+        product_name: "",
+        brand_name: "",
+        model_name: "",
+        list_price: "",
+        price_adjustment: "",
+        net_price: "",
+        remarks: "",
+      });
+      setCategory(temp);
+    }
     scrollToBottom();
   };
 
@@ -490,6 +492,8 @@ function AdminPrice() {
       alert('something went wrong')
     }
   }
+
+  // const addPendingItems
 
   return (
     <div className="PriceList">
