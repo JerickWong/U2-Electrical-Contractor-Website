@@ -179,6 +179,7 @@ function AdminPrice() {
   const [tobeAdded, setTobeAdded] = useState({});
   const [name, setName] = useState("");
   const [items, setItems] = useState([]);
+  const [selectedItems, setSelected] = useState([])
 
   const Papa = require("papaparse");
 
@@ -595,6 +596,8 @@ function AdminPrice() {
                 setPendingItem={setTobeAdded}
                 isAdding={isAdding}
                 setIsAdding={setIsAdding}
+                selectedItems={selectedItems}
+                setSelected={setSelected}
               />
             )}
             {/* ADD SUPPLIER */}
