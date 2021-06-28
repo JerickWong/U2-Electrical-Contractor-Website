@@ -611,10 +611,10 @@ function AdminPrice() {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid>
+                <Grid container spacing={2}>
                   {
                     Boolean(selectedItems.length) &&
-                    <ButtonGroup variant="outlined">
+                    <ButtonGroup variant="outlined" style={{position: 'absolute', margin: 10}}>
                       <Button
                         color="primary"
                         className={classes.button3}
@@ -908,6 +908,7 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.list_price}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
@@ -924,11 +925,17 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.price_adjustment}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
                           price_adjustment: e.target.value,
                         })
+                      }
+                      endAdornment={
+                        <InputAdornment position="end">
+                          %
+                        </InputAdornment>
                       }
                     />
                   </FormGroup>
@@ -940,6 +947,7 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.net_price}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
