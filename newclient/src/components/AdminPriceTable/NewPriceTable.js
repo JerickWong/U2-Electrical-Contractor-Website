@@ -23,6 +23,7 @@ export default function NewPriceTable(props) {
   const [category, setCategory] = useState({items: []});
   const [isEditing, setIsEditing] = useState([])
   const [edit, setEdit] = useState([])
+  const [selectedRows, setRows] = useState([])
 
   useEffect(() => {
     const temp = []
@@ -94,12 +95,33 @@ export default function NewPriceTable(props) {
     } catch (error) {
       alert(error)
     }
+    props.setSelected([])
+    selectedRows.map(row => {row.firstChild.firstChild.firstChild.checked = false; row.style.backgroundColor = '';})
+    setRows([])
+  }
+
+  function selectRow(e, index) {
+    const tr = e.target.parentNode.parentNode.parentNode
+    selectedRows.push(tr)
+    setRows([...selectedRows])
+    
+    if (e.target.checked) {
+      props.selectedItems.push(index)
+      props.setSelected([...props.selectedItems])
+      tr.style.backgroundColor = "#b6b7ff"
+    }
+    else {
+      props.selectedItems.splice(props.selectedItems.indexOf(index), 1)
+      props.setSelected([...props.selectedItems])
+      tr.style.backgroundColor = ""
+    }
   }
 
   return (
     <Table bordered responsive striped hover className="priceTable" size="lg">
       <thead>
         <tr>
+          <th></th>
           <th width="100">Unit</th>
           <th width="600">Product Name</th>
           <th width="230">Brand</th>
@@ -117,6 +139,7 @@ export default function NewPriceTable(props) {
           category.items.map((cat, index) => {
             return (
               <tr key={cat._id}>
+                <td><Form.Check type={'checkbox'} onClick={e => selectRow(e, index)}></Form.Check></td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].unit = e.target.value} type="text" size="sm" defaultValue={cat.unit ? cat.unit.slice() : ''}/> : cat.unit}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].product_name = e.target.value} type="text" size="sm" defaultValue={cat.product_name ? cat.product_name.slice() : ''}/> : cat.product_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].brand_name = e.target.value} type="text" size="sm" defaultValue={cat.brand_name ? cat.brand_name.slice() : ''}/> : cat.brand_name}</td>
