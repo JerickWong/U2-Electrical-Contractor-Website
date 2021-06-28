@@ -59,15 +59,14 @@ export default function NewPriceTable(props) {
     if (!category.items[index].price_adjustment)
       category.items[index].price_adjustment = 0
 
-    if (props.isAdding) {
-      props.setIsAdding(false)
-      if (index !== category.items.length-1)
-        category.items.pop()
-    }
-
     try {
       await suppliers.updateSupplierById(category._id, category)
       setCategory({...category})
+      if (props.isAdding) {
+        props.setIsAdding(false)
+        if (index !== category.items.length-1)
+          category.items.pop()
+      }
     } catch (error) {
       alert("UNIT and PRODUCT NAME are required.")
     }
