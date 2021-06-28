@@ -478,6 +478,24 @@ function AdminPrice() {
     }
   }
 
+  const removeItems = async () => {
+    console.log(selectedItems)
+    const sorted = selectedItems.sort((a, b) => b-a)
+    console.log(sorted)
+    sorted.map(index => {
+      console.log(category.items[index])
+      category.items.splice(index, 1)
+    })
+    console.log(category.items)
+    try {
+      await suppliers.updateSupplierById(category._id, category)
+      setSelected([])
+    } catch (error) {
+      console.error(error)
+      alert('something went wrong')
+    }
+  }
+
   return (
     <div className="PriceList">
       <Container fluid="lg" className="cont">
@@ -612,6 +630,7 @@ function AdminPrice() {
                         disable={!category}
                         className={classes.button3}
                         startIcon={<Delete />}
+                        onClick={removeItems}
                       >
                         Remove Selected
                       </Button>
