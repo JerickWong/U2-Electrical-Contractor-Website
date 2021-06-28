@@ -39,6 +39,7 @@ import {
   ViewColumn,
   AccountCircle,
   Delete,
+  LocalOffer
 } from "@material-ui/icons";
 import AddSharpIcon from "@material-ui/icons/AddSharp";
 import { MaterialTable, MTable, MTableToolbar } from "material-table";
@@ -168,6 +169,8 @@ function AdminPrice() {
   const [isAdding, setIsAdding] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPending, setOpenPending] = useState(false);
+  const [openPrice, setOpenPrice] = useState(false);
+  const [price, setPrice] = useState(0)
   const [category, setCategory] = useState(null);
   const [backupCategory, setBackupCategory] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -465,6 +468,16 @@ function AdminPrice() {
     scrollToBottom()
   }
 
+  const applyPrice = async () => {
+    try {
+      // selectedItems.map(index => {
+      //   category.items[]
+      // })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   return (
     <div className="PriceList">
       <Container fluid="lg" className="cont">
@@ -581,6 +594,29 @@ function AdminPrice() {
                         Add Item
                       </Button>
                   </Grid>
+                </Grid>
+                <Grid>
+                  {
+                    Boolean(selectedItems.length) &&
+                    <ButtonGroup variant="outlined">
+                      <Button
+                        color="primary"
+                        className={classes.button3}
+                        startIcon={<LocalOffer />}
+                        onClick={() => setOpenPrice(true)}
+                      >
+                        Apply Price Adjustment
+                      </Button>
+                      <Button
+                        color="secondary"
+                        disable={!category}
+                        className={classes.button3}
+                        startIcon={<Delete />}
+                      >
+                        Remove Selected
+                      </Button>
+                    </ButtonGroup>
+                  }
                 </Grid>
               </Grid>
             </div>
@@ -916,6 +952,67 @@ function AdminPrice() {
                   }}
                 >
                   Add This Item
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            {/* APPLY PRICE ADJUSTMENT */}
+            <Dialog
+              fullWidth="true"
+              maxWidth="sm"
+              open={openPrice}
+              onClose={() => {
+                setOpenPrice(false);
+              }}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                <h3>Apply Price Adjustment</h3>
+              </DialogTitle>
+              <DialogContent dividers>
+                <div className="modalAcc">
+                  <FormGroup>
+                    <InputLabel className={classes.modalFields}>
+                      Enter Price Percentage
+                    </InputLabel>
+                    <Input
+                      className={classes.modalFields}
+                      variant="outlined"
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <LocalOffer color="primary" />
+                        </InputAdornment>
+                      }
+                      endAdornment={
+                        <InputAdornment position="end">
+                          %
+                        </InputAdornment>
+                      }
+                      defaultValue={0}
+                      type="number"
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
+                  </FormGroup>
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    setOpenPrice(false);
+                  }}
+                  variant="contained"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className={classes.create}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    price ? applyPrice() : alert("Do not leave empty");
+                  }}
+                >
+                  Apply
                 </Button>
               </DialogActions>
             </Dialog>

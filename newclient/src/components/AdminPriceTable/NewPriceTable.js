@@ -101,11 +101,13 @@ export default function NewPriceTable(props) {
     const tr = e.target.parentNode.parentNode.parentNode
     
     if (e.target.checked) {
-      selectedItems.push(index)
+      props.selectedItems.push(index)
+      props.setSelected([...props.selectedItems])
       tr.style.backgroundColor = "#b6b7ff"
     }
     else {
-      selectedItems.splice(selectedItems.indexOf(index), 1)
+      props.selectedItems.splice(props.selectedItems.indexOf(index), 1)
+      props.setSelected([...props.selectedItems])
       tr.style.backgroundColor = ""
     }
   }
