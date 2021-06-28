@@ -112,13 +112,50 @@ export default function NewPriceTable(props) {
       props.setSelected([...props.selectedItems])
       tr.style.backgroundColor = ""
     }
+
+    let value = true
+    const tbody = tr.parentNode
+    for(let i=0; i<tbody.childElementCount; i++) {
+      if (!tbody.childNodes[i].firstChild.firstChild.firstChild.checked) {
+        value = false
+        break;
+      }
+    }
+    tbody.previousSibling.firstChild.firstChild.firstChild.firstChild.checked = value
+  }
+
+  function selectAll(e) {
+    const tbody = e.target.parentNode.parentNode.parentNode.parentNode.nextSibling
+    if (e.target.checked) {
+
+      selectedRows.length = 0
+      for (let i=0; i< tbody.childElementCount; i++) {
+        const row = tbody.childNodes[i]
+        selectedRows.push(row)
+        props.selectedItems.push(i)
+        row.firstChild.firstChild.firstChild.checked = true
+        row.style.backgroundColor = "#b6b7ff"
+      }
+      props.setSelected([...props.selectedItems])
+      setRows([...selectedRows])
+    } else {
+      for (let i=0; i< tbody.childElementCount; i++) {
+        const row = tbody.childNodes[i]
+        props.selectedItems.splice(props.selectedItems.indexOf(i), 1)
+        row.firstChild.firstChild.firstChild.checked = false
+        row.style.backgroundColor = ""
+      }
+      props.setSelected([...props.selectedItems])
+      setRows([])
+    }
+    
   }
 
   return (
     <Table bordered responsive striped hover className="priceTable" size="lg">
       <thead>
         <tr>
-          <th></th>
+          <th><Form.Check type={'checkbox'} onClick={e => selectAll(e)} /></th>
           <th width="100">Unit</th>
           <th width="600">Product Name</th>
           <th width="230">Brand</th>
