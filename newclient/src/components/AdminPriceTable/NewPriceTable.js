@@ -39,11 +39,11 @@ export default function NewPriceTable(props) {
 
     setIsEditing(temp)
     setEdit(tempEdit)
+    removeSelects()
     setCategory(props.data);
   }, [props.data, props.isAdding]);
 
   function editItem(event, item, index) {
-    
     let tempEditing = [...isEditing]
     tempEditing[index] = true
     setIsEditing(tempEditing)
@@ -152,6 +152,14 @@ export default function NewPriceTable(props) {
       setRows([])
     }
     
+  }
+
+  function removeSelects() {
+    if (selectedRows[0]) {
+      selectedRows[0].parentNode.previousSibling.firstChild.firstChild.firstChild.firstChild.checked = false
+      props.setSelected([])
+    }
+    setRows([])
   }
 
   return (
