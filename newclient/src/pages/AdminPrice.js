@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import {
   Button,
-  TextField,
   Grid,
   makeStyles,
   createMuiTheme,
@@ -12,37 +11,18 @@ import {
   FormControl,
   FormGroup,
   Input,
-  InputGroup,
   ButtonGroup,
   InputAdornment,
-  InputBase,
-  IconButton,
   CircularProgress,
 } from "@material-ui/core";
 import {
   Add,
-  AddBox,
-  ArrowDownward,
   Edit,
-  Clear,
-  Search,
   GroupAdd,
   QueryBuilder,
-  AddShoppingCart,
-  ChevronRight,
-  DeleteOutline,
-  FilterList,
-  FirstPage,
-  LastPage,
-  Remove,
-  SaveAlt,
-  ViewColumn,
-  AccountCircle,
   Delete,
   LocalOffer
 } from "@material-ui/icons";
-import AddSharpIcon from "@material-ui/icons/AddSharp";
-import { MaterialTable, MTable, MTableToolbar } from "material-table";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -50,12 +30,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit,
-  faTrashAlt,
-  faFileExcel,
-} from "@fortawesome/free-solid-svg-icons";
-//import PriceTable from '../components/AdminPriceTable/PriceTable';
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import NewPriceTable from "../components/AdminPriceTable/NewPriceTable";
 import Badge from "@material-ui/core/Badge";
 import "../styles/mts.css";
@@ -703,6 +678,22 @@ function AdminPrice() {
               getRootProps={getRootProps}
             />
 
+            {/* APPLY PRICE ADJUSTMENT */}
+            <SingleFieldDialog 
+              open={openPrice}
+              close={setOpenPrice}
+              title={"Apply Price Adjustment"}
+              label={"Enter Price Percentage"}
+              endAdornment={"%"}
+              defaultValue={0}
+              isName={false}
+              type={"number"}
+              value={price}
+              setValue={setPrice}
+              actionName={"Apply"}
+              handleAction={applyPrice}
+            />
+
             {/* ADD PENDING ITEMS */}
             <Dialog
               fullWidth="true"
@@ -899,22 +890,6 @@ function AdminPrice() {
                 </Button>
               </DialogActions>
             </Dialog>
-
-            {/* APPLY PRICE ADJUSTMENT */}
-            <SingleFieldDialog 
-              open={openPrice}
-              close={setOpenPrice}
-              title={"Apply Price Adjustment"}
-              label={"Enter Price Percentage"}
-              endAdornment={"%"}
-              defaultValue={0}
-              isName={false}
-              type={"number"}
-              value={price}
-              setValue={setPrice}
-              actionName={"Apply"}
-              handleAction={applyPrice}
-            />
 
             <div className="tbl">
               <Grid container spacing={1}>

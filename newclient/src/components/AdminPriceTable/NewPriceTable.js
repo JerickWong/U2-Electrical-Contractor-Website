@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import Add from "@material-ui/icons/Add";
 import Check from "@material-ui/icons/Check";
@@ -165,9 +165,9 @@ export default function NewPriceTable(props) {
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].product_name = e.target.value} type="text" size="sm" defaultValue={cat.product_name ? cat.product_name.slice() : ''}/> : cat.product_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].brand_name = e.target.value} type="text" size="sm" defaultValue={cat.brand_name ? cat.brand_name.slice() : ''}/> : cat.brand_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].model_name = e.target.value} type="text" size="sm" defaultValue={cat.model_name ? cat.model_name.slice() : ''}/> : cat.model_name}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].list_price = e.target.value} type="number" size="sm" defaultValue={cat.list_price ? cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.list_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].list_price = e.target.value} type="number" size="sm" defaultValue={cat.list_price ? Number(parseFloat(cat.list_price).toFixed(2)).toLocaleString('en-US') : ''}/> : Number(parseFloat(cat.list_price).toFixed(2)).toLocaleString('en-US')}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].price_adjustment = e.target.value} type="number" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment.slice() : '0%'}/> : cat.price_adjustment ? cat.price_adjustment+"%" : '0%'}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].net_price = e.target.value} type="number" size="sm" defaultValue={cat.net_price ? cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").slice() : ''}/> : cat.net_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].net_price = e.target.value} type="number" size="sm" defaultValue={cat.net_price ? Number(parseFloat(cat.net_price).toFixed(2)).toLocaleString('en-US') : ''}/> : Number(parseFloat(cat.net_price).toFixed(2)).toLocaleString('en-US')}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].remarks = e.target.value} type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>
                   {
