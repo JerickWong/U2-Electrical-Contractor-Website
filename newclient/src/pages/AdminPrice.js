@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import {
   Button,
-  TextField,
   Grid,
   makeStyles,
   createMuiTheme,
@@ -12,37 +11,18 @@ import {
   FormControl,
   FormGroup,
   Input,
-  InputGroup,
   ButtonGroup,
   InputAdornment,
-  InputBase,
-  IconButton,
   CircularProgress,
 } from "@material-ui/core";
 import {
   Add,
-  AddBox,
-  ArrowDownward,
   Edit,
-  Clear,
-  Search,
   GroupAdd,
   QueryBuilder,
-  AddShoppingCart,
-  ChevronRight,
-  DeleteOutline,
-  FilterList,
-  FirstPage,
-  LastPage,
-  Remove,
-  SaveAlt,
-  ViewColumn,
-  AccountCircle,
   Delete,
   LocalOffer
 } from "@material-ui/icons";
-import AddSharpIcon from "@material-ui/icons/AddSharp";
-import { MaterialTable, MTable, MTableToolbar } from "material-table";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -50,12 +30,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit,
-  faTrashAlt,
-  faFileExcel,
-} from "@fortawesome/free-solid-svg-icons";
-//import PriceTable from '../components/AdminPriceTable/PriceTable';
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import NewPriceTable from "../components/AdminPriceTable/NewPriceTable";
 import Badge from "@material-ui/core/Badge";
 import "../styles/mts.css";
@@ -63,6 +38,7 @@ import { useDropzone } from "react-dropzone";
 import suppliers from "../api/supplier";
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
 import SuccessDialog from "../components/SuccessDialog/SuccessDialog";
+import SingleFieldDialog from "../components/SingleFieldDialog/SingleFieldDialog";
 
 const primary = "#8083FF";
 const white = "#FFFFFF";
@@ -181,6 +157,10 @@ function AdminPrice() {
   const [selectedItems, setSelected] = useState([])
 
   const Papa = require("papaparse");
+
+  useEffect(() => {
+    setItems([]);
+  }, [openAdd])
 
   const handleChange = (event) => {
     if (isAdding) category.items.pop();
@@ -343,7 +323,7 @@ function AdminPrice() {
           const final = window.confirm(
             `Are you sure you want to replace the price list for ${category.name}?`
           );
-          if (final) uploadItems(results.data);
+          if (final) {uploadItems(results.data); setOpenEdit(false)};
         } else {
           if (category === null) alert("No selected Supplier yet");
           else {
@@ -391,7 +371,7 @@ function AdminPrice() {
       alert("uploaded");
       setCategory(payload);
       setBackupCategory(payload);
-      const index = categories.indexOf(category);
+      const index = categories.indexOf(backupCategory);
       categories[index] = payload;
     } catch (error) {
       alert("error saving to database");
@@ -447,19 +427,21 @@ function AdminPrice() {
   };
 
   const newItem = () => {
-    setIsAdding(true);
-    const temp = { ...category };
-    temp.items.push({
-      unit: "",
-      product_name: "",
-      brand_name: "",
-      model_name: "",
-      list_price: "",
-      price_adjustment: "",
-      net_price: "",
-      remarks: "",
-    });
-    setCategory(temp);
+    if (!isAdding) {
+      setIsAdding(true);
+      const temp = { ...category };
+      temp.items.push({
+        unit: "",
+        product_name: "",
+        brand_name: "",
+        model_name: "",
+        list_price: "",
+        price_adjustment: "",
+        net_price: "",
+        remarks: "",
+      });
+      setCategory(temp);
+    }
     scrollToBottom();
   };
 
@@ -474,22 +456,22 @@ function AdminPrice() {
   }
 
   const removeItems = async () => {
-    console.log(selectedItems)
     const sorted = selectedItems.sort((a, b) => b-a)
-    console.log(sorted)
     sorted.map(index => {
-      console.log(category.items[index])
       category.items.splice(index, 1)
     })
-    console.log(category.items)
+    
     try {
       await suppliers.updateSupplierById(category._id, category)
       setSelected([])
+      setCategory({...category})
     } catch (error) {
       console.error(error)
       alert('something went wrong')
     }
   }
+
+  // const addPendingItems
 
   return (
     <div className="PriceList">
@@ -608,10 +590,10 @@ function AdminPrice() {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid>
+                <Grid container spacing={2}>
                   {
                     Boolean(selectedItems.length) &&
-                    <ButtonGroup variant="outlined">
+                    <ButtonGroup variant="outlined" style={{position: 'absolute', margin: 10}}>
                       <Button
                         color="primary"
                         className={classes.button3}
@@ -620,6 +602,18 @@ function AdminPrice() {
                       >
                         Apply Price Adjustment
                       </Button>
+                      {
+                        category.name === "Pending Items" &&
+                        <Button
+                          color="default"
+                          disable={!category}
+                          className={classes.button3}
+                          startIcon={<Add />}
+                          onClick={removeItems}
+                        >
+                          Add Items
+                        </Button>
+                      }
                       <Button
                         color="secondary"
                         disable={!category}
@@ -651,135 +645,55 @@ function AdminPrice() {
               />
             )}
             {/* ADD SUPPLIER */}
-            <Dialog
-              fullWidth="true"
-              maxWidth="sm"
+            <SingleFieldDialog 
               open={openAdd}
-              onClose={() => {
-                setOpenAdd(false);
-                setItems([]);
-              }}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">
-                <h3>New Supplier</h3>
-              </DialogTitle>
-              <DialogContent dividers>
-                <div className="modalAcc">
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Name
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AccountCircle color="primary" />
-                        </InputAdornment>
-                      }
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <InputLabel className={classes.modalFields}>
-                      {items.length ? "Upload Complete!" : "No Uploaded File"}
-                    </InputLabel>
-                  </FormGroup>
-                </div>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => {
-                    setOpenAdd(false);
-                    setItems([]);
-                  }}
-                  variant="contained"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  {...getRootProps({ className: "dropzone" })}
-                >
-                  <input {...getInputProps()} />
-                  <FontAwesomeIcon className="excel" icon={faFileExcel} />
-                  Upload Excel
-                </Button>
-                <Button
-                  className={classes.create}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    name ? addSupplier() : alert("Enter a name");
-                  }}
-                >
-                  Create Supplier
-                </Button>
-              </DialogActions>
-            </Dialog>
+              close={setOpenAdd}
+              title={"New Supplier"}
+              label={"Name"}
+              defaultValue={""}
+              isName={true}
+              type={"text"}
+              value={name}
+              setValue={setName}
+              actionName={"Create Supplier"}
+              handleAction={addSupplier}
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
+              items={items}
+            />
 
             {/* EDIT SUPPLIER */}
-            <Dialog
-              fullWidth="true"
-              maxWidth="sm"
+            <SingleFieldDialog 
               open={openEdit}
-              onClose={() => setOpenEdit(false)}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">
-                <h3>Edit Supplier</h3>
-              </DialogTitle>
-              <DialogContent dividers>
-                <div className="modalAcc">
-                  <FormGroup>
-                    <InputLabel
-                      className={classes.modalFields}
-                      onChange={(e) => setName(e.target.value)}
-                    >
-                      Name
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AccountCircle color="primary" />
-                        </InputAdornment>
-                      }
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </FormGroup>
-                </div>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpenEdit(false)} variant="contained">
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  {...getRootProps({ className: "dropzone" })}
-                >
-                  <input {...getInputProps()} />
-                  <FontAwesomeIcon className="excel" icon={faFileExcel} />
-                  Upload Excel
-                </Button>
-                <Button
-                  className={classes.create}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    name ? editSupplier() : alert("Enter a name");
-                  }}
-                >
-                  Save Changes
-                </Button>
-              </DialogActions>
-            </Dialog>
+              close={setOpenEdit}
+              title={"Edit Supplier"}
+              label={"Name"}
+              defaultValue={name}
+              isName={true}
+              type={"text"}
+              value={name}
+              setValue={setName}
+              actionName={"Save Changes"}
+              handleAction={editSupplier}
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
+            />
+
+            {/* APPLY PRICE ADJUSTMENT */}
+            <SingleFieldDialog 
+              open={openPrice}
+              close={setOpenPrice}
+              title={"Apply Price Adjustment"}
+              label={"Enter Price Percentage"}
+              endAdornment={"%"}
+              defaultValue={0}
+              isName={false}
+              type={"number"}
+              value={price}
+              setValue={setPrice}
+              actionName={"Apply"}
+              handleAction={applyPrice}
+            />
 
             {/* ADD PENDING ITEMS */}
             <Dialog
@@ -893,6 +807,7 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.list_price}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
@@ -909,11 +824,17 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.price_adjustment}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
                           price_adjustment: e.target.value,
                         })
+                      }
+                      endAdornment={
+                        <InputAdornment position="end">
+                          %
+                        </InputAdornment>
                       }
                     />
                   </FormGroup>
@@ -925,6 +846,7 @@ function AdminPrice() {
                       className={classes.modalFields}
                       variant="outlined"
                       defaultValue={tobeAdded.net_price}
+                      type="Number"
                       onChange={(e) =>
                         setTobeAdded({
                           ...tobeAdded,
@@ -966,67 +888,6 @@ function AdminPrice() {
                   }}
                 >
                   Add This Item
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            {/* APPLY PRICE ADJUSTMENT */}
-            <Dialog
-              fullWidth="true"
-              maxWidth="sm"
-              open={openPrice}
-              onClose={() => {
-                setOpenPrice(false);
-              }}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">
-                <h3>Apply Price Adjustment</h3>
-              </DialogTitle>
-              <DialogContent dividers>
-                <div className="modalAcc">
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Enter Price Percentage
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <LocalOffer color="primary" />
-                        </InputAdornment>
-                      }
-                      endAdornment={
-                        <InputAdornment position="end">
-                          %
-                        </InputAdornment>
-                      }
-                      defaultValue={0}
-                      type="number"
-                      onChange={(e) => setPrice(e.target.value)}
-                    />
-                  </FormGroup>
-                </div>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => {
-                    setOpenPrice(false);
-                  }}
-                  variant="contained"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className={classes.create}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    price ? applyPrice() : alert("Do not leave empty");
-                  }}
-                >
-                  Apply
                 </Button>
               </DialogActions>
             </Dialog>

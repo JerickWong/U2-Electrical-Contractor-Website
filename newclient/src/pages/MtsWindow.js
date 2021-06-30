@@ -903,7 +903,7 @@ function MtsWindow(props) {
 
             {confirmDialog}
 
-            <Table name="table" responsive hover bordercolor="#8f8f94" border="#8f8f94">
+            <Table name="table" hover bordercolor="#8f8f94" border="#8f8f94">
               <thead>
                 <tr>
                   <th>Qty</th>
