@@ -74,6 +74,12 @@ export default function SingleFieldDialog(props) {
                     type={props.type}
                     onChange={(e) => props.setValue(e.target.value)}
                 />
+                {
+                    props.items &&
+                    <InputLabel className={classes.modalFields}>
+                        {props.items.length ? "Upload Complete!" : "No Uploaded File"}
+                    </InputLabel>
+                }
                 </FormGroup>
             </div>
             </DialogContent>

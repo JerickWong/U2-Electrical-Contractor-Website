@@ -183,6 +183,10 @@ function AdminPrice() {
 
   const Papa = require("papaparse");
 
+  useEffect(() => {
+    setItems([]);
+  }, [openAdd])
+
   const handleChange = (event) => {
     if (isAdding) category.items.pop();
     setIsAdding(false);
@@ -665,7 +669,22 @@ function AdminPrice() {
               />
             )}
             {/* ADD SUPPLIER */}
-            <Dialog
+            <SingleFieldDialog 
+              open={openAdd}
+              close={setOpenAdd}
+              title={"New Supplier"}
+              label={"Name"}
+              defaultValue={""}
+              type={"text"}
+              value={name}
+              setValue={setName}
+              actionName={"Create Supplier"}
+              handleAction={addSupplier}
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
+              items={items}
+            />
+            {/* <Dialog
               fullWidth="true"
               maxWidth="sm"
               open={openAdd}
@@ -732,7 +751,7 @@ function AdminPrice() {
                   Create Supplier
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
             {/* EDIT SUPPLIER */}
             <SingleFieldDialog 
