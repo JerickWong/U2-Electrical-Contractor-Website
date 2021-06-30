@@ -63,6 +63,7 @@ import { useDropzone } from "react-dropzone";
 import suppliers from "../api/supplier";
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
 import SuccessDialog from "../components/SuccessDialog/SuccessDialog";
+import SingleFieldDialog from "../components/SingleFieldDialog/SingleFieldDialog";
 
 const primary = "#8083FF";
 const white = "#FFFFFF";
@@ -343,7 +344,7 @@ function AdminPrice() {
           const final = window.confirm(
             `Are you sure you want to replace the price list for ${category.name}?`
           );
-          if (final) uploadItems(results.data);
+          if (final) {uploadItems(results.data); setOpenEdit(false)};
         } else {
           if (category === null) alert("No selected Supplier yet");
           else {
@@ -734,7 +735,22 @@ function AdminPrice() {
             </Dialog>
 
             {/* EDIT SUPPLIER */}
-            <Dialog
+            <SingleFieldDialog 
+              open={openEdit}
+              close={setOpenEdit}
+              title={"Edit Supplier"}
+              label={"Name"}
+              defaultValue={name}
+              isName={true}
+              type={"text"}
+              value={name}
+              setValue={setName}
+              actionName={"Save Changes"}
+              handleAction={editSupplier}
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
+            />
+            {/* <Dialog
               fullWidth="true"
               maxWidth="sm"
               open={openEdit}
@@ -792,7 +808,7 @@ function AdminPrice() {
                   Save Changes
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
             {/* ADD PENDING ITEMS */}
             <Dialog
@@ -992,7 +1008,21 @@ function AdminPrice() {
             </Dialog>
 
             {/* APPLY PRICE ADJUSTMENT */}
-            <Dialog
+            <SingleFieldDialog 
+              open={openPrice}
+              close={setOpenPrice}
+              title={"Apply Price Adjustment"}
+              label={"Enter Price Percentage"}
+              endAdornment={"%"}
+              defaultValue={0}
+              isName={false}
+              type={"number"}
+              value={price}
+              setValue={setPrice}
+              actionName={"Apply"}
+              handleAction={applyPrice}
+            />
+            {/* <Dialog
               fullWidth="true"
               maxWidth="sm"
               open={openPrice}
@@ -1050,7 +1080,7 @@ function AdminPrice() {
                   Apply
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
             <div className="tbl">
               <Grid container spacing={1}>
