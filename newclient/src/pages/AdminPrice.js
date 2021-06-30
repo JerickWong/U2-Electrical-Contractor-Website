@@ -14,6 +14,7 @@ import {
   ButtonGroup,
   InputAdornment,
   CircularProgress,
+  TextField,
 } from "@material-ui/core";
 import {
   Add,
@@ -21,7 +22,8 @@ import {
   GroupAdd,
   QueryBuilder,
   Delete,
-  LocalOffer
+  LocalOffer,
+  Search
 } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -503,7 +505,30 @@ function AdminPrice(props) {
     }
   }
 
-  // const addPendingItems
+  const handleSearch = (event) => {
+
+    let query = event.target.value
+    if (query !== '') {
+        query = query.toLowerCase()
+        const temp = [...backupCategory.items]
+        console.log(temp)
+        const filtered = temp.filter(obj => {
+          let unit = obj.unit.toLowerCase()
+          let product_name = obj.product_name.toLowerCase()
+          let model_name = obj.model_name.toLowerCase()
+          let brand_name = obj.brand_name.toLowerCase()
+          let remarks = obj.remarks.toLowerCase()
+          if (unit.includes(query) || product_name.includes(query) || 
+          model_name.includes(query) || brand_name.includes(query) || remarks.includes(query))
+              return obj
+        })
+        console.log(filtered)
+        setCategory({items: filtered})
+    } else {
+        setCategory(backupCategory)
+    }
+
+  }
 
   return (
     <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
@@ -538,7 +563,25 @@ function AdminPrice(props) {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid container item xs={4} />
+                <Grid container item xs={4} >
+                  <FormControl>
+                    <TextField
+                      className={classes.txt}
+                      size="normal"
+                      placeholder="Search"
+                      type='search'
+                      InputProps={{
+                          startAdornment: (
+                              <InputAdornment position="start">
+                                  <Search />
+                              </InputAdornment>
+                          ),
+                      }}
+                      onChange={handleSearch}
+                      id="search"
+                    />
+                    </FormControl>
+                </Grid>
                 <Grid
                   container
                   item
