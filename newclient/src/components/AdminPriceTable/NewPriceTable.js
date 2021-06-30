@@ -34,6 +34,15 @@ export default function NewPriceTable(props) {
     setCategory(props.data);
   }, [props.data, props.isAdding]);
 
+  useEffect(() => {
+    if (!props.selectedItems.length) {
+      selectedRows.map(tr => {
+        tr.style.backgroundColor = ""
+        tr.firstChild.firstChild.firstChild.checked = false
+      })
+    }
+  }, [props.selectedItems])
+
   function editItem(event, item, index) {
     let tempEditing = [...isEditing]
     tempEditing[index] = true

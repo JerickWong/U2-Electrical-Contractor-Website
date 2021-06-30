@@ -447,9 +447,14 @@ function AdminPrice() {
 
   const applyPrice = async () => {
     try {
-      // selectedItems.map(index => {
-      //   category.items[index]
-      // })
+      selectedItems.map(index => {
+        category.items[index].price_adjustment = price
+        category.items[index].net_price = (1+price/100) * category.items[index].list_price
+      })
+      await suppliers.updateSupplierById(category._id, category)
+      setSelected([])
+      setOpenPrice(false)
+      setCategory({...category})
     } catch (error) {
       alert(error)
     }
