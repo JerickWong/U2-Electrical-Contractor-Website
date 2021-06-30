@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 const dbMTS = db.collection("MTS-Collection");
 
-function Cost() {
+function Cost(props) {
   ////// STATES //////
   const [current_project, setProject] = useState("");
   const [error, setError] = useState("");
@@ -204,7 +204,7 @@ function Cost() {
   }, [current_project, view]);
 
   return (
-    <div className="App">
+    <div className="App" style={{marginLeft: props.isOpen && 200}}>
       {/*style:{{marginLeft:200}}*/}
       <div className="cont">
         <Container className={classes.container} maxWidth="lg">

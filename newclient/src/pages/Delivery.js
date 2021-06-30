@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 const dbMTS = db.collection('MTS-Collection');
 
-function Price() {
+function Price(props) {
     ////// STATES //////
     const [current_project, setProject] = useState('');    
     const [error, setError] = useState('')
@@ -474,7 +474,7 @@ function Price() {
 
 
     return (
-        <div className="PriceList">
+        <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
             {/*style:{{marginLeft:200}}*/}
             <Container className="cont">
                 <main className={classes.content}>

@@ -230,7 +230,7 @@ function MtsList(props) {
 
 
     return (
-        <div className="App">
+        <div className="App" style={{marginLeft: props.isOpen && 200}}>
             {/*style:{{marginLeft:200}}*/}
             <Container className="cont">                
                 <div className="project">

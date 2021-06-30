@@ -140,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function AdminNavbar() {
+function AdminNavbar(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -148,10 +148,14 @@ function AdminNavbar() {
 
   const handleDrawerOpen = () => {
     setOpen(true);
+    if (props.setIsOpen)
+      props.setIsOpen(true)
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
+    if (props.setIsOpen)
+      props.setIsOpen(false)
   };
 
   // firebase.auth().onAuthStateChanged(user => {

@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Accounts() {
+function Accounts(props) {
   const classes = useStyles();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [open, setOpen] = useState(false);
@@ -345,10 +345,10 @@ function Accounts() {
     setEditRole("");
     setPassword("");
   };
+
   return (
-    <div className="Accounts">
+    <div className="Accounts" style={{marginLeft: props.isOpen && 200}}>
       {checkAdmin()}
-      {/*style:{{marginLeft:200}}*/}
       <Container className="cont">
         <div className={classes.toolbar} />
         <MuiThemeProvider theme={theme}>

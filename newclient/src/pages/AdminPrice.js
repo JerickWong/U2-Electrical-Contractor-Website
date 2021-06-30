@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AdminPrice() {
+function AdminPrice(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -506,7 +506,7 @@ function AdminPrice() {
   // const addPendingItems
 
   return (
-    <div className="PriceList">
+    <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
       {/*style:{{marginLeft:200}}*/}
       <Container fluid="lg" className="cont">
         <main className={classes.content}>

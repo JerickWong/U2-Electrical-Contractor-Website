@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function Price() {
+function Price(props) {
     const classes = useStyles();
     const [category, setCategory] = useState(null);
     const [backupCategory, setBackup] = useState(null);
@@ -206,7 +206,7 @@ function Price() {
     }
 
     return (
-        <div className="PriceList">
+        <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
             {/*style:{{marginLeft:200}}*/}
             <Container className="cont">
                 <main className={classes.content}>
