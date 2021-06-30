@@ -475,6 +475,7 @@ function Price() {
 
     return (
         <div className="PriceList">
+            {/*style:{{marginLeft:200}}*/}
             <Container className="cont">
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
