@@ -391,7 +391,7 @@ function AdminPrice() {
       alert("uploaded");
       setCategory(payload);
       setBackupCategory(payload);
-      const index = categories.indexOf(category);
+      const index = categories.indexOf(backupCategory);
       categories[index] = payload;
     } catch (error) {
       alert("error saving to database");
@@ -476,17 +476,15 @@ function AdminPrice() {
   }
 
   const removeItems = async () => {
-    console.log(selectedItems)
     const sorted = selectedItems.sort((a, b) => b-a)
-    console.log(sorted)
     sorted.map(index => {
-      console.log(category.items[index])
       category.items.splice(index, 1)
     })
-    console.log(category.items)
+    
     try {
       await suppliers.updateSupplierById(category._id, category)
       setSelected([])
+      setCategory({...category})
     } catch (error) {
       console.error(error)
       alert('something went wrong')
