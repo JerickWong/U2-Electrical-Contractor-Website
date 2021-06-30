@@ -205,6 +205,7 @@ function Cost() {
 
   return (
     <div className="App">
+      {/*style:{{marginLeft:200}}*/}
       <div className="cont">
         <Container className={classes.container} maxWidth="lg">
           <div className="project">

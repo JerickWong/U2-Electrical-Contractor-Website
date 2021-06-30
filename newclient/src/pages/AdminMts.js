@@ -477,6 +477,7 @@ function AdminMts(props) {
 
     return (
         <div className="App">
+            {/*style:{{marginLeft:200}}*/}
             <Container className="cont">                
                 <div className="project">
                     {renderError()}

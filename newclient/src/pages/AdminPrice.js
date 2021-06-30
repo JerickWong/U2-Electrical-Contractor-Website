@@ -493,6 +493,7 @@ function AdminPrice() {
 
   return (
     <div className="PriceList">
+      {/*style:{{marginLeft:200}}*/}
       <Container fluid="lg" className="cont">
         <main className={classes.content}>
           <div className={classes.toolbar} />
