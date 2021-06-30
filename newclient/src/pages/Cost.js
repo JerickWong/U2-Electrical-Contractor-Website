@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Table } from "react-bootstrap";
-import { Save } from "@material-ui/icons";
 import {
   makeStyles,
   MenuItem,
-  TextField,
   InputLabel,
-  Button,
   Container,
   Grid,
   Select,
@@ -16,8 +13,7 @@ import {
 } from "@material-ui/core";
 import "../styles/mts.css";
 import moment from "moment";
-import db from "../components/Firestore/firestore";
-import UserAlert from "../components/UserAlert/UserAlert";
+// import db from "../components/Firestore/firestore";
 import api from "../api";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,12 +29,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dbMTS = db.collection("MTS-Collection");
+// const dbMTS = db.collection("MTS-Collection");
 
 function Cost(props) {
   ////// STATES //////
   const [current_project, setProject] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [projects, setProjects] = useState([]);
   const [view, setView] = useState("Daily");
   const [mts, setMts] = useState([]);
@@ -153,11 +149,9 @@ function Cost(props) {
       setProjects(projectnames);
       setProject(projectnames[0]);
 
-      setError("");
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
-      setError(error);
     }
   }
 
@@ -182,10 +176,10 @@ function Cost(props) {
     setLoading(false);
   }
 
-  function renderError() {
-    if (error) return <UserAlert severity="error" message={error} />;
-    else return "";
-  }
+  // function renderError() {
+  //   if (error) return <UserAlert severity="error" message={error} />;
+  //   else return "";
+  // }
 
   const handleChange = (event) => {
     console.log(event.target.value);

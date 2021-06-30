@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import Navbars from '../components/Navbar/Navbars';
 import Price from './Price'

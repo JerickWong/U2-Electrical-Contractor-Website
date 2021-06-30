@@ -7,8 +7,8 @@ import {Container, Table} from 'react-bootstrap';
 import { makeStyles, MenuItem, InputLabel, Grid, Select, FormControl, Button, CircularProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import '../styles/mts.css';
-import db from '../components/Firestore/firestore';
-import firebase from 'firebase'
+// import db from '../components/Firestore/firestore';
+// import firebase from 'firebase'
 import UserAlert from '../components/UserAlert/UserAlert'
 import users from '../api/users';
 import api from '../api';
@@ -18,10 +18,6 @@ import ConfirmationDialog from '../components/ConfirmationDialog/ConfirmationDia
 import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-  },
   selectEmpty: {
       marginTop: theme.spacing(2),
   },
@@ -334,7 +330,7 @@ function AdminMts(props) {
             const delivered_rows = newDelivered.map(row => {
                 return { ...row, estqty: 0 }
             })
-            const message = await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
+            await (await api.insertDelivered({ project_name: current_project, start: dates.start, end: dates.end, rows: delivered_rows })).data.message
         }
 
         setTimeout(() => {
@@ -354,7 +350,7 @@ function AdminMts(props) {
             const tempPendingItems = []
             console.log(current_mts)
             
-            current_mts.rows.map( row => {
+            current_mts.rows.forEach( row => {
                 const found = suppliers.find( supplier => supplier.items.find( item => {
                     return item.unit.trim() === row.unit.trim() &&
                             item.product_name.trim() === row.description.trim() &&
@@ -381,7 +377,7 @@ function AdminMts(props) {
                 setOpen(false)
                 setMessage('')
                 const temp = ["By proceeding, the following will be added to the Pending Items:"]
-                tempPendingItems.map( item => {
+                tempPendingItems.forEach( item => {
                     console.log(item)
                     temp.push(`${item.unit} ${item.description} ${item.brand} ${item.model}`)
                 })

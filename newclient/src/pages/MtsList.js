@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
@@ -14,10 +14,6 @@ import api from '../api'
 import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-  },
   selectEmpty: {
       marginTop: theme.spacing(2),
   },
@@ -195,10 +191,7 @@ function MtsList(props) {
             let new_mts = await (await api.getMTSByProject(payload)).data.data
             let current = await user
 
-            new_mts = new_mts.filter(mts => {
-                if (mts.prepared_by === current.username) 
-                    return mts
-            })
+            new_mts = new_mts.filter(mts => mts.prepared_by === current.username)
 
             setMts(new_mts)
         } catch (error) {

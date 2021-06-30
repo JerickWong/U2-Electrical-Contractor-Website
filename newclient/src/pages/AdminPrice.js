@@ -264,7 +264,7 @@ function AdminPrice(props) {
     //try {
     const temp = await (await suppliers.getAllSupplier()).data.data;
     temp.sort((a, b) => a.name.localeCompare(b.name));
-    temp.map((s) => {
+    temp.forEach((s) => {
       if (s.name === "Pending Items") setPending(s);
     });
     setCategories(temp);
@@ -339,7 +339,7 @@ function AdminPrice(props) {
         } else {
           if (category === null) alert("No selected Supplier yet");
           else {
-            results.data.map((item) => {
+            results.data.forEach((item) => {
               item.unit = item.unit.trim();
               item.product_name = item.product_name.trim();
               item.brand_name = item.brand_name.trim();
@@ -363,7 +363,7 @@ function AdminPrice(props) {
   };
 
   const uploadItems = async (rawItems) => {
-    rawItems.map((item) => {
+    rawItems.forEach((item) => {
       item.unit = item.unit.trim();
       item.product_name = item.product_name.trim();
       item.brand_name = item.brand_name.trim();
@@ -441,7 +441,7 @@ function AdminPrice(props) {
   const addPendingItems = async () => {
     try {
       const sorted = selectedItems.sort((a, b) => b-a)
-      sorted.map(index => {
+      sorted.forEach(index => {
         category.items.push(pending.items[index])
         pending.items.splice(index, 1)
       })
@@ -476,7 +476,7 @@ function AdminPrice(props) {
 
   const applyPrice = async () => {
     try {
-      selectedItems.map(index => {
+      selectedItems.forEach(index => {
         category.items[index].price_adjustment = price
         category.items[index].net_price = (1+price/100) * category.items[index].list_price
       })
@@ -491,7 +491,7 @@ function AdminPrice(props) {
 
   const removeItems = async () => {
     const sorted = selectedItems.sort((a, b) => b-a)
-    sorted.map(index => {
+    sorted.forEach(index => {
       category.items.splice(index, 1)
     })
     
@@ -518,9 +518,7 @@ function AdminPrice(props) {
           let model_name = obj.model_name.toLowerCase()
           let brand_name = obj.brand_name.toLowerCase()
           let remarks = obj.remarks.toLowerCase()
-          if (unit.includes(query) || product_name.includes(query) || 
-          model_name.includes(query) || brand_name.includes(query) || remarks.includes(query))
-              return obj
+          return unit.includes(query) || product_name.includes(query) || model_name.includes(query) || brand_name.includes(query) || remarks.includes(query)
         })
         console.log(filtered)
         setCategory({items: filtered})

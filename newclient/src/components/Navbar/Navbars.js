@@ -16,11 +16,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ListItemLink,
   Typography,
 } from "@material-ui/core";
 import {
-  Description,
   Assignment,
   LocalOffer,
   NoteAdd,
@@ -31,12 +29,12 @@ import {
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import indigo from "@material-ui/core/colors/indigo";
 import grey from "@material-ui/core/colors/grey";
 import "../../styles/navbar.css";
-import Authenticate from "../Firestore/auth";
-import firebase from "firebase";
+// import Authenticate from "../Firestore/auth";
+// import firebase from "firebase";
 import { Redirect } from "react-router-dom";
 import users from "../../api/users";
 
@@ -46,13 +44,6 @@ const dark = grey[800];
 const primary = "#8083FF";
 const white = "#FFFFFF";
 const lightIndigo = "#CDCFEF";
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#8083FF",
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -188,9 +179,9 @@ function Navbars(props) {
     localStorage.setItem("token", "");
   };
 
-  function refreshPage() {
-    window.location.reload(false);
-  }
+  // function refreshPage() {
+  //   window.location.reload(false);
+  // }
 
   return (
     <div className={classes.root}>

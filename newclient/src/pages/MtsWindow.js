@@ -19,23 +19,21 @@ import {
   LocationOn,
   Edit,
   LocalShipping,
-  ArrowBack,
-  CastConnectedSharp,
   ArrowBackIos,
 } from "@material-ui/icons";
-import { MuiThemeProvider, withStyles } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { InputBase } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Prompt } from "react-router";
 import "../styles/mts.css";
-import MtsRow from "../components/MtsRow/MtsRow";
-import db from "../components/Firestore/firestore";
+// import MtsRow from "../components/MtsRow/MtsRow";
+// import db from "../components/Firestore/firestore";
 import moment from "moment";
 import UserAlert from "../components/UserAlert/UserAlert";
 import ConfirmationDialog from "../components/ConfirmationDialog/ConfirmationDialog";
-import firebase from "firebase";
+// import firebase from "firebase";
 import api from "../api";
 import users from "../api/users";
 import supplier from "../api/supplier";
@@ -140,7 +138,6 @@ function MtsWindow(props) {
   const [action, setAction] = useState("Add");
   const [success, setSuccess] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const [confirmDialog, setConfirmationDialog] = useState("");
   const [prepared_by, setPreparedBy] = useState("");
   const [address, setAddress] = useState("");
   const [MTS_number, setMtsNumber] = useState("");
@@ -273,10 +270,10 @@ function MtsWindow(props) {
         const raw = res.data.data;
         let compiled = [],
           tempUnits = [];
-        raw.map((supp) => {
+        raw.forEach((supp) => {
           const items = supp.items;
           compiled = compiled.concat(items);
-          items.map((item) => tempUnits.push(item.unit));
+          items.forEach((item) => tempUnits.push(item.unit));
 
           if (supp.name === "Pending Items")
             pendingItems.pendingSupplier = supp;
@@ -465,7 +462,7 @@ function MtsWindow(props) {
     if (date === "") temp.push("Date");
     if (address === "") temp.push("Address");
 
-    rows.map((row, index) => {
+    rows.forEach((row, index) => {
       const { qty, description, unit, brand, model, remarks } = row;
 
       if (qty === "") temp.push(`Quantity at row ${index + 1}`);
@@ -489,9 +486,7 @@ function MtsWindow(props) {
     setOpen(true);
     setLoading(true);
 
-    const clean_rows = rows.filter((row) => {
-      if (row.description && row.qty) return row;
-    });
+    const clean_rows = rows.filter((row) => row.description && row.qty);
 
     const payload = {
       prepared_by,
@@ -513,7 +508,7 @@ function MtsWindow(props) {
     if (props.location.state) {
       try {
         const _id = props.location.state.mts._id;
-        const response = await (await api.updateMTSById(_id, payload)).data;
+        await (await api.updateMTSById(_id, payload)).data;
 
         // alert(response.message)
         setTimeout(() => {
@@ -531,7 +526,7 @@ function MtsWindow(props) {
       }
     } else {
       try {
-        const response = await (await api.insertMTS(payload)).data;
+        await (await api.insertMTS(payload)).data;
 
         setTimeout(() => {
           setLoading(false);
@@ -552,7 +547,7 @@ function MtsWindow(props) {
       const pendingRows = pending.map((index) => rows[index]);
       try {
         const payload = { items: [] };
-        pendingRows.map((row) => {
+        pendingRows.forEach((row) => {
           const { unit, description, brand, model, remarks, price } = row;
           payload.items.push({
             unit,
@@ -651,19 +646,19 @@ function MtsWindow(props) {
   }
 
   // RETURNS NON EMPTY HTML ROWS
-  function getRows() {
-    const tablerows = [...document.querySelectorAll("tr")];
+  // function getRows() {
+  //   const tablerows = [...document.querySelectorAll("tr")];
 
-    // REMOVE HEADER
-    tablerows.splice(0, 1);
+  //   // REMOVE HEADER
+  //   tablerows.splice(0, 1);
 
-    // FILTER ROWS WITH TOTAL
-    const filteredrows = tablerows.filter((row) => {
-      let total = row.querySelector('td[name="total"]').innerHTML;
-      if (total != "0") return row;
-    });
-    return filteredrows;
-  }
+  //   // FILTER ROWS WITH TOTAL
+  //   const filteredrows = tablerows.filter((row) => {
+  //     let total = row.querySelector('td[name="total"]').innerHTML;
+  //     if (total !== "0") return row;
+  //   });
+  //   return filteredrows;
+  // }
 
   function handleRowChange(e, index) {
     const { name, value } = e.target;
@@ -723,7 +718,6 @@ function MtsWindow(props) {
                     id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Prepared by"
-                    id="preparedby"
                     value={prepared_by}
                     onChange={(e) => setPreparedBy(e.target.value)}
                     size="normal"
@@ -751,7 +745,6 @@ function MtsWindow(props) {
                     id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="Address"
-                    id="address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     size="normal"
@@ -780,7 +773,6 @@ function MtsWindow(props) {
                     error={!MTS_number}
                     className={classes.txt4}
                     label="MTS No."
-                    id="mtsnumber"
                     value={MTS_number}
                     required
                     size="normal"
@@ -813,7 +805,6 @@ function MtsWindow(props) {
                     error={!project_name}
                     className={classes.txt4}
                     label="Project Name"
-                    id="projectname"
                     value={project_name}
                     required
                     size="normal"
@@ -844,7 +835,6 @@ function MtsWindow(props) {
                     id="input-with-icon-textfield"
                     className={classes.txt4}
                     label="From"
-                    id="deliveredfrom"
                     value={delivered_from}
                     onChange={(e) => setDeliveredFrom(e.target.value)}
                     size="normal"
@@ -900,8 +890,6 @@ function MtsWindow(props) {
                 <Grid item xs={7} />
               </Grid>
             </div>
-
-            {confirmDialog}
 
             <Table name="table" hover bordercolor="#8f8f94" border="#8f8f94">
               <thead>
@@ -1138,7 +1126,6 @@ function MtsWindow(props) {
                     value={requested_by}
                     InputLabelProps={{ shrink: true }}
                     className={classes.txt4}
-                    id="requestedby"
                     size="small"
                     label="Requested by"
                     required
@@ -1161,7 +1148,6 @@ function MtsWindow(props) {
                     value={takenout_by}
                     onChange={(e) => setTakenoutBy(e.target.value)}
                     InputLabelProps={{ shrink: true }}
-                    id="takenoutby"
                     size="small"
                     label="Taken out by"
                     variant="outlined"
@@ -1195,7 +1181,6 @@ function MtsWindow(props) {
                     value={approved_by}
                     onChange={(e) => setApprovedBy(e.target.value)}
                     InputLabelProps={{ shrink: true }}
-                    id="approvedby"
                     size="small"
                     label="Approved by"
                     variant="outlined"
@@ -1215,7 +1200,6 @@ function MtsWindow(props) {
                     value={received_by}
                     onChange={(e) => setReceivedBy(e.target.value)}
                     InputLabelProps={{ shrink: true }}
-                    id="receivedby"
                     size="small"
                     label="Received by"
                     variant="outlined"

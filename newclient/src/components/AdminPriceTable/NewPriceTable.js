@@ -19,7 +19,7 @@ export default function NewPriceTable(props) {
     const temp = []
     const tempEdit = []
 
-    props.data.items.map(item => {
+    props.data.items.forEach(item => {
       temp.push(false)
       tempEdit.push({...item})
     })
@@ -35,7 +35,7 @@ export default function NewPriceTable(props) {
 
   useEffect(() => {
     if (!props.selectedItems.length) {
-      selectedRows.map(tr => {
+      selectedRows.forEach(tr => {
         tr.style.backgroundColor = ""
         tr.firstChild.firstChild.firstChild.checked = false
       })
@@ -97,7 +97,7 @@ export default function NewPriceTable(props) {
       alert(error)
     }
     props.setSelected([])
-    selectedRows.map(row => {row.firstChild.firstChild.firstChild.checked = false; row.style.backgroundColor = '';})
+    selectedRows.forEach(row => {row.firstChild.firstChild.firstChild.checked = false; row.style.backgroundColor = '';})
     setRows([])
   }
 

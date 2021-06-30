@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, IconButton, InputBase, CircularProgress } from '@material-ui/core';
-import { ArrowBackIos, Save, Clear, Search, DateRange, SettingsBackupRestore } from '@material-ui/icons';
+import { InputAdornment, Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputBase, CircularProgress } from '@material-ui/core';
+import { ArrowBackIos, Save, Search, DateRange } from '@material-ui/icons';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
-import db from '../components/Firestore/firestore';
-import UserAlert from '../components/UserAlert/UserAlert'
+// import db from '../components/Firestore/firestore';
 import '../styles/mts.css';
 import api from '../api';
 import moment from 'moment'
 import SuccessDialog from '../components/SuccessDialog/SuccessDialog'
 
 const primary = '#8083FF';
-const gray = '#838387';
 const white = '#FFFFFF';
 const theme = createMuiTheme({
     palette: {
@@ -90,7 +86,6 @@ function Price(props) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-    const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
     const [backupMts, setBackup] = useState([])
@@ -255,10 +250,8 @@ function Price(props) {
             setProjects(projectnames)
             setProject(projectnames[0])
             
-            setError('')
         } catch (error) {
             alert('Something went wrong')
-            setError(error)
         }
     }
 
@@ -299,8 +292,7 @@ function Price(props) {
             const temp = [...backupMts]
             const filtered = temp.filter(obj => {
                 const item = obj.item.toLowerCase()
-                if (item.includes(query))
-                    return obj
+                return item.includes(query)
             })
             setMts(filtered)
         } else {
@@ -338,7 +330,6 @@ function Price(props) {
             } catch (error) {
                 setMts([])
                 console.log(error)
-                setError(error)
             }
         } else {
             // get delivered
