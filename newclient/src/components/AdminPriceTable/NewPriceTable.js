@@ -30,7 +30,6 @@ export default function NewPriceTable(props) {
     setIsEditing(temp)
     setEdit(tempEdit)
     setRows([])
-    props.setSelected([])
     setCategory(props.data);
   }, [props.data, props.isAdding]);
 

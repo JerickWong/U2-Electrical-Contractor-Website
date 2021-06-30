@@ -162,6 +162,16 @@ function AdminPrice() {
     setItems([]);
   }, [openAdd])
 
+  useEffect(() => {
+    if (!openPending)
+      setTobeAdded({})
+  }, [openPending])
+
+  useEffect(() => {
+    if (!openPending)
+      setSelected([])
+  }, [category])
+
   const handleChange = (event) => {
     if (isAdding) category.items.pop();
     setIsAdding(false);
@@ -426,6 +436,23 @@ function AdminPrice() {
     }
   };
 
+  const addPendingItems = async () => {
+    try {
+      const sorted = selectedItems.sort((a, b) => b-a)
+      sorted.map(index => {
+        category.items.push(pending.items[index])
+        pending.items.splice(index, 1)
+      })
+      await suppliers.updateSupplierById(category._id, category)
+      await suppliers.updateSupplierById(pending._id, pending)
+      setSelected([])
+      setOpenPending(false)
+      setCategory({...category})
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   const newItem = () => {
     if (!isAdding) {
       setIsAdding(true);
@@ -614,7 +641,7 @@ function AdminPrice() {
                           disable={!category}
                           className={classes.button3}
                           startIcon={<Add />}
-                          onClick={removeItems}
+                          onClick={() => setOpenPending(true)}
                         >
                           Add Items
                         </Button>
@@ -709,7 +736,7 @@ function AdminPrice() {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                <h3>Select which supplier to add this item</h3>
+                <h3>Select which supplier to add {tobeAdded.unit ? 'this item' : 'the items selected'}</h3>
               </DialogTitle>
               <DialogContent dividers>
                 <div className="modalAcc">
@@ -739,140 +766,145 @@ function AdminPrice() {
                       })}
                     </Select>
                   </FormControl>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Unit
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.unit}
-                      onChange={(e) =>
-                        setTobeAdded({ ...tobeAdded, unit: e.target.value })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Product Name
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.product_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          product_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Brand
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.brand_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          brand_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Model
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.model_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          model_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      List Price
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.list_price}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          list_price: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Price Adjustment
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.price_adjustment}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          price_adjustment: e.target.value,
-                        })
-                      }
-                      endAdornment={
-                        <InputAdornment position="end">
-                          %
-                        </InputAdornment>
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Net Price
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.net_price}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          net_price: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Remarks
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.remarks}
-                      onChange={(e) =>
-                        setTobeAdded({ ...tobeAdded, remarks: e.target.value })
-                      }
-                    />
-                  </FormGroup>
+                  {
+                    tobeAdded.unit &&
+                    <div>
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Unit
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.unit}
+                          onChange={(e) =>
+                            setTobeAdded({ ...tobeAdded, unit: e.target.value })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Product Name
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.product_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              product_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Brand
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.brand_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              brand_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Model
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.model_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              model_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          List Price
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.list_price}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              list_price: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Price Adjustment
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.price_adjustment}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              price_adjustment: e.target.value,
+                            })
+                          }
+                          endAdornment={
+                            <InputAdornment position="end">
+                              %
+                            </InputAdornment>
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Net Price
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.net_price}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              net_price: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Remarks
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.remarks}
+                          onChange={(e) =>
+                            setTobeAdded({ ...tobeAdded, remarks: e.target.value })
+                          }
+                        />
+                      </FormGroup>
+                    </div>
+                  }
                 </div>
               </DialogContent>
               <DialogActions>
@@ -882,18 +914,30 @@ function AdminPrice() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  className={classes.create}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    tobeAdded.unit && tobeAdded.product_name
-                      ? addPendingItem()
-                      : alert("Enter a name");
-                  }}
-                >
-                  Add This Item
-                </Button>
+                {
+                  tobeAdded.unit ?
+                  <Button
+                    className={classes.create}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      tobeAdded.unit && tobeAdded.product_name
+                        ? addPendingItem()
+                        : alert("Enter a name");
+                    }}
+                  >
+                    Add This Item
+                  </Button>
+                  :
+                  <Button
+                    className={classes.create}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => addPendingItems()}
+                  >
+                    Add Items
+                  </Button>
+                }
               </DialogActions>
             </Dialog>
 
