@@ -1,14 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React, { useState } from 'react';
+import { Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminNavbar from '../components/Navbar/AdminNavbar';
 import DeliverSum from './DeliverSum';
 
 function DeliverSummary() {
+    const [isOpen, setIsOpen] = useState(false)
     return (
         <div>
-            <AdminNavbar />
-            <Route exact path="/DeliverSummary" component={DeliverSum}></Route>
+            <AdminNavbar setIsOpen={setIsOpen}/>
+            <Route exact path="/DeliverSummary" render={() => (<DeliverSum isOpen={isOpen}/>)}></Route>
         </div>
     );
 }

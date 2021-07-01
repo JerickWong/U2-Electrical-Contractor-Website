@@ -19,7 +19,7 @@ export default function NewPriceTable(props) {
     const temp = []
     const tempEdit = []
 
-    props.data.items.map(item => {
+    props.data.items.forEach(item => {
       temp.push(false)
       tempEdit.push({...item})
     })
@@ -30,9 +30,17 @@ export default function NewPriceTable(props) {
     setIsEditing(temp)
     setEdit(tempEdit)
     setRows([])
-    props.setSelected([])
     setCategory(props.data);
   }, [props.data, props.isAdding]);
+
+  useEffect(() => {
+    if (!props.selectedItems.length) {
+      selectedRows.forEach(tr => {
+        tr.style.backgroundColor = ""
+        tr.firstChild.firstChild.firstChild.checked = false
+      })
+    }
+  }, [props.selectedItems])
 
   function editItem(event, item, index) {
     let tempEditing = [...isEditing]
@@ -49,6 +57,8 @@ export default function NewPriceTable(props) {
       category.items[index].net_price = 0
     if (!category.items[index].price_adjustment)
       category.items[index].price_adjustment = 0
+
+    category.items[index].net_price = (1+category.items[index].price_adjustment/100) * category.items[index].list_price
 
     try {
       await suppliers.updateSupplierById(category._id, category)
@@ -87,7 +97,7 @@ export default function NewPriceTable(props) {
       alert(error)
     }
     props.setSelected([])
-    selectedRows.map(row => {row.firstChild.firstChild.firstChild.checked = false; row.style.backgroundColor = '';})
+    selectedRows.forEach(row => {row.firstChild.firstChild.firstChild.checked = false; row.style.backgroundColor = '';})
     setRows([])
   }
 
@@ -166,7 +176,7 @@ export default function NewPriceTable(props) {
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].brand_name = e.target.value} type="text" size="sm" defaultValue={cat.brand_name ? cat.brand_name.slice() : ''}/> : cat.brand_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].model_name = e.target.value} type="text" size="sm" defaultValue={cat.model_name ? cat.model_name.slice() : ''}/> : cat.model_name}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].list_price = e.target.value} type="number" size="sm" defaultValue={cat.list_price ? Number(parseFloat(cat.list_price).toFixed(2)).toLocaleString('en-US') : ''}/> : Number(parseFloat(cat.list_price).toFixed(2)).toLocaleString('en-US')}</td>
-                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].price_adjustment = e.target.value} type="number" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment.slice() : '0%'}/> : cat.price_adjustment ? cat.price_adjustment+"%" : '0%'}</td>
+                <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].price_adjustment = e.target.value} type="number" size="sm" defaultValue={cat.price_adjustment ? cat.price_adjustment : '0%'}/> : cat.price_adjustment ? cat.price_adjustment+"%" : '0%'}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].net_price = e.target.value} type="number" size="sm" defaultValue={cat.net_price ? Number(parseFloat(cat.net_price).toFixed(2)).toLocaleString('en-US') : ''}/> : Number(parseFloat(cat.net_price).toFixed(2)).toLocaleString('en-US')}</td>
                 <td>{isEditing[index] ? <Form.Control onChange={e => edit[index].remarks = e.target.value} type="text" size="sm" defaultValue={cat.remarks ? cat.remarks.slice() : ''}/> : cat.remarks}</td>
                 <td>

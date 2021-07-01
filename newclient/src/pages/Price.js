@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, InputBase, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
-import { Save, Clear, Search } from '@material-ui/icons';
-import AddSharpIcon from '@material-ui/icons/AddSharp';
+import { Button, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, InputAdornment } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
-import Badge from '@material-ui/core/Badge';
 import '../styles/mts.css';
 import {useDropzone} from 'react-dropzone';
 import suppliers from '../api/supplier';
@@ -66,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function Price() {
+function Price(props) {
     const classes = useStyles();
     const [category, setCategory] = useState(null);
     const [backupCategory, setBackup] = useState(null);
@@ -90,10 +88,7 @@ function Price() {
         try {
             let temp = await (await suppliers.getAllSupplier()).data.data
             temp.sort((a, b) => a.name.localeCompare(b.name))
-            temp = temp.filter( s => {
-                if (s.name !== "Pending Items")
-                    return s
-            })
+            temp = temp.filter( s => s.name !== "Pending Items")
             setCategories(temp)
             setCategory(temp[0])
             setBackup(temp[0])
@@ -129,7 +124,7 @@ function Price() {
 
     const uploadItems = async (items) => {
 
-        items.map(item => {
+        items.forEach(item => {
             item.unit = item.unit.trim()
             item.product_name = item.product_name.trim()
             item.brand_name = item.brand_name.trim()
@@ -166,9 +161,8 @@ function Price() {
                 const lowerBrand = p.brand_name.toLowerCase()
                 const lowerModel = p.model_name.toLowerCase()
                 const lowerRemarks = p.remarks.toLowerCase()
-                if (lowerUnit.includes(query) || lowerName.includes(query) || lowerBrand.includes(query) || 
-                    lowerModel.includes(query) || lowerRemarks.includes(query))
-                    return p
+                return lowerUnit.includes(query) || lowerName.includes(query) || lowerBrand.includes(query) || 
+                    lowerModel.includes(query) || lowerRemarks.includes(query)
                 
             })
             setCategory({...category, items: filtered})
@@ -206,7 +200,7 @@ function Price() {
     }
 
     return (
-        <div className="PriceList">
+        <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
             {/*style:{{marginLeft:200}}*/}
             <Container className="cont">
                 <main className={classes.content}>

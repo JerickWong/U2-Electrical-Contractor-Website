@@ -14,6 +14,7 @@ import {
   ButtonGroup,
   InputAdornment,
   CircularProgress,
+  TextField,
 } from "@material-ui/core";
 import {
   Add,
@@ -21,7 +22,8 @@ import {
   GroupAdd,
   QueryBuilder,
   Delete,
-  LocalOffer
+  LocalOffer,
+  Search
 } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -128,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AdminPrice() {
+function AdminPrice(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,6 +163,16 @@ function AdminPrice() {
   useEffect(() => {
     setItems([]);
   }, [openAdd])
+
+  useEffect(() => {
+    if (!openPending)
+      setTobeAdded({})
+  }, [openPending])
+
+  useEffect(() => {
+    if (!openPending)
+      setSelected([])
+  }, [category])
 
   const handleChange = (event) => {
     if (isAdding) category.items.pop();
@@ -252,7 +264,7 @@ function AdminPrice() {
     //try {
     const temp = await (await suppliers.getAllSupplier()).data.data;
     temp.sort((a, b) => a.name.localeCompare(b.name));
-    temp.map((s) => {
+    temp.forEach((s) => {
       if (s.name === "Pending Items") setPending(s);
     });
     setCategories(temp);
@@ -327,7 +339,7 @@ function AdminPrice() {
         } else {
           if (category === null) alert("No selected Supplier yet");
           else {
-            results.data.map((item) => {
+            results.data.forEach((item) => {
               item.unit = item.unit.trim();
               item.product_name = item.product_name.trim();
               item.brand_name = item.brand_name.trim();
@@ -351,7 +363,7 @@ function AdminPrice() {
   };
 
   const uploadItems = async (rawItems) => {
-    rawItems.map((item) => {
+    rawItems.forEach((item) => {
       item.unit = item.unit.trim();
       item.product_name = item.product_name.trim();
       item.brand_name = item.brand_name.trim();
@@ -426,6 +438,23 @@ function AdminPrice() {
     }
   };
 
+  const addPendingItems = async () => {
+    try {
+      const sorted = selectedItems.sort((a, b) => b-a)
+      sorted.forEach(index => {
+        category.items.push(pending.items[index])
+        pending.items.splice(index, 1)
+      })
+      await suppliers.updateSupplierById(category._id, category)
+      await suppliers.updateSupplierById(pending._id, pending)
+      setSelected([])
+      setOpenPending(false)
+      setCategory({...category})
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   const newItem = () => {
     if (!isAdding) {
       setIsAdding(true);
@@ -447,9 +476,14 @@ function AdminPrice() {
 
   const applyPrice = async () => {
     try {
-      // selectedItems.map(index => {
-      //   category.items[index]
-      // })
+      selectedItems.forEach(index => {
+        category.items[index].price_adjustment = price
+        category.items[index].net_price = (1+price/100) * category.items[index].list_price
+      })
+      await suppliers.updateSupplierById(category._id, category)
+      setSelected([])
+      setOpenPrice(false)
+      setCategory({...category})
     } catch (error) {
       alert(error)
     }
@@ -457,7 +491,7 @@ function AdminPrice() {
 
   const removeItems = async () => {
     const sorted = selectedItems.sort((a, b) => b-a)
-    sorted.map(index => {
+    sorted.forEach(index => {
       category.items.splice(index, 1)
     })
     
@@ -471,10 +505,31 @@ function AdminPrice() {
     }
   }
 
-  // const addPendingItems
+  const handleSearch = (event) => {
+
+    let query = event.target.value
+    if (query !== '') {
+        query = query.toLowerCase()
+        const temp = [...backupCategory.items]
+        console.log(temp)
+        const filtered = temp.filter(obj => {
+          let unit = obj.unit.toLowerCase()
+          let product_name = obj.product_name.toLowerCase()
+          let model_name = obj.model_name.toLowerCase()
+          let brand_name = obj.brand_name.toLowerCase()
+          let remarks = obj.remarks.toLowerCase()
+          return unit.includes(query) || product_name.includes(query) || model_name.includes(query) || brand_name.includes(query) || remarks.includes(query)
+        })
+        console.log(filtered)
+        setCategory({items: filtered})
+    } else {
+        setCategory(backupCategory)
+    }
+
+  }
 
   return (
-    <div className="PriceList">
+    <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
       {/*style:{{marginLeft:200}}*/}
       <Container fluid="lg" className="cont">
         <main className={classes.content}>
@@ -506,7 +561,25 @@ function AdminPrice() {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid container item xs={4} />
+                <Grid container item xs={4} >
+                  <FormControl>
+                    <TextField
+                      className={classes.txt}
+                      size="normal"
+                      placeholder="Search"
+                      type='search'
+                      InputProps={{
+                          startAdornment: (
+                              <InputAdornment position="start">
+                                  <Search />
+                              </InputAdornment>
+                          ),
+                      }}
+                      onChange={handleSearch}
+                      id="search"
+                    />
+                    </FormControl>
+                </Grid>
                 <Grid
                   container
                   item
@@ -609,7 +682,7 @@ function AdminPrice() {
                           disable={!category}
                           className={classes.button3}
                           startIcon={<Add />}
-                          onClick={removeItems}
+                          onClick={() => setOpenPending(true)}
                         >
                           Add Items
                         </Button>
@@ -704,7 +777,7 @@ function AdminPrice() {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                <h3>Select which supplier to add this item</h3>
+                <h3>Select which supplier to add {tobeAdded.unit ? 'this item' : 'the items selected'}</h3>
               </DialogTitle>
               <DialogContent dividers>
                 <div className="modalAcc">
@@ -734,140 +807,145 @@ function AdminPrice() {
                       })}
                     </Select>
                   </FormControl>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Unit
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.unit}
-                      onChange={(e) =>
-                        setTobeAdded({ ...tobeAdded, unit: e.target.value })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Product Name
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.product_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          product_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Brand
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.brand_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          brand_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Model
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.model_name}
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          model_name: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      List Price
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.list_price}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          list_price: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Price Adjustment
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.price_adjustment}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          price_adjustment: e.target.value,
-                        })
-                      }
-                      endAdornment={
-                        <InputAdornment position="end">
-                          %
-                        </InputAdornment>
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Net Price
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.net_price}
-                      type="Number"
-                      onChange={(e) =>
-                        setTobeAdded({
-                          ...tobeAdded,
-                          net_price: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <InputLabel className={classes.modalFields}>
-                      Remarks
-                    </InputLabel>
-                    <Input
-                      className={classes.modalFields}
-                      variant="outlined"
-                      defaultValue={tobeAdded.remarks}
-                      onChange={(e) =>
-                        setTobeAdded({ ...tobeAdded, remarks: e.target.value })
-                      }
-                    />
-                  </FormGroup>
+                  {
+                    tobeAdded.unit &&
+                    <div>
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Unit
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.unit}
+                          onChange={(e) =>
+                            setTobeAdded({ ...tobeAdded, unit: e.target.value })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Product Name
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.product_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              product_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Brand
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.brand_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              brand_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Model
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.model_name}
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              model_name: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          List Price
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.list_price}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              list_price: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Price Adjustment
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.price_adjustment}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              price_adjustment: e.target.value,
+                            })
+                          }
+                          endAdornment={
+                            <InputAdornment position="end">
+                              %
+                            </InputAdornment>
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Net Price
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.net_price}
+                          type="Number"
+                          onChange={(e) =>
+                            setTobeAdded({
+                              ...tobeAdded,
+                              net_price: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <InputLabel className={classes.modalFields}>
+                          Remarks
+                        </InputLabel>
+                        <Input
+                          className={classes.modalFields}
+                          variant="outlined"
+                          defaultValue={tobeAdded.remarks}
+                          onChange={(e) =>
+                            setTobeAdded({ ...tobeAdded, remarks: e.target.value })
+                          }
+                        />
+                      </FormGroup>
+                    </div>
+                  }
                 </div>
               </DialogContent>
               <DialogActions>
@@ -877,18 +955,30 @@ function AdminPrice() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  className={classes.create}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    tobeAdded.unit && tobeAdded.product_name
-                      ? addPendingItem()
-                      : alert("Enter a name");
-                  }}
-                >
-                  Add This Item
-                </Button>
+                {
+                  tobeAdded.unit ?
+                  <Button
+                    className={classes.create}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      tobeAdded.unit && tobeAdded.product_name
+                        ? addPendingItem()
+                        : alert("Enter a name");
+                    }}
+                  >
+                    Add This Item
+                  </Button>
+                  :
+                  <Button
+                    className={classes.create}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => addPendingItems()}
+                  >
+                    Add Items
+                  </Button>
+                }
               </DialogActions>
             </Dialog>
 

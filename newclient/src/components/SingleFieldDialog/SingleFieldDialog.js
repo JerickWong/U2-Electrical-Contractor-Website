@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { 
     Dialog, 
     makeStyles, 
@@ -11,7 +11,7 @@ import {
     Button, 
     InputAdornment
 } from "@material-ui/core";
-import { SettingsPowerRounded, LocalOffer, AccountCircle } from '@material-ui/icons';
+import { LocalOffer, AccountCircle } from '@material-ui/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 

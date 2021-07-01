@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import db from "../components/Firestore/firestore";
+import UserAlert from "../components/UserAlert/UserAlert";
 import { Container, Table } from "react-bootstrap";
 import {
   InputAdornment,
   Button,
-  ButtonGroup,
   TextField,
   Grid,
   makeStyles,
@@ -12,32 +17,17 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  Typography,
-  IconButton,
   InputBase,
   CircularProgress,
 } from "@material-ui/core";
-import {
-  ArrowBackIos,
-  Save,
-  Clear,
-  Search,
-  DateRange,
-  SettingsBackupRestore,
-} from "@material-ui/icons";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import db from "../components/Firestore/firestore";
-import UserAlert from "../components/UserAlert/UserAlert";
+import { ArrowBackIos, Save, Search, DateRange } from "@material-ui/icons";
+// import db from '../components/Firestore/firestore';
 import "../styles/mts.css";
 import api from "../api";
 import moment from "moment";
 import SuccessDialog from "../components/SuccessDialog/SuccessDialog";
 
 const primary = "#8083FF";
-const gray = "#838387";
 const white = "#FFFFFF";
 const theme = createMuiTheme({
   palette: {
@@ -111,13 +101,12 @@ const useStyles = makeStyles((theme) => ({
 
 // const dbMTS = db.collection('MTS-Collection');
 
-function Price() {
+function Price(props) {
   const classes = useStyles();
   const [current_project, setProject] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
   const [projects, setProjects] = useState([]);
   const [mts, setMts] = useState([]);
   const [backupMts, setBackup] = useState([]);
@@ -281,11 +270,8 @@ function Price() {
 
       setProjects(projectnames);
       setProject(projectnames[0]);
-
-      setError("");
     } catch (error) {
       alert("Something went wrong");
-      setError(error);
     }
   }
 
@@ -369,7 +355,7 @@ function Price() {
       } catch (error) {
         setMts([]);
         console.log(error);
-        setError(error);
+        //setError(error);
       }
     } else {
       // get delivered
@@ -391,9 +377,9 @@ function Price() {
     setProject(event.target.value);
     document.getElementById("search").value = "";
   };
+
   return (
-    <div className="PriceList">
-      {/*style:{{marginLeft:200}}*/}
+    <div className="PriceList" style={{ marginLeft: props.isOpen && 200 }}>
       <Container className="cont">
         <main className={classes.content}>
           <div className={classes.toolbar} />

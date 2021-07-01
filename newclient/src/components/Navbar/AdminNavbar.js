@@ -26,21 +26,18 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
-  ListAlt,
   TrendingUp,
   VerifiedUser,
   SupervisorAccount,
 } from "@material-ui/icons";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import indigo from "@material-ui/core/colors/indigo";
 import grey from "@material-ui/core/colors/grey";
 import "../../styles/navbar.css";
-import firebase from "firebase";
-import Authenticate from "../Firestore/auth";
+// import firebase from "firebase";
+// import Authenticate from "../Firestore/auth";
 import { Redirect } from "react-router-dom";
 import users from "../../api/users";
 
@@ -50,13 +47,6 @@ const dark = grey[800];
 const primary = "#8083FF";
 const white = "#FFFFFF";
 const lightIndigo = "#CDCFEF";
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#8083FF",
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -140,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function AdminNavbar() {
+function AdminNavbar(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -148,10 +138,14 @@ function AdminNavbar() {
 
   const handleDrawerOpen = () => {
     setOpen(true);
+    if (props.setIsOpen)
+      props.setIsOpen(true)
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
+    if (props.setIsOpen)
+      props.setIsOpen(false)
   };
 
   // firebase.auth().onAuthStateChanged(user => {
@@ -192,9 +186,9 @@ function AdminNavbar() {
     fetchUser();
   }, []);
 
-  function refreshPage() {
-    window.location.reload(false);
-  }
+  // function refreshPage() {
+  //   window.location.reload(false);
+  // }
 
   return (
     <div className={classes.root}>
@@ -231,6 +225,7 @@ function AdminNavbar() {
                   <Button
                     className={classes.logout}
                     endIcon={<ExitToAppIcon />}
+                    onClick={handleLogout}
                   >
                     {" "}
                     Logout{" "}
@@ -308,7 +303,7 @@ function AdminNavbar() {
               </ListItem>
             </Link>
             {
-              user.type === "Admin" &&
+              user && user.type === "Admin" &&
               <Link to="/Accounts">
                 <ListItem button key="Accounts">
                   <ListItemIcon className={classes.listIcon}>

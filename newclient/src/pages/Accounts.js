@@ -20,18 +20,16 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { Search, Lock, AccountCircle, Save } from "@material-ui/icons";
-import EmailIcon from "@material-ui/icons/Email";
-import { MuiThemeProvider, withStyles } from "@material-ui/core/styles";
+import { Search, Lock, AccountCircle } from "@material-ui/icons";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserEdit,
   faUserMinus,
-  faKey,
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/accounts.css";
-import Authenticate from "../components/Firestore/auth";
-import db from "../components/Firestore/firestore";
+// import Authenticate from "../components/Firestore/auth";
+// import db from "../components/Firestore/firestore";
 import moment from "moment";
 import users from "../api/users";
 import { Redirect } from "react-router-dom";
@@ -119,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Accounts() {
+function Accounts(props) {
   const classes = useStyles();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [open, setOpen] = useState(false);
@@ -195,9 +193,7 @@ function Accounts() {
       setAccounts(backupAccounts);
     } else {
       const accs = [...backupAccounts];
-      const filtered = accs.filter((acc) => {
-        if (acc.type === role) return acc;
-      });
+      const filtered = accs.filter((acc) => acc.type === role);
       setAccounts(filtered);
     }
   };
@@ -208,8 +204,7 @@ function Accounts() {
       const accs = [...backupAccounts];
       const filtered = accs.filter((acc) => {
         const lowerUser = acc.username.toLowerCase();
-        if (acc.type === role || role === "All")
-          if (lowerUser.includes(query)) return acc;
+        return (acc.type === role || role === "All") && (lowerUser.includes(query))
       });
       setAccounts(filtered);
     } else {
@@ -274,7 +269,7 @@ function Accounts() {
           password: editPassword,
           type: editRole,
         };
-        const message = await (
+        await (
           await users.updateUser(_id, payload)
         ).data.message;
         setTimeout(() => {
@@ -325,9 +320,6 @@ function Accounts() {
     setEdit(true);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
     setOpen(false);
 
@@ -345,10 +337,10 @@ function Accounts() {
     setEditRole("");
     setPassword("");
   };
+
   return (
-    <div className="Accounts">
+    <div className="Accounts" style={{marginLeft: props.isOpen && 200}}>
       {checkAdmin()}
-      {/*style:{{marginLeft:200}}*/}
       <Container className="cont">
         <div className={classes.toolbar} />
         <MuiThemeProvider theme={theme}>

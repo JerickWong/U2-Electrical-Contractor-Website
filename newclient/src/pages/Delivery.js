@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { Button, InputAdornment, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, Typography, CircularProgress } from '@material-ui/core';
+import { Button, InputAdornment, TextField, Grid, makeStyles, createMuiTheme, Select, MenuItem, InputLabel, FormControl, CircularProgress } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import db from '../components/Firestore/firestore'
+// import db from '../components/Firestore/firestore'
 import UserAlert from '../components/UserAlert/UserAlert'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import '../styles/mts.css';
 import api from '../api';
 
@@ -66,21 +64,21 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
-const dbMTS = db.collection('MTS-Collection');
+// const dbMTS = db.collection('MTS-Collection');
 
-function Price() {
+function Price(props) {
     ////// STATES //////
     const [current_project, setProject] = useState('');    
     const [error, setError] = useState('')
     const [projects, setProjects] = useState([])
     const [mts, setMts] = useState([])
     const [backupMts, setBackup] = useState([])
-    const [first, setFirst] = useState('')
-    const [changeProject, setChangeProject] = useState(true)
+    // const [first, setFirst] = useState('')
+    // const [changeProject, setChangeProject] = useState(true)
     const [isLoading, setLoading] = useState(true)
     const classes = useStyles();    
-    let temprows = []
-    let dates = []
+    // let temprows = []
+    // let dates = []
     
     ////// INITIAL //////
     // useEffect(() => {
@@ -408,8 +406,7 @@ function Price() {
             const filtered = temp.map(obj => {
                 const newItems = obj.items.filter(item => {
                     item = item.toLowerCase()
-                    if (item.includes(query))
-                        return item
+                    return item.includes(query)
                 })
 
                 return {...obj, items: newItems}
@@ -474,7 +471,7 @@ function Price() {
 
 
     return (
-        <div className="PriceList">
+        <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
             {/*style:{{marginLeft:200}}*/}
             <Container className="cont">
                 <main className={classes.content}>

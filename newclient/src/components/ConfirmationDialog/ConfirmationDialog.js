@@ -39,10 +39,6 @@ function ConfirmationDialogRaw(props) {
     props.handle()
   };
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-
   const empty = props.empty || []
 
   return (
