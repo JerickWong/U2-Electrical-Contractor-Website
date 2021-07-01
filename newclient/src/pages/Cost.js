@@ -198,7 +198,7 @@ function Cost(props) {
   }, [current_project, view]);
 
   return (
-    <div className="App" style={{marginLeft: props.isOpen && 200}}>
+    <div className="App" style={{marginLeft: props.isOpen && 230}}>
       {/*style:{{marginLeft:200}}*/}
       <div className="cont">
         <Container className={classes.container} maxWidth="lg">
