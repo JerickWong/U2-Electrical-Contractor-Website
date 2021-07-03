@@ -562,19 +562,15 @@ function MtsWindow(props) {
         });
 
         payload.name = "Pending Items";
-        console.log(pendingItems.pendingSupplier);
-        alert(pendingItems.pendingSupplier);
 
         const { pendingSupplier } = pendingItems;
 
         if (pendingSupplier === null) {
           await supplier.insertSupplier(payload);
-          alert("success insert");
         } else {
           // get supplier by name == Pending Items
           payload.items = [...pendingSupplier.items, ...payload.items]
           await supplier.updateSupplierById(pendingSupplier._id, payload);
-          alert("success update");
         }
       } catch (error) {
         console.log(error);
