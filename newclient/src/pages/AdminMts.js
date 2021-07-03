@@ -434,7 +434,7 @@ function AdminMts(props) {
             console.log(error)
             setSuccess(false)
             alert('error in deleting')
-            if (error.includes("404"))
+            if (error.toString().includes("404"))
                 setMessage("MTS could not be found")
             else
                 setMessage("Unknown error")

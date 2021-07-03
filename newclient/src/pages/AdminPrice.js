@@ -179,6 +179,7 @@ function AdminPrice(props) {
     setIsAdding(false);
     setCategory(event.target.value);
     setBackupCategory(event.target.value);
+    document.getElementById("search").value = "";
   };
 
   const handleClose = () => {
