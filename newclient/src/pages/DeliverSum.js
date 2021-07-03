@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faEye } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, Prompt } from "react-router-dom";
 import db from "../components/Firestore/firestore";
 import UserAlert from "../components/UserAlert/UserAlert";
 import { Container, Table } from "react-bootstrap";
@@ -114,6 +114,7 @@ function Price(props) {
   const [from, setFrom] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isFiltered, setFiltered] = useState(false);
+  const [isUnsaved, setUnsaved] = useState(false)
   // const [first, setFirst] = useState('')
   // const [date, setDate] = useState([])
   // const [changeProject, setChangeProject] = useState(true)
@@ -279,6 +280,7 @@ function Price(props) {
     const newRows = [...mts];
     newRows[index]["estqty"] = e.target.value;
     setMts(newRows);
+    setUnsaved(true)
   };
 
   const handleSave = async () => {
@@ -287,6 +289,7 @@ function Price(props) {
     try {
       await api.addEstQty({ project_name: current_project, rows: mts });
       setSuccess(true);
+      setUnsaved(false)
     } catch (error) {
       console.log(error);
       setSuccess(false);
@@ -572,6 +575,11 @@ function Price(props) {
         success={success}
         isLoading={loading}
         action={"Save"}
+      />
+
+      <Prompt
+        when={isUnsaved}
+        message="You have unsaved changes, are you sure you want to leave?"
       />
     </div>
   );
