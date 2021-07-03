@@ -961,9 +961,6 @@ function MtsWindow(props) {
                         <Autocomplete
                           value={row.description}
                           onChange={(event, newValue) => {
-                            const newRows = [...rows];
-                            newRows[index]["description"] = newValue.inputValue;
-                            setRows(newRows);
                             if (newValue && newValue.inputValue) {
                               alert(
                                 `${newValue.inputValue} and its row will be added to pending items. Do not change its row position.`
@@ -1002,6 +999,11 @@ function MtsWindow(props) {
                                   else row.remarks = "";
                               } 
                             }
+                          }}
+                          onInputChange={(event, value) => {
+                            console.log(value)
+                            const newRows = [...rows];
+                            newRows[index]["description"] = value;
                           }}
                           filterOptions={(options, params) => {
                             const filtered = filter(options, params);
