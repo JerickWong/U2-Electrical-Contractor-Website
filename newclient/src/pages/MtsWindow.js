@@ -408,10 +408,11 @@ function MtsWindow(props) {
     const currentRows = [...rows];
 
     if (currentRows[index].qty && currentRows[index].price) {
-      currentRows[index].total =
-        parseInt(currentRows[index].qty) * parseFloat(currentRows[index].price);
-      setRows(currentRows);
+      currentRows[index].total = parseInt(currentRows[index].qty) * parseFloat(currentRows[index].price);
+    } else {
+      currentRows[index].total = 0
     }
+    setRows(currentRows)
   }
 
   useEffect(() => {
@@ -918,7 +919,7 @@ function MtsWindow(props) {
                             if (e.target.value.includes('-')) {
                               e.target.value = Math.abs(e.target.value)
                             }
-                            e.target.value.length < 8 && handleRowChange(e, index) && updateTotal(e, index)
+                            e.target.value.length < 8 && (handleRowChange(e, index) || updateTotal(e, index))
                           }}
                           pattern="[0-9*]"
                           inputProps= {{min: 0}}
@@ -1081,11 +1082,18 @@ function MtsWindow(props) {
                           size="small"
                           value={row.price}
                           onChange={(e) => {
-                            handleRowChange(e, index);
-                            updateTotal(e, index);
+                            if (!e.target.value) {
+                              e.target.value = ''
+                            }
+                            if (e.target.value.includes('-')) {
+                              e.target.value = Math.abs(e.target.value)
+                            }
+                            handleRowChange(e, index)
+                            updateTotal(e, index)
                           }}
                           pattern="[0-9*]"
                           type="number"
+                          inputProps= {{min: 0}}
                           readOnly={confirmed}
                         />
                       </td>
