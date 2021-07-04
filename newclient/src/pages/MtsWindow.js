@@ -910,12 +910,18 @@ function MtsWindow(props) {
                           className={classes.txt}
                           name="qty"
                           size="small"
-                          value={row.qty}
+                          value={row.qty && Math.max(0, row.qty)}
                           onChange={(e) => {
-                            handleRowChange(e, index);
-                            updateTotal(e, index);
+                            if (!e.target.value) {
+                              e.target.value = ''
+                            }
+                            if (e.target.value.includes('-')) {
+                              e.target.value = Math.abs(e.target.value)
+                            }
+                            e.target.value.length < 8 && handleRowChange(e, index) && updateTotal(e, index)
                           }}
                           pattern="[0-9*]"
+                          inputProps= {{min: 0}}
                           type="number"
                           readOnly={confirmed}
                         />
