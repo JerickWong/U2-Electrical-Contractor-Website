@@ -773,7 +773,7 @@ function MtsWindow(props) {
                     required
                     size="normal"
                     InputLabelProps={{ shrink: true }}
-                    onChange={(e) => setMtsNumber(e.target.value)}
+                    onChange={(e) => !e.target.value.includes('-') && e.target.value.length < 11 && setMtsNumber(e.target.value)}
                     name="mts_field"
                     pattern="[0-9*]"
                     type="number"
