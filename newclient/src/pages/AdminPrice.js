@@ -885,12 +885,15 @@ function AdminPrice(props) {
                           variant="outlined"
                           defaultValue={tobeAdded.list_price}
                           type="Number"
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            if (e.target.value === '' || parseFloat(e.target.value)<0)
+                              e.target.value = ''
                             setTobeAdded({
                               ...tobeAdded,
                               list_price: e.target.value,
                             })
-                          }
+                          }}
+                          inputProps= {{min: 0}}
                         />
                       </FormGroup>
                       <FormGroup>
@@ -924,12 +927,15 @@ function AdminPrice(props) {
                           variant="outlined"
                           defaultValue={tobeAdded.net_price}
                           type="Number"
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            if (e.target.value === '' || parseFloat(e.target.value)<0)
+                              e.target.value = ''
                             setTobeAdded({
                               ...tobeAdded,
-                              net_price: e.target.value,
+                              list_price: e.target.value,
                             })
-                          }
+                          }}
+                          inputProps= {{min: 0}}
                         />
                       </FormGroup>
                       <FormGroup>

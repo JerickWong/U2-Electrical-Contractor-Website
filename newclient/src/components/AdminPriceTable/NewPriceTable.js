@@ -150,10 +150,9 @@ export default function NewPriceTable(props) {
 
   function handleChange(e, index) {
     const { value, name } = e.target
-    if(value !== '' && parseFloat(value)>=0) 
-      edit[index][name] = value; 
-    else 
+    if(value === '' || parseFloat(value)<0) 
       e.target.value = ''
+    edit[index][name] = e.target.value; 
   }
 
   return (
