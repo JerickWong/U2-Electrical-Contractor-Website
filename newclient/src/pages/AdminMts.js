@@ -431,7 +431,7 @@ function AdminMts(props) {
             console.log('success!')
             setSuccess(true)
         } catch (error) {
-            console.log(error)
+            console.log(error.error)
             setSuccess(false)
             alert('error in deleting')
             if (error.toString().includes("404"))
