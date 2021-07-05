@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
     color: white,
     width: 150,
   },
+  btnGrp2:{
+    marginTop:5,
+    marginBottom:5
+  },
   pending: {
     alignItems: "flex-end",
   },
@@ -670,7 +674,7 @@ function AdminPrice(props) {
                     <ButtonGroup variant="outlined" style={{position: 'absolute', margin: 10}}>
                       <Button
                         color="primary"
-                        className={classes.button3}
+                        className={classes.btnGrp2}
                         startIcon={<LocalOffer />}
                         onClick={() => setOpenPrice(true)}
                       >
@@ -691,7 +695,7 @@ function AdminPrice(props) {
                       <Button
                         color="secondary"
                         disable={!category}
-                        className={classes.button3}
+                        className={classes.btnGrp2}
                         startIcon={<Delete />}
                         onClick={removeItems}
                       >
