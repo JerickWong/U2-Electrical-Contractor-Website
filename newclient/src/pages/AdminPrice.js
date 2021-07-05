@@ -23,7 +23,7 @@ import {
   QueryBuilder,
   Delete,
   LocalOffer,
-  Search
+  Search,
 } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -60,9 +60,9 @@ const useStyles = makeStyles((theme) => ({
     color: white,
     width: 150,
   },
-  btnGrp2:{
-    marginTop:5,
-    marginBottom:5
+  btnGrp2: {
+    marginTop: 7,
+    marginBottom: 7,
   },
   pending: {
     alignItems: "flex-end",
@@ -127,10 +127,16 @@ const useStyles = makeStyles((theme) => ({
   },
   modalFields: {
     width: 400,
-    marginBottom: 20,
     alignItems: "center",
-    display: "flex",
-    marginLeft: 30,
+  },
+  editFields: {
+    width: 230,
+    alignItems: "center",
+    marginTop: theme.spacing(1),
+  },
+  modalContent: {
+    marginTop:20,
+    marginBottom: 10,
   },
 }));
 
@@ -148,7 +154,7 @@ function AdminPrice(props) {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPending, setOpenPending] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState(0);
   const [category, setCategory] = useState(null);
   const [backupCategory, setBackupCategory] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -160,23 +166,21 @@ function AdminPrice(props) {
   const [tobeAdded, setTobeAdded] = useState({});
   const [name, setName] = useState("");
   const [items, setItems] = useState([]);
-  const [selectedItems, setSelected] = useState([])
+  const [selectedItems, setSelected] = useState([]);
 
   const Papa = require("papaparse");
 
   useEffect(() => {
     setItems([]);
-  }, [openAdd])
+  }, [openAdd]);
 
   useEffect(() => {
-    if (!openPending)
-      setTobeAdded({})
-  }, [openPending])
+    if (!openPending) setTobeAdded({});
+  }, [openPending]);
 
   useEffect(() => {
-    if (!openPending)
-      setSelected([])
-  }, [category])
+    if (!openPending) setSelected([]);
+  }, [category]);
 
   const handleChange = (event) => {
     if (isAdding) category.items.pop();
@@ -340,7 +344,10 @@ function AdminPrice(props) {
           const final = window.confirm(
             `Are you sure you want to replace the price list for ${category.name}?`
           );
-          if (final) {uploadItems(results.data); setOpenEdit(false)};
+          if (final) {
+            uploadItems(results.data);
+            setOpenEdit(false);
+          }
         } else {
           if (category === null) alert("No selected Supplier yet");
           else {
@@ -445,20 +452,20 @@ function AdminPrice(props) {
 
   const addPendingItems = async () => {
     try {
-      const sorted = selectedItems.sort((a, b) => b-a)
-      sorted.forEach(index => {
-        category.items.push(pending.items[index])
-        pending.items.splice(index, 1)
-      })
-      await suppliers.updateSupplierById(category._id, category)
-      await suppliers.updateSupplierById(pending._id, pending)
-      setSelected([])
-      setOpenPending(false)
-      setCategory({...category})
+      const sorted = selectedItems.sort((a, b) => b - a);
+      sorted.forEach((index) => {
+        category.items.push(pending.items[index]);
+        pending.items.splice(index, 1);
+      });
+      await suppliers.updateSupplierById(category._id, category);
+      await suppliers.updateSupplierById(pending._id, pending);
+      setSelected([]);
+      setOpenPending(false);
+      setCategory({ ...category });
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  }
+  };
 
   const newItem = () => {
     if (!isAdding) {
@@ -481,60 +488,65 @@ function AdminPrice(props) {
 
   const applyPrice = async () => {
     try {
-      selectedItems.forEach(index => {
-        category.items[index].price_adjustment = price
-        category.items[index].net_price = (1+price/100) * category.items[index].list_price
-      })
-      await suppliers.updateSupplierById(category._id, category)
-      setSelected([])
-      setOpenPrice(false)
-      setCategory({...category})
+      selectedItems.forEach((index) => {
+        category.items[index].price_adjustment = price;
+        category.items[index].net_price =
+          (1 + price / 100) * category.items[index].list_price;
+      });
+      await suppliers.updateSupplierById(category._id, category);
+      setSelected([]);
+      setOpenPrice(false);
+      setCategory({ ...category });
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  }
+  };
 
   const removeItems = async () => {
-    const sorted = selectedItems.sort((a, b) => b-a)
-    sorted.forEach(index => {
-      category.items.splice(index, 1)
-    })
-    
+    const sorted = selectedItems.sort((a, b) => b - a);
+    sorted.forEach((index) => {
+      category.items.splice(index, 1);
+    });
+
     try {
-      await suppliers.updateSupplierById(category._id, category)
-      setSelected([])
-      setCategory({...category})
+      await suppliers.updateSupplierById(category._id, category);
+      setSelected([]);
+      setCategory({ ...category });
     } catch (error) {
-      console.error(error)
-      alert('something went wrong')
+      console.error(error);
+      alert("something went wrong");
     }
-  }
+  };
 
   const handleSearch = (event) => {
-
-    let query = event.target.value
-    if (query !== '') {
-        query = query.toLowerCase()
-        const temp = [...backupCategory.items]
-        console.log(temp)
-        const filtered = temp.filter(obj => {
-          let unit = obj.unit.toLowerCase()
-          let product_name = obj.product_name.toLowerCase()
-          let model_name = obj.model_name.toLowerCase()
-          let brand_name = obj.brand_name.toLowerCase()
-          let remarks = obj.remarks.toLowerCase()
-          return unit.includes(query) || product_name.includes(query) || model_name.includes(query) || brand_name.includes(query) || remarks.includes(query)
-        })
-        console.log(filtered)
-        setCategory({items: filtered})
+    let query = event.target.value;
+    if (query !== "") {
+      query = query.toLowerCase();
+      const temp = [...backupCategory.items];
+      console.log(temp);
+      const filtered = temp.filter((obj) => {
+        let unit = obj.unit.toLowerCase();
+        let product_name = obj.product_name.toLowerCase();
+        let model_name = obj.model_name.toLowerCase();
+        let brand_name = obj.brand_name.toLowerCase();
+        let remarks = obj.remarks.toLowerCase();
+        return (
+          unit.includes(query) ||
+          product_name.includes(query) ||
+          model_name.includes(query) ||
+          brand_name.includes(query) ||
+          remarks.includes(query)
+        );
+      });
+      console.log(filtered);
+      setCategory({ items: filtered });
     } else {
-        setCategory(backupCategory)
+      setCategory(backupCategory);
     }
-
-  }
+  };
 
   return (
-    <div className="PriceList" style={{marginLeft: props.isOpen && 200}}>
+    <div className="PriceList" style={{ marginLeft: props.isOpen && 200 }}>
       {/*style:{{marginLeft:200}}*/}
       <Container fluid="lg" className="cont">
         <main className={classes.content}>
@@ -566,24 +578,24 @@ function AdminPrice(props) {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid container item xs={4} >
+                <Grid container item xs={4}>
                   <FormControl>
                     <TextField
                       className={classes.txt}
                       size="normal"
                       placeholder="Search"
-                      type='search'
+                      type="search"
                       InputProps={{
-                          startAdornment: (
-                              <InputAdornment position="start">
-                                  <Search />
-                              </InputAdornment>
-                          ),
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
                       }}
                       onChange={handleSearch}
                       id="search"
                     />
-                    </FormControl>
+                  </FormControl>
                 </Grid>
                 <Grid
                   container
@@ -669,9 +681,11 @@ function AdminPrice(props) {
                   </Grid>
                 </Grid>
                 <Grid container spacing={2}>
-                  {
-                    Boolean(selectedItems.length) &&
-                    <ButtonGroup variant="outlined" style={{position: 'absolute', margin: 10}}>
+                  {Boolean(selectedItems.length) && (
+                    <ButtonGroup
+                      variant="outlined"
+                      style={{ position: "absolute", margin: 10 }}
+                    >
                       <Button
                         color="primary"
                         className={classes.btnGrp2}
@@ -680,18 +694,17 @@ function AdminPrice(props) {
                       >
                         Apply Price Adjustment
                       </Button>
-                      {
-                        category.name === "Pending Items" &&
+                      {category.name === "Pending Items" && (
                         <Button
                           color="default"
                           disable={!category}
-                          className={classes.button3}
+                          className={classes.btnGrp2}
                           startIcon={<Add />}
                           onClick={() => setOpenPending(true)}
                         >
                           Add Items
                         </Button>
-                      }
+                      )}
                       <Button
                         color="secondary"
                         disable={!category}
@@ -702,7 +715,7 @@ function AdminPrice(props) {
                         Remove Selected
                       </Button>
                     </ButtonGroup>
-                  }
+                  )}
                 </Grid>
               </Grid>
             </div>
@@ -723,7 +736,7 @@ function AdminPrice(props) {
               />
             )}
             {/* ADD SUPPLIER */}
-            <SingleFieldDialog 
+            <SingleFieldDialog
               open={openAdd}
               close={setOpenAdd}
               title={"New Supplier"}
@@ -741,7 +754,7 @@ function AdminPrice(props) {
             />
 
             {/* EDIT SUPPLIER */}
-            <SingleFieldDialog 
+            <SingleFieldDialog
               open={openEdit}
               close={setOpenEdit}
               title={"Edit Supplier"}
@@ -758,7 +771,7 @@ function AdminPrice(props) {
             />
 
             {/* APPLY PRICE ADJUSTMENT */}
-            <SingleFieldDialog 
+            <SingleFieldDialog
               open={openPrice}
               close={setOpenPrice}
               title={"Apply Price Adjustment"}
@@ -782,10 +795,18 @@ function AdminPrice(props) {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                <h3>Select which supplier to add {tobeAdded.unit ? 'this item' : 'the items selected'}</h3>
+                <h3>
+                  Select which supplier to add{" "}
+                  {tobeAdded.unit ? "this item" : "the items selected"} to:
+                </h3>
               </DialogTitle>
               <DialogContent dividers>
-                <div className="modalAcc">
+                <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                >
                   <FormControl>
                     <InputLabel
                       id="demo-simple-select-label"
@@ -812,33 +833,31 @@ function AdminPrice(props) {
                       })}
                     </Select>
                   </FormControl>
-                  {
-                    tobeAdded.unit &&
-                    <div>
-                      <br />
-                      <br />
-                      <br />
-                      <br />
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Unit
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                  {tobeAdded.unit && (
+                    <Grid
+                      className={classes.modalContent}
+                      container
+                      direction="row"
+                      justify="center"
+                      alignItems="center"
+                    >
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Unit"
                           defaultValue={tobeAdded.unit}
                           onChange={(e) =>
                             setTobeAdded({ ...tobeAdded, unit: e.target.value })
                           }
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Product Name
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        {" "}
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Product Name"
                           defaultValue={tobeAdded.product_name}
                           onChange={(e) =>
                             setTobeAdded({
@@ -847,14 +866,12 @@ function AdminPrice(props) {
                             })
                           }
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Brand
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Brand"
                           defaultValue={tobeAdded.brand_name}
                           onChange={(e) =>
                             setTobeAdded({
@@ -863,14 +880,12 @@ function AdminPrice(props) {
                             })
                           }
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Model
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                        size="Small"
+                          id="standard-basic"
+                          label="Model"
                           defaultValue={tobeAdded.model_name}
                           onChange={(e) =>
                             setTobeAdded({
@@ -879,34 +894,34 @@ function AdminPrice(props) {
                             })
                           }
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          List Price
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="List Price"
                           defaultValue={tobeAdded.list_price}
                           type="Number"
                           onChange={(e) => {
-                            if (e.target.value === '' || parseFloat(e.target.value)<0)
-                              e.target.value = ''
+                            if (
+                              e.target.value === "" ||
+                              parseFloat(e.target.value) < 0
+                            )
+                              e.target.value = "";
                             setTobeAdded({
                               ...tobeAdded,
                               list_price: e.target.value,
-                            })
+                            });
                           }}
-                          inputProps= {{min: 0}}
+                          inputProps={{ min: 0 }}
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Price Adjustment
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        {" "}
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Price Adjustment"
                           defaultValue={tobeAdded.price_adjustment}
                           type="Number"
                           onChange={(e) =>
@@ -916,48 +931,48 @@ function AdminPrice(props) {
                             })
                           }
                           endAdornment={
-                            <InputAdornment position="end">
-                              %
-                            </InputAdornment>
+                            <InputAdornment position="end"> % </InputAdornment>
                           }
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Net Price
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Net Price"
                           defaultValue={tobeAdded.net_price}
                           type="Number"
                           onChange={(e) => {
-                            if (e.target.value === '' || parseFloat(e.target.value)<0)
-                              e.target.value = ''
+                            if (
+                              e.target.value === "" ||
+                              parseFloat(e.target.value) < 0
+                            )
+                              e.target.value = "";
                             setTobeAdded({
                               ...tobeAdded,
                               list_price: e.target.value,
-                            })
+                            });
                           }}
-                          inputProps= {{min: 0}}
+                          inputProps={{ min: 0 }}
                         />
-                      </FormGroup>
-                      <FormGroup>
-                        <InputLabel className={classes.modalFields}>
-                          Remarks
-                        </InputLabel>
-                        <Input
-                          className={classes.modalFields}
-                          variant="outlined"
+                      </FormControl>
+                      <FormControl className={classes.editFields}>
+                        <TextField
+                          id="standard-basic"
+                          size="Small"
+                          label="Remarks"
                           defaultValue={tobeAdded.remarks}
                           onChange={(e) =>
-                            setTobeAdded({ ...tobeAdded, remarks: e.target.value })
+                            setTobeAdded({
+                              ...tobeAdded,
+                              remarks: e.target.value,
+                            })
                           }
                         />
-                      </FormGroup>
-                    </div>
-                  }
-                </div>
+                      </FormControl>
+                    </Grid>
+                  )}
+                </Grid>
               </DialogContent>
               <DialogActions>
                 <Button
@@ -966,8 +981,7 @@ function AdminPrice(props) {
                 >
                   Cancel
                 </Button>
-                {
-                  tobeAdded.unit ?
+                {tobeAdded.unit ? (
                   <Button
                     className={classes.create}
                     variant="contained"
@@ -980,7 +994,7 @@ function AdminPrice(props) {
                   >
                     Add This Item
                   </Button>
-                  :
+                ) : (
                   <Button
                     className={classes.create}
                     variant="contained"
@@ -989,7 +1003,7 @@ function AdminPrice(props) {
                   >
                     Add Items
                   </Button>
-                }
+                )}
               </DialogActions>
             </Dialog>
 
