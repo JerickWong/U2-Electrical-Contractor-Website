@@ -142,6 +142,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
     marginBottom: 10,
   },
+  upload:{
+    width: 170
+  },
+  download:{
+    marginLeft:20,
+    width: 150
+  }
 }));
 
 function AdminPrice(props) {
@@ -1025,10 +1032,10 @@ function AdminPrice(props) {
             <div className="tbl">
               <Grid container spacing={1}>
                 <Grid item xs={4}>
-                  <ButtonGroup variant="contained">
                     <Button
                       variant="contained"
                       color="primary"
+                      className={classes.upload}
                       {...getRootProps({ className: "dropzone" })}
                     >
                       <input {...getInputProps()} />
@@ -1038,12 +1045,12 @@ function AdminPrice(props) {
                     <Button
                       variant="contained"
                       color="primary"
+                      className={classes.download}
                       startIcon={<GetAppIcon />}
                       onClick={downloadFile}
                     >
                       Download
                     </Button>
-                  </ButtonGroup>
                 </Grid>
               </Grid>
             </div>
