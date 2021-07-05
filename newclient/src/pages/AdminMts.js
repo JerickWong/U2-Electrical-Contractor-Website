@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Container, Table } from "react-bootstrap";
+import { Visibility, Delete, CheckCircle } from "@material-ui/icons";
+import { ButtonGroup, Container, Table } from "react-bootstrap";
 import {
   makeStyles,
   MenuItem,
@@ -628,8 +628,11 @@ function AdminMts(props) {
                           },
                         }}
                       >
-                        <Button variant="outlined" color="primary">
-                          <FontAwesomeIcon className="view" icon={faEye} />
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          startIcon={<Visibility />}
+                        >
                           View
                         </Button>
                       </Link>{" "}
@@ -638,6 +641,8 @@ function AdminMts(props) {
                       ) : (
                         <Button
                           variant="outlined"
+                          color="primary"
+                          startIcon={<CheckCircle />}
                           onClick={() => {
                             setCurrent(m);
                           }}
@@ -648,6 +653,7 @@ function AdminMts(props) {
                       <Button
                         variant="outlined"
                         color="secondary"
+                        startIcon={<Delete />}
                         onClick={() => {
                           setAction("Delete");
                           setEmpty([]);
@@ -655,7 +661,6 @@ function AdminMts(props) {
                           setOpenConfirm(true);
                         }}
                       >
-                        <DeleteIcon />
                         Delete
                       </Button>
                     </td>
