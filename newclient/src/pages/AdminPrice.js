@@ -60,9 +60,12 @@ const useStyles = makeStyles((theme) => ({
     color: white,
     width: 150,
   },
+  btnGrp1: {
+    width: 195,
+  },
   btnGrp2: {
-    marginTop: 7,
-    marginBottom: 7,
+    marginTop: 10,
+    marginBottom: 10,
   },
   pending: {
     alignItems: "flex-end",
@@ -79,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
   txt: {
     width: 300,
     marginTop: 15,
+    marginBottom: 20,
   },
   badge: {
     marginTop: 15,
@@ -135,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   modalContent: {
-    marginTop:20,
+    marginTop: 20,
     marginBottom: 10,
   },
 }));
@@ -578,7 +582,14 @@ function AdminPrice(props) {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid container item xs={4}>
+                <Grid
+                  container
+                  item
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                  xs={4}
+                >
                   <FormControl>
                     <TextField
                       className={classes.txt}
@@ -617,6 +628,7 @@ function AdminPrice(props) {
                       startIcon={<QueryBuilder />}
                       className={classes.pending}
                       onClick={() => setCategory(pending)}
+                      style={{ marginBottom: 20 }}
                     >
                       Pending Items
                     </Button>
@@ -633,16 +645,16 @@ function AdminPrice(props) {
                   >
                     <ButtonGroup variant="contained">
                       <Button
+                        className={classes.btnGrp1}
                         color="primary"
-                        className={classes.button3}
                         startIcon={<GroupAdd />}
                         onClick={() => setOpenAdd(true)}
                       >
                         Add Supplier
                       </Button>
                       <Button
+                        className={classes.btnGrp1}
                         color="primary"
-                        className={classes.button3}
                         startIcon={<Edit />}
                         onClick={() => {
                           setOpenEdit(true);
@@ -652,9 +664,9 @@ function AdminPrice(props) {
                         Edit Supplier
                       </Button>
                       <Button
+                        className={classes.btnGrp1}
                         color="secondary"
                         disable={!category}
-                        className={classes.button3}
                         startIcon={<Delete />}
                         onClick={() => setOpenConfirm(true)}
                       >
@@ -665,16 +677,17 @@ function AdminPrice(props) {
                   <Grid
                     container
                     item
-                    xs={4}
+                    xs={6}
                     direction="row"
+                    justify="flex-end"
                     alignItems="center"
                   >
                     <Button
                       variant="contained"
                       color="primary"
-                      className={classes.button3}
                       startIcon={<Add />}
                       onClick={newItem}
+                      style={{ width: 167 }}
                     >
                       Add Item
                     </Button>
@@ -696,13 +709,13 @@ function AdminPrice(props) {
                       </Button>
                       {category.name === "Pending Items" && (
                         <Button
-                          color="default"
+                          color="primary"
                           disable={!category}
                           className={classes.btnGrp2}
                           startIcon={<Add />}
                           onClick={() => setOpenPending(true)}
                         >
-                          Add Items
+                          Add Selected
                         </Button>
                       )}
                       <Button
@@ -719,7 +732,8 @@ function AdminPrice(props) {
                 </Grid>
               </Grid>
             </div>
-            <br></br>
+            <br />
+            <br />
             {/*<PriceTable data={category ? category.items : []} category={category}/>*/}
             {isLoading ? (
               <CircularProgress />
@@ -883,7 +897,7 @@ function AdminPrice(props) {
                       </FormControl>
                       <FormControl className={classes.editFields}>
                         <TextField
-                        size="Small"
+                          size="Small"
                           id="standard-basic"
                           label="Model"
                           defaultValue={tobeAdded.model_name}
@@ -978,6 +992,7 @@ function AdminPrice(props) {
                 <Button
                   onClick={() => setOpenPending(false)}
                   variant="contained"
+                  color="secondary"
                 >
                   Cancel
                 </Button>
@@ -1014,7 +1029,6 @@ function AdminPrice(props) {
                     <Button
                       variant="contained"
                       color="primary"
-                      className={classes.button3}
                       {...getRootProps({ className: "dropzone" })}
                     >
                       <input {...getInputProps()} />
@@ -1024,7 +1038,6 @@ function AdminPrice(props) {
                     <Button
                       variant="contained"
                       color="primary"
-                      className={classes.button3}
                       startIcon={<GetAppIcon />}
                       onClick={downloadFile}
                     >
