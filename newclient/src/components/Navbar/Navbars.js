@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
     color: lightIndigo,
   },
   username: {
-    marginLeft: 7,
+    marginLeft: 5,
     color: lightIndigo,
   },
   logout: {
