@@ -5,6 +5,7 @@ import {
   makeStyles,
   useTheme,
   Button,
+  Container,
   Drawer,
   AppBar,
   Grid,
@@ -113,10 +114,11 @@ const useStyles = makeStyles((theme) => ({
     color: lightIndigo,
   },
   username: {
-    marginLeft: 5,
+    marginLeft: 7,
     color: lightIndigo,
   },
   logout: {
+    marginLeft:30,
     color: white,
   },
   listIcon: {
@@ -132,14 +134,12 @@ function Navbars(props) {
 
   const handleDrawerOpen = () => {
     setOpen(true);
-    if (props.setIsOpen)
-      props.setIsOpen(true)
+    if (props.setIsOpen) props.setIsOpen(true);
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
-    if (props.setIsOpen)
-      props.setIsOpen(false)
+    if (props.setIsOpen) props.setIsOpen(false);
   };
 
   // firebase.auth().onAuthStateChanged(user => {
@@ -201,26 +201,28 @@ function Navbars(props) {
             >
               <Menu />
             </IconButton>
-            <Grid
-              container
-              direction="row"
-              justify="flex-end"
-              alignItems="center"
-            >
-              <Typography className={classes.login}>Logged in as:</Typography>
-              <Typography className={classes.username}>
-                {user ? user : ""}
-              </Typography>
-              <Link to="/">
-                <Button
-                  onClick={handleLogout}
-                  className={classes.logout}
-                  startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}
-                >
-                  Logout
-                </Button>
-              </Link>
-            </Grid>
+            <Container className={classes.navbarContainer} maxWidth="md">
+              <Grid
+                container
+                direction="row"
+                justify="flex-end"
+                alignItems="center"
+              >
+                <Typography className={classes.login}>Logged in as:</Typography>
+                <Typography className={classes.username}>
+                  {user ? user : ""}
+                </Typography>
+                <Link to="/">
+                  <Button
+                    onClick={handleLogout}
+                    className={classes.logout}
+                    startIcon={<FontAwesomeIcon icon={faSignOutAlt} />}
+                  >
+                    Logout
+                  </Button>
+                </Link>
+              </Grid>
+            </Container>
           </Toolbar>
         </AppBar>
         <Drawer
