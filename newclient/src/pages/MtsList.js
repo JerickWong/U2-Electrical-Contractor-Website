@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   projectFields:{
-    width: 200
+    width: 270
   },
   parentCenter: {
     height: "200px",
